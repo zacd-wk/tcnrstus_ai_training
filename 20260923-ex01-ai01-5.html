@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>練習01. 使用CSS語法配置版面</title>
+    <link rel="stylesheet" href="css/myall.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            /* 確保寬高計算包含內襯與邊框 */
+        }
+
+        body {
+            background-color: var(--color-sb-bg-white);
+        }
+
+        /* 桌機版（預設基本樣式） */
+        .wrapper {
+            width: 1024px;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .logo {
+            width: 1024px;
+            height: 160px;
+            background-color: var(--color-sb-bg-white);
+            background-image: url(images/christina-rumpf-LMzwJDu6hTE-unsplash.jpg);
+            background-position: center center;
+            background-size: cover;
+        }
+
+        .nav {
+            background-color: var(--color-sb-bg-white);
+            text-align: center;
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+
+        .nav ul {
+            display: inline-block;
+        }
+
+        .nav ul li {
+            float: left;
+            list-style-type: none;
+        }
+
+        .nav ul li a {
+            text-decoration: none;
+            background-color: var(--color-sb-bg-white);
+            color: var(--color-sb-text-dark);
+            padding-top: 15px;
+            padding-bottom: 15px;
+            padding-left: 20px;
+            padding-right: 20px;
+            margin-left: 5px;
+            margin-right: 5px;
+            border-radius: 10px;
+            box-shadow: 2px 2px 2px 2px var(--color-sb-transparent);
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .nav ul li a:hover {
+            background-color: var(--color-sb-text-dark);
+            color: var(--color-sb-bg-white);
+        }
+
+        .content {
+            padding: 30px 80px;
+            background-color: var(--color-sb-bg-light);
+        }
+
+        .content h1 {
+            text-align: center;
+            color: var(--color-sb-brand-green);
+            font-size: 48px;
+        }
+
+        .content p {
+            font-size: 24px;
+            margin-top: 20px;
+            color: var(--color-sb-text-dark);
+        }
+
+        /* 了解更多按鈕基本樣式 */
+        .content a {
+            display: block;
+            background-color: var(--color-sb-text-dark);
+            width: 130px;
+            height: 40px;
+            margin-top: 30px;
+            margin-bottom: 0px;
+            margin-left: auto;
+            margin-right: auto;
+            color: var(--color-sb-bg-white);
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            line-height: 40px;
+            border-radius: 10px;
+            box-shadow: 2px 2px 2px 2px var(--color-sb-transparent);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            /* 讓Hover特效平滑過渡 */
+        }
+
+        /* 新增：了解更多按鈕的 Hover 效果 */
+        .content a:hover {
+            background-color: var(--color-sb-brand-green);
+            /* 變成星巴克經典綠 */
+            transform: scale(1.05);
+            /* 輕微放大微動態感 */
+        }
+
+        /* 豐富化後的頁尾（.footer）設計 */
+        .footer {
+            background-color: var(--color-sb-web-footer);
+            color: var(--color-sb-bg-white);
+            padding: 40px 80px;
+            /* 加大上下內襯，提升呼吸感 */
+        }
+
+        .footer-social {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .footer-social a {
+            color: var(--color-sb-bg-white);
+            text-decoration: none;
+            font-size: 16px;
+            margin: 0 15px;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .footer-social a:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+        .footer-links {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .footer-links a {
+            color: #aaa;
+            /* 次要連結採用淺灰色 */
+            text-decoration: none;
+            font-size: 14px;
+            margin: 0 10px;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--color-sb-bg-white);
+        }
+
+        .footer hr {
+            border: 0;
+            border-top: 1px solid #333333;
+            /* 質感深灰分隔線 */
+            margin-bottom: 20px;
+        }
+
+        .footer-copyright {
+            text-align: center;
+            font-size: 14px;
+            color: #888888;
+        }
+
+        /* ==========================================================================
+           【RWD 第一層】當螢幕寬度小於或等於 1024px（平板、小筆電）
+           ========================================================================== */
+        @media screen and (max-width: 1024px) {
+            .wrapper {
+                width: 95%;
+                /* 釋放固定寬度，改為佔螢幕寬度的 95%，左右留白 */
+            }
+
+            .logo {
+                width: 100%;
+                /* 圖片區塊自動填滿外殼 */
+                height: 150px;
+            }
+
+            .content {
+                padding: 30px 40px;
+                /* 稍微縮小內容區的左右間距 */
+            }
+
+            .content h1 {
+                font-size: 38px;
+                /* 縮小標題文字 */
+            }
+
+            .content p {
+                font-size: 20px;
+                /* 縮小內文段落文字 */
+            }
+
+            .footer {
+                padding: 40px 40px;
+            }
+        }
+
+        /* ==========================================================================
+           【RWD 第二層】當螢幕寬度小於或等於 600px（智慧型手機）
+           ========================================================================== */
+        @media screen and (max-width: 700px) {
+            .wrapper {
+                width: 100%;
+                /* 手機版完全滿版 */
+            }
+
+            .logo {
+                height: 120px;
+                /* 縮小手機版 Logo 圖片高度 */
+            }
+
+            .nav {
+                padding-top: 0px;
+                padding-bottom: 0px;
+            }
+
+            .nav ul {
+                display: block;
+                /* 清單外殼改為區塊，占滿寬度 */
+                width: 100%;
+            }
+
+            .nav ul li {
+                float: none;
+                /* 拔除水平排列，讓選項恢復垂直堆疊 */
+                width: 100%;
+            }
+
+            .nav ul li a {
+                display: block;
+                /* 讓超連結填滿整列，更好點擊 */
+                margin: 0px;
+                /* 清除左右間距 */
+                padding-top: 12px;
+                padding-bottom: 12px;
+                border-radius: 0px;
+                /* 移除圓角，展現星巴克極簡風格 */
+                border-bottom: 1px solid #e0e0e0;
+                /* 新增細微的淺灰分隔線 */
+                font-size: 18px;
+            }
+
+            .content {
+                padding: 25px 20px;
+                /* 手機版兩側留白縮小，增加閱讀範圍 */
+            }
+
+            .content h1 {
+                font-size: 28px;
+                /* 標題再度縮小以符合手機螢幕 */
+            }
+
+            .content p {
+                font-size: 16px;
+                /* 內文字體縮小至行動版最適大小 */
+                line-height: 1.6;
+                /* 增加行高，提升長文字的可讀性 */
+            }
+
+            /* 手機版頁尾調整 */
+            .footer {
+                padding: 30px 20px;
+            }
+
+            .footer-links a {
+                display: inline-block;
+                margin: 5px 10px;
+                /* 連結稍微拉開距離方便手機點擊 */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="banner">
+            <div class="logo"></div>
+            <div class="nav">
+                <ul>
+                    <li><a href="#">首頁</a></li>
+                    <li><a href="#">最新消息</a></li>
+                    <li><a href="#">合作店家</a></li>
+                    <li><a href="#">關於我們</a></li>
+                    <li><a href="#">聯絡我們</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="content">
+            <h1>歡迎光臨</h1>
+            <P>沒人出發同時命運，特徵醫療考試巨大郵件導致挑戰多年明顯家長排行分類，豐原收入恐怖你也信號滑鼠本網引起看不到幾年為止雙方，普通立場首頁一步轉移使用以後，選項開發商好了留下提出不足時尚我也，咱們人群，試。</P>
+            <P>豐原組織，不管具備人士我把，做法防治聲音污染他是提出，她們進口收入是我下午恐怕蔬菜差距開展家人如果您勞動，生態位，比賽雖然廣大一套不知農村內容對比接收不滿輔助擔任辛苦證實，種子經營許可證抱著，你就。</P>
+            <p>類似簡歷各國文件那就信箱並在所在經濟發展，風格低價好評視頻行為行情組成隱藏毫不一句話歐美，實行我真。</p>
+            <a href="#">了解更多</a>
+        </div>
+
+        <!-- 豐富化後的星巴克風頁尾 -->
+        <div class="footer">
+            <div class="footer-social">
+                <a href="#">Facebook</a>
+                <a href="#">Instagram</a>
+                <a href="#">YouTube</a>
+            </div>
+            <div class="footer-links">
+                <a href="#">使用條款</a>
+                <a href="#">隱私權政策</a>
+                <a href="#">聯絡我們</a>
+                <a href="#">網站地圖</a>
+            </div>
+            <hr>
+            <div class="footer-copyright">Copyright © 2026 Coffee Company.</div>
+        </div>
+    </div>
+</body>
+
+</html>

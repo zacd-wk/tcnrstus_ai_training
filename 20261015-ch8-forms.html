@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ch8. Forms(表單)</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/myall.css">
+</head>
+
+<body>
+    <div class="container py-5">
+        <div class="display-2 fw-900 text-center mt-4 text-bg-success p-3">ch8. Forms(表單)</div>
+
+        <div class="display-5 fw-900 mt-3 text-primary p-3">1. 基本表單樣式</div>
+        <div class="row">
+            <div class="col-12">
+                <div class="mb-3">
+                    <label for="username" class="form-label">帳號</label>
+                    <input type="text" class="form-control" id="username" placeholder="請輸入一個大寫英文.......">
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">密碼</label>
+                    <input type="password" class="form-control" id="password" readonly>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control form-control-lg" id="email" disabled>
+                </div>
+                <div class="mb-3">
+                    <label for="num" class="form-label">人數</label>
+                    <input type="number" class="form-control form-control-lg" id="num" min="0" max="10" value="1">
+                </div>
+                <div class="mb-3">
+                    <label for="formfile" class="form-label">檔案</label>
+                    <input type="file" class="form-control form-control-lg" id="formfile">
+                </div>
+                <div>
+                    <label class="form-label" for="foodlist">點餐(datalist)</label>
+                    <input type="text" class="form-control" id="foodlist" list="datalistOption">
+                    <datalist id="datalistOption">
+                        <option value="漢堡"></option>
+                        <option value="拉麵"></option>
+                        <option value="壽司"></option>
+                        <option value="牛肉麵"></option>
+                    </datalist>
+                </div>
+            </div>
+        </div>
+
+        <div class="display-5 fw-900 mt-3 text-primary p-3">2. select</div>
+        <div class="row">
+            <div class="col-12">
+                <label for="" class="form-label">請選擇縣市</label>
+                <select name="" id="" class="form-select form-select-lg">
+                    <option value="" class="text-center" disabled selected>---請選擇縣市---</option>
+                    <option value="臺中市">臺中市</option>
+                    <option value="彰化縣">彰化縣</option>
+                    <option value="雲林縣">雲林縣</option>
+                    <option value="嘉義縣">嘉義縣</option>
+                    <option value="臺南縣">臺南縣</option>
+                </select>
+            </div>
+            <div class="col-12">
+                <!-- 補上 for 屬性連動 input -->
+                <label for="citySelect" class="form-label">請選擇縣市（可多選）</label>
+
+                <!-- 核心變動：加上 multiple，並用 size="5" 讓 5 個縣市直接展開顯示 -->
+                <select name="cities[]" id="citySelect" class="form-select form-select-lg" multiple size="3">
+                    <!-- 移除原本的「---請選擇縣市---」提示項目 -->
+                    <option value="" class="text-center" disabled selected>---請選擇縣市---</option>
+                    <option value="臺中市">臺中市</option>
+                    <option value="彰化縣">彰化縣</option>
+                    <option value="雲林縣">雲林縣</option>
+                    <option value="嘉義縣">嘉義縣</option>
+                    <option value="臺南縣">臺南縣</option>
+                </select>
+                <div class="form-text text-muted">💡 提示：按住 Ctrl 或 Command 鍵可選擇多個縣市</div>
+            </div>
+        </div>
+
+        <div class="display-5 fw-900 mt-3 text-primary p-3">3. checkbox(複選)，radio(單選)</div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-check form-check-inline">
+                    <input type="checkbox" class="form-check-input" name="" id="chk01">
+                    <label for="chk01" class="form-check-label">選項01</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input type="checkbox" class="form-check-input" name="" id="chk02">
+                    <label for="chk02" class="form-check-label">選項02</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input type="checkbox" class="form-check-input" name="" id="chk03">
+                    <label for="chk03" class="form-check-label">選項03</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input type="checkbox" class="form-check-input" name="" id="chk04">
+                    <label for="chk04" class="form-check-label">選項04</label>
+                </div>
+            </div>
+            <hr class="my-3">
+            <div class="col-12">
+                <div class="form-check ">
+                    <input type="radio" class="form-check-input" name="myradio" id="rad01">
+                    <label for="rad01" class="form-check-label">選項01</label>
+                </div>
+                <div class="form-check ">
+                    <input type="radio" class="form-check-input" name="myradio" id="rad02">
+                    <label for="rad02" class="form-check-label">選項02</label>
+                </div>
+                <div class="form-check ">
+                    <input type="radio" class="form-check-input" name="myradio" id="rad03">
+                    <label for="rad03" class="form-check-label">選項03</label>
+                </div>
+                <div class="form-check ">
+                    <input type="radio" class="form-check-input" name="myradio" id="rad04">
+                    <label for="rad04" class="form-check-label">選項04</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="display-5 fw-900 mt-3 text-primary p-3">4. switch</div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-check form-switch">
+                    <input type="checkbox" class="form-check-input" name="" id="">
+                    <label for="" class="form-check-label">開燈/關燈</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="display-5 fw-900 mt-3 text-primary p-3">5. range</div>
+        <div class="mb-3">
+            <!-- <label for="range01" class="form-label">數量: 99個</label> -->
+            <label class="form-label">數量: <span id="rangeValue01">50</span> 個</label>
+            <input type="range" class="form-range" min="1" max="100" step="1" value="50" id="range01">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">數量: <span id="rangeValue02">50</span> 個</label>
+            <input type="range" class="form-range" id="range02"
+                oninput="document.getElementById('rangeValue02').innerText = this.value">
+        </div>
+
+        <div class="display-5 fw-900 mt-3 text-primary p-3">6. input-group</div>
+        <div class="row">
+            <div class="col-12">
+                <div class="mb-3 input-group">
+                    <span class="input-group-text">帳號</span>
+                    <input type="text" class="form-control">
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="mb-3 input-group">
+                    <input type="text" class="form-control">
+                    <span class="input-group-text">@gami.com</span>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="mb-3 input-group">
+                    <span class="input-group-text">$</span>
+                    <input type="number" min="1" max="1000" step="1" value="100" class="form-control">
+                    <span class="input-group-text">NT</span>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="mb-3 input-group">
+                    <input type="text" class="form-control form-control-lg" name="" id="">
+                    <button class="btn btn-primary">搜尋</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="display-5 fw-900 mt-3 text-primary p-3">7. Floating Labels(浮動標籤)</div>
+        <div class="row">
+            <div class="col-12">
+                <div class="mb-3 form-floating">
+                    <input type="text" class="form-control form-control-lg" placeholder="">
+                    <label for="username" class="form-label">帳號</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="display-5 fw-900 mt-3 text-primary p-3">8. 表單驗證</div>
+        <div class="row">
+            <div class="col-12">
+                <div class="mb-3">
+                    <label for="username" class="form-label">帳號</label>
+                    <input type="text" class="form-control is-valid" id="username" placeholder="請輸入一個大寫英文.......">
+                    <div class="valid-feedback">帳號輸入符合規定!</div>
+                    <div class="invalid-feedback">帳號輸入不符合規定!</div>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">密碼</label>
+                    <input type="password" class="form-control is-invalid" id="password">
+                    <div class="valid-feedback">密碼輸入符合規定!</div>
+                    <div class="invalid-feedback">密碼輸入不符合規定!</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="container bg-white p-4 rounded shadow" style="max-width: 500px;">
+                    <h2 class="mb-4 text-center fw-bold">會員註冊</h2>
+
+                    <!-- 1. 表單加上 novalidate 屬性，告訴瀏覽器「停用 HTML5 預設的彈出泡泡提示」，改用 Bootstrap 的精美外觀 -->
+                    <form id="registrationForm" class="needs-validation" novalidate>
+
+                        <!-- 姓名欄位（基本必填） -->
+                        <div class="mb-3">
+                            <label for="userName" class="form-label">姓名</label>
+                            <input type="text" class="form-control" id="userName" required>
+                            <!-- 驗證回饋字串 -->
+                            <div class="valid-feedback">這個名字可以用！</div>
+                            <div class="invalid-feedback">請填寫您的姓名。</div>
+                        </div>
+
+                        <!-- Email 欄位（必填 + 格式） -->
+                        <div class="mb-3">
+                            <label for="userEmail" class="form-label">電子信箱 (Email)</label>
+                            <!-- type="email" 瀏覽器會自動檢查有沒有包含 @ 符號 -->
+                            <input type="email" class="form-control" id="userEmail" required>
+                            <div class="valid-feedback">Email 格式正確！</div>
+                            <div class="invalid-feedback">請輸入正確的 Email 格式（必須包含 @）。</div>
+                        </div>
+
+                        <!-- 密碼欄位（長度限制） -->
+                        <div class="mb-3">
+                            <label for="userPassword" class="form-label">密碼</label>
+                            <!-- 使用 HTML5 的 minlength 限制最少需要 6 個字 -->
+                            <input type="password" class="form-control" id="userPassword" minlength="6" required>
+                            <div class="valid-feedback">密碼長度沒問題！</div>
+                            <div class="invalid-feedback">密碼為必填，且長度至少需要 6 個字元。</div>
+                        </div>
+
+                        <!-- 送出按鈕 -->
+                        <button class="btn btn-primary w-100 mt-3" type="submit">送出註冊</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div id="myCustomBlock">
+                    <div class="mb-3">
+                        <label for="couponInput" class="form-label">請輸入優惠碼</label>
+
+                        <!-- 核心亮點：保留 HTML5 原生的 required 屬性 -->
+                        <input type="text" class="form-control" id="couponInput" required>
+
+                        <!-- 核心亮點：這裡的 id 用來給 jQuery 動態改字，同時兼具 Bootstrap 預設的提示功能 -->
+                        <div class="invalid-feedback" id="couponError">欄位不能為空！</div>
+                        <div class="valid-feedback">優惠碼兌換成功！</div>
+                    </div>
+                    <button type="button" class="btn btn-dark" id="checkBtn">檢查優惠碼</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/jquery-4.0.0.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            // 監聽 id 為 range01 的拉棍，當數值改變時觸發 (input 事件)
+            $('#range01').on('input', function () {
+
+                // 1. $(this).val() 可以抓到目前拉棍的數值
+                let currentVal = $(this).val();
+
+                // 2. $('#rangeValue').text(...) 可以把數值寫入到標籤中
+                $('#rangeValue01').text(currentVal);
+
+            });
+
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+
+            // 監聽表單的送出事件 (submit)
+            $('#registrationForm').on('submit', function (event) {
+
+                // 1. 抓取原生的 DOM 表單物件（因為 checkValidity() 是原生 HTML5 的方法）
+                const form = this;
+
+                // 2. 檢查表單內的所有欄位是否「不符合」驗證規則
+                if (form.checkValidity() === false) {
+
+                    // 【核心】如果格式錯了，強制攔截！阻止表單跳頁刷新
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    alert("表單填寫有誤，請檢查紅框處！");
+                } else {
+                    // 如果全部正確，就可以在這裡寫 Ajax 送出資料，或讓網頁自然送出跳頁
+                    alert("表單驗證成功！準備送出資料...");
+                }
+
+                // 3. 【核心外觀觸發】在外層的 <form> 加上 .was-validated
+                // 只要一加上這個 Class，Bootstrap 內建的 CSS 就會自動讓所有框變紅（錯）或變綠（對）
+                $(form).addClass('was-validated');
+
+            });
+
+        });
+    </script>
+
+    <script>
+        $('#checkBtn').on('click', function () {
+            // 先選取輸入框元件，方便後面重複使用
+            let $input = $('#couponInput');
+            let code = $input.val().trim(); // .trim() 可以自動刪除使用者不小心打的前後空格
+
+            // 【第一關：檢查是否為空】
+            if (code === "") {
+                // 1. 如果是空的，我們把手動的 is-valid/is-invalid 清除，回歸給自動流處理
+                $input.removeClass('is-valid is-invalid');
+                $('#couponError').text('欄位不能為空！'); // 恢復預設文字
+
+                // 2. 幫外層加上 .was-validated，讓 Bootstrap 自動去抓 required 變紅框
+                $('#myCustomBlock').addClass('was-validated');
+                return; // 攔截中斷，不往下執行
+            }
+
+            // 【第二關：有輸入內容，開始檢查優惠碼對不對】
+            // 既然要走手動邏輯，我們就把外層的自動流 .was-validated 移除，完全拿回主導權
+            $('#myCustomBlock').removeClass('was-validated');
+
+            if (code !== "FREE100") {
+                // 優惠碼打錯了：手動強制變紅框，並動態修改紅字內容
+                $input.addClass('is-invalid').removeClass('is-valid');
+                $('#couponError').text('優惠碼不存在或已過期！');
+            } else {
+                // 優惠碼答對了：手動強制變綠框
+                $input.addClass('is-valid').removeClass('is-invalid');
+            }
+        });
+    </script>
+</body>
+
+</html>

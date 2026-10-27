@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ch8 表單排版(JS)</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/myall.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="display-3 text-bg-primary fw-900 text-center py-3 my-3">課程線上報名表</div>
+            </div>
+            <div class="col-12">
+                <ul>
+                    <li>1. Email: 包含@這個字元，使用includes();8~15字。</li>
+                    <li>2. 密碼: 8~16字。</li>
+                    <li>3. 手機: 10個字；開頭為09-XXXXXXXX，使用startWith()</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="row p-2">
+            <div class="col-12 bg-light">
+                <div class="mb-3">
+                    <label for="username" class="form-label">姓名</label>
+                    <input type="text" class="form-control form-control-lg" id="username" placeholder="姓名字串長度2~8!">
+                    <div class="valid-feedback">姓名 符合規定</div>
+                    <div class="invalid-feedback">姓名 不符合規定</div>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control form-control-lg" id="email"
+                        placeholder="包含@這個字元，使用includes();8~15字">
+                    <div class="valid-feedback">Email 符合規定</div>
+                    <div class="invalid-feedback">Email 不符合規定</div>
+                </div>
+                <div class="mb-3">
+                    <label for="pw" class="form-label">密碼</label>
+                    <input type="password" class="form-control form-control-lg" id="pw" placeholder="8~16字">
+                    <div class="valid-feedback">密碼 符合規定</div>
+                    <div class="invalid-feedback">密碼 不符合規定</div>
+                </div>
+                <div class="mb-3">
+                    <label for="tel" class="form-label">手機</label>
+                    <div class="input-group">
+                        <span class="input-group-text">+886</span>
+                        <input type="text" class="form-control form-control-lg" id="tel"
+                            placeholder="10個字；開頭為09xxxxxxxx">
+                        <div class="valid-feedback">手機 符合規定</div>
+                        <div class="invalid-feedback">手機 不符合規定</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 text-center mt-3">
+                <button class="btn btn-primary" id="ok_btn">確認送出</button>
+                <button class="btn btn-secondary">重新填寫</button>
+            </div>
+        </div>
+
+        <!-- 顯示輸入的訊息區塊 -->
+        <div class="row">
+            <div class="col-12">
+                <div class="display-5 text-bg-success fw-900 text-center py-3 my-3">報名資料確認</div>
+            </div>
+            <div class="col-12" id="showmsg">
+            </div>
+        </div>
+    </div>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/jquery-4.0.0.js"></script>
+    <script>
+        // let flag_username = true; //布林值
+
+        $(function () {
+            //即時監聽 #username
+            $("#username").on("input", function () {
+                // console.log($("#username").val());
+                console.log($(this).val());
+                console.log("input: " + $(this).val().length);
+                if ($(this).val().length > 1 && $(this).val().length < 9) {
+                    //符合規定
+                    console.log("符合規定!");
+                    $(this).removeClass("is-invalid");
+                    $(this).addClass("is-valid");
+                    // flag_username = true;
+                } else {
+                    //不符合規定
+                    console.log("不符合規定!");
+                    $(this).removeClass("is-valid");
+                    $(this).addClass("is-invalid");
+                    // flag_username = false;
+                }
+            });
+
+            $("#email").on("change", function () {
+                // console.log($("#email").val());
+                // console.log($(this).val());
+
+                const email = $(this).val();
+
+                if (email.includes('@') && email.length >= 8 && email.length <= 15) {
+                    //符合規定
+                    console.log("符合規定!");
+                    $(this).removeClass("is-invalid");
+                    $(this).addClass("is-valid");
+                    // flag_username = true;
+                } else {
+                    //不符合規定
+                    console.log("不符合規定!");
+                    $(this).removeClass("is-valid");
+                    $(this).addClass("is-invalid");
+                    // flag_username = false;
+                }
+            });
+
+            $("#pw").on("input", function () {
+                // console.log($("#username").val());
+                console.log($(this).val());
+                console.log("input: " + $(this).val().length);
+                if ($(this).val().length >= 8 && $(this).val().length <= 16) {
+                    //符合規定
+                    console.log("符合規定!");
+                    $(this).removeClass("is-invalid");
+                    $(this).addClass("is-valid");
+                    // flag_username = true;
+                } else {
+                    //不符合規定
+                    console.log("不符合規定!");
+                    $(this).removeClass("is-valid");
+                    $(this).addClass("is-invalid");
+                    // flag_username = false;
+                }
+            });
+
+            $("#tel").on("input", function () {
+                // console.log($(this).val());
+                // console.log("input: " + $(this).val().length);
+                const tel = $(this).val();
+
+                if (tel.startsWith("09") && tel.length == 10) {
+                    //符合規定
+                    console.log("符合規定!");
+                    $(this).removeClass("is-invalid");
+                    $(this).addClass("is-valid");
+                    // flag_username = true;
+                } else {
+                    //不符合規定
+                    console.log("不符合規定!");
+                    $(this).removeClass("is-valid");
+                    $(this).addClass("is-invalid");
+                    // flag_username = false;
+                }
+            });
+
+            //輸入完成後離開欄位才觸發
+            // $("#username").on("change", function(){
+            //     console.log("change: " + $(this).val());
+            // });
+
+            //監聽 #ok_btn確認送出
+            $("#ok_btn").on("click", function () {
+                const validCount = $(".is-valid").length;
+
+                console.log('validCount', validCount);
+
+                // if (flag_username == true) {
+                if (validCount == 4) {
+                    console.log("符合規定!");
+                    const strHTML = `
+                        <div class="h2">姓名: ${$("#username").val()}</div>
+                        <div class="h2">Email: ${$("#email").val()}</div>
+                        <div class="h2">密碼: ${'*'.repeat($("#pw").val().length)}</div>
+
+                        <div class="h2">手機: ${$("#tel").val()}</div>
+                    `;
+                    $("#showmsg").html(strHTML);
+                } else {
+                    console.log("不符合規定!");
+                    alert("不符合規定!!!");
+                }
+
+                // flag_username = true
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,2086 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPA - 個人履歷排版練習</title>
+
+    <!-- 外部樣式：Bootstrap 5 / Font Awesome / 自訂共用樣式 -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/all.min.css">
+    <link rel="stylesheet" href="css/myall.css">
+
+    <!-- ==================================================
+         共用 CSS：色彩變數、通用工具類別、跨區塊共用元件
+         （skill-* 系列被 s03 / s04 / s06 使用，stat-card 被 s04 / s05 使用）
+         ================================================== -->
+    <style>
+        /* ---------- 色彩變數 ---------- */
+        :root {
+            /* 頁面底色 */
+            --page-bg: #d3d3da;
+
+            /* 天藍色卡片配色（統一管理，全站卡片都使用這組） */
+            --sky-main: #38bdf8;
+            --sky-deep: #0ea5e9;
+            --sky-light: #e0f2fe;
+            --sky-line: #bae6fd;
+            --sky-border: #7dd3fc;
+            --sky-shadow: rgba(56, 189, 248, .35);
+            --sky-title: #0369a1;
+            --sky-name: #0c4a6e;
+            --sky-desc: #5f84a3;
+        }
+
+        /* ---------- 頁面基底 ---------- */
+        body {
+            background-color: var(--page-bg);
+        }
+
+        /* 背景圖共用設定；若確認 css/myall.css 已有 .bg-img，可刪除此段 */
+        .bg-img {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        /* ---------- 天藍風卡片（s03 / s04 / s06 共用） ---------- */
+        .skill-card {
+            width: 100%;
+            margin: 0;
+            padding: 1.75rem 2rem 1.1rem;
+            text-align: left;
+            background: rgba(255, 255, 255, 0.92);
+            -webkit-backdrop-filter: blur(6px);
+            backdrop-filter: blur(6px);
+            border: 3px solid var(--sky-border);
+            border-radius: 28px;
+            box-shadow:
+                0 20px 50px rgba(15, 40, 70, .28),
+                0 0 0 8px rgba(255, 255, 255, .35);
+        }
+
+        /* 虛線膠囊標籤（卡片標題） */
+        .skill-title {
+            display: inline-block;
+            margin-bottom: 1rem;
+            padding: .35rem 1.1rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--sky-title);
+            background: var(--sky-light);
+            border: 2px dashed var(--sky-main);
+            border-radius: 999px;
+            transform: rotate(-2deg);
+        }
+
+        /* 條列清單 */
+        .skill-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .skill-list li {
+            display: flex;
+            align-items: center;
+            gap: .9rem;
+            padding: .85rem 0;
+        }
+
+        .skill-list li+li {
+            border-top: 2px dotted var(--sky-line);
+        }
+
+        /* 圓形圖示 */
+        .skill-icon {
+            flex: 0 0 auto;
+            width: 2.2rem;
+            height: 2.2rem;
+            display: grid;
+            place-items: center;
+            font-size: .95rem;
+            color: #fff;
+            background: linear-gradient(135deg, var(--sky-main), var(--sky-deep));
+            border-radius: 50%;
+        }
+
+        /* 項目名稱與說明 */
+        .skill-name {
+            display: block;
+            font-weight: 700;
+            color: var(--sky-name);
+        }
+
+        .skill-desc {
+            display: block;
+            margin-top: .1rem;
+            color: var(--sky-desc);
+        }
+
+        /* 手機版：縮小卡片內距 */
+        @media (max-width: 576px) {
+            .skill-card {
+                padding: 1.1rem 1.2rem .6rem;
+            }
+        }
+
+        /* ---------- 數據卡片（s04 / s05 共用） ---------- */
+        .stat-card {
+            height: 100%;
+            padding: 1.25rem .75rem 1rem;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.85);
+            -webkit-backdrop-filter: blur(6px);
+            backdrop-filter: blur(6px);
+            border: 3px solid var(--sky-border);
+            border-radius: 28px;
+            box-shadow: 0 8px 24px var(--sky-shadow);
+            transition: transform .25s ease, box-shadow .25s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 28px var(--sky-shadow);
+        }
+
+        .stat-card .skill-icon {
+            width: 2.6rem;
+            height: 2.6rem;
+            margin: 0 auto .75rem;
+            font-size: 1.05rem;
+        }
+    </style>
+
+    <!-- ==================================================
+         s03 專用 CSS：輪播（照片為主 + 白底毛玻璃卡，天藍外環）
+         ================================================== -->
+    <style>
+        /* 輪播項目：高度 85vh，最小 560px */
+        #s03 .carousel-item {
+            position: relative;
+            height: 85vh;
+            min-height: 560px;
+        }
+
+        /* 只留底部極輕的暗角，讓指示點看得清楚 */
+        #s03 .carousel-item::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: linear-gradient(180deg,
+                    rgba(0, 0, 0, 0) 75%,
+                    rgba(0, 0, 0, .25) 100%);
+        }
+
+        /* 卡片位置：右下角，不擋山 */
+        #s03 .carousel-caption {
+            left: auto;
+            right: 6%;
+            top: auto;
+            bottom: 4.5rem;
+            transform: none;
+            width: min(400px, 88%);
+            padding: 0;
+            z-index: 2;
+        }
+
+        /* 玻璃質感：淺灰白 + 天藍邊 + 半透明外環 */
+        #s03 .skill-card {
+            padding: 1.25rem 1.5rem .75rem;
+            background: rgba(248, 250, 252, .92);
+            -webkit-backdrop-filter: blur(14px) saturate(140%);
+            backdrop-filter: blur(14px) saturate(140%);
+            border: 1px solid var(--sky-border);
+            border-radius: 20px;
+            box-shadow:
+                inset 0 0 0 1px var(--sky-border),
+                0 20px 50px rgba(15, 40, 70, .28),
+                0 0 0 8px rgba(255, 255, 255, .35);
+        }
+
+        /* 標題標籤：虛線膠囊（此處不旋轉） */
+        #s03 .skill-title {
+            margin-bottom: .6rem;
+            padding: .3rem 1rem;
+            transform: none;
+            font-size: 1.05rem;
+            color: var(--sky-title);
+            background: var(--sky-light);
+            border: 1px dashed var(--sky-main);
+        }
+
+        #s03 .skill-list li {
+            gap: .9rem;
+            padding: .7rem 0;
+        }
+
+        #s03 .skill-list li+li {
+            border-top: 1px solid var(--sky-line);
+        }
+
+        /* 圖示縮小 */
+        #s03 .skill-icon {
+            width: 2.2rem;
+            height: 2.2rem;
+            font-size: .95rem;
+            background: linear-gradient(135deg, var(--sky-main), var(--sky-deep));
+        }
+
+        #s03 .skill-name {
+            font-size: 1.05rem;
+            color: var(--sky-name);
+        }
+
+        #s03 .skill-desc {
+            font-size: .9rem;
+            color: var(--sky-desc);
+        }
+
+        /* 箭頭：保留深色圓底，在亮暗背景都看得到 */
+        #s03 .carousel-control-prev-icon,
+        #s03 .carousel-control-next-icon {
+            filter: none;
+            padding: 1.2rem;
+            background-color: rgba(12, 74, 110, .5);
+            background-size: 50%;
+            border-radius: 50%;
+        }
+
+        #s03 .carousel-indicators [data-bs-target] {
+            background-color: #fff;
+        }
+
+        /* 手機版：卡片置中靠下 */
+        @media (max-width: 576px) {
+            #s03 .carousel-caption {
+                right: 50%;
+                bottom: 2.5rem;
+                transform: translateX(50%);
+                width: 90%;
+            }
+
+            #s03 .skill-card {
+                padding: 1rem 1.2rem .5rem;
+            }
+        }
+    </style>
+
+    <!-- ==================================================
+         s04 專用 CSS：關於我（左圖遮罩 + 右側數據）
+         ================================================== -->
+    <style>
+        /* 左側圖片：漸層遮罩 + 醒目文字 */
+        #s04 .about-img {
+            position: relative;
+            min-height: 380px;
+            overflow: hidden;
+        }
+
+        #s04 .about-img::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg,
+                    rgba(14, 165, 233, .10) 0%,
+                    rgba(12, 74, 110, .35) 45%,
+                    rgba(12, 74, 110, .80) 100%);
+        }
+
+        #s04 .about-img-inner {
+            position: relative;
+            z-index: 1;
+            height: 100%;
+            min-height: inherit;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 2rem 1.5rem 2rem 0;
+            color: #fff;
+        }
+
+        #s04 .about-img-inner .skill-title {
+            margin-bottom: 0;
+        }
+
+        #s04 .hero-text {
+            margin: 1.5rem 0;
+            font-size: clamp(1.9rem, 3.4vw, 2.9rem);
+            font-weight: 800;
+            line-height: 1.35;
+            text-align: left;
+            color: #fff;
+            text-shadow: 0 3px 14px rgba(0, 0, 0, .55);
+        }
+
+        #s04 .hero-text mark {
+            padding: 0 .35rem;
+            color: var(--sky-name);
+            background: var(--sky-light);
+            border-radius: 10px;
+            text-shadow: none;
+        }
+
+        #s04 .hero-en {
+            display: block;
+            margin-top: .75rem;
+            font-size: .95rem;
+            font-weight: 600;
+            letter-spacing: .25em;
+            color: var(--sky-line);
+        }
+
+        /* 右側標題與副標（頁面唯一的 h1） */
+        #s04 .about-title {
+            font-size: clamp(1.8rem, 3.2vw, 2.6rem);
+            font-weight: 800;
+            line-height: 1.3;
+            color: var(--sky-name);
+        }
+
+        #s04 .about-title em {
+            font-style: normal;
+            color: var(--sky-deep);
+        }
+
+        #s04 .about-sub {
+            max-width: 36rem;
+            margin: 0 auto;
+            font-size: 1.1rem;
+            color: var(--sky-desc);
+        }
+
+        /* 數據卡片內的數字與文字（卡片外框用共用的 .stat-card） */
+        .stat-number {
+            font-size: 2.4rem;
+            font-weight: 800;
+            line-height: 1.1;
+            color: var(--sky-deep);
+        }
+
+        .stat-number small {
+            margin-left: .15rem;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--sky-title);
+        }
+
+        .stat-label {
+            margin: .5rem 0 .25rem;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--sky-name);
+        }
+
+        .stat-desc {
+            display: block;
+            font-size: .85rem;
+            color: var(--sky-desc);
+            border-top: 2px dotted var(--sky-line);
+            padding-top: .5rem;
+            margin-top: .5rem;
+        }
+
+        /* 手機版 */
+        @media (max-width: 576px) {
+            #s04 .about-img-inner {
+                padding: 1.5rem 1.25rem;
+            }
+
+            #s04 .hero-text {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+
+    <!-- ==================================================
+         s05 專用 CSS：工作信念（淺天藍）
+         ================================================== -->
+    <style>
+        #s05 {
+            padding: 4.5rem 0;
+            background: linear-gradient(180deg, var(--sky-light) 0%, #f0f9ff 100%);
+        }
+
+        #s05 .section-title {
+            font-size: clamp(1.8rem, 3.2vw, 2.6rem);
+            font-weight: 800;
+            line-height: 1.3;
+            color: var(--sky-name);
+        }
+
+        #s05 .section-title em {
+            font-style: normal;
+            color: var(--sky-deep);
+        }
+
+        #s05 .section-sub {
+            max-width: 36rem;
+            margin: 0 auto;
+            font-size: 1.1rem;
+            color: var(--sky-desc);
+        }
+
+        /* 沿用 .stat-card 的外觀，只調整內距與文字 */
+        #s05 .belief-card {
+            padding: 2rem 1.5rem 1.5rem;
+        }
+
+        #s05 .belief-card .skill-icon {
+            width: 4rem;
+            height: 4rem;
+            margin: 0 auto 1rem;
+            font-size: 1.6rem;
+        }
+
+        #s05 .belief-card h3 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--sky-name);
+        }
+
+        #s05 .belief-card p {
+            margin: 1rem 0 0;
+            padding-top: 1rem;
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--sky-desc);
+            border-top: 2px dotted var(--sky-line);
+        }
+
+        /* 手機版 */
+        @media (max-width: 576px) {
+            #s05 {
+                padding: 3rem 0;
+            }
+        }
+    </style>
+
+    <!-- ==================================================
+         s06 專用 CSS：關於我（淺天藍）
+         ================================================== -->
+    <style>
+        #s06 {
+            padding: 4.5rem 0;
+            background: #f0f9ff;
+        }
+
+        /* 左側照片 */
+        #s06 .about-photo {
+            position: relative;
+            min-height: 420px;
+            height: 100%;
+            overflow: hidden;
+            border: 3px solid var(--sky-border);
+            border-radius: 28px;
+            box-shadow: 0 8px 24px var(--sky-shadow);
+        }
+
+        #s06 .about-photo::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg,
+                    rgba(14, 165, 233, .05) 0%,
+                    rgba(12, 74, 110, .25) 100%);
+        }
+
+        /* 右側介紹卡 */
+        #s06 .about-card {
+            box-shadow: 0 8px 24px var(--sky-shadow);
+            padding: 2rem 2.25rem 2rem;
+        }
+
+        #s06 .about-heading {
+            margin-bottom: 1rem;
+            font-size: clamp(1.7rem, 3vw, 2.3rem);
+            font-weight: 800;
+            color: var(--sky-name);
+        }
+
+        #s06 .about-heading span {
+            margin-left: .4rem;
+            font-size: .55em;
+            letter-spacing: .2em;
+            color: var(--sky-deep);
+        }
+
+        #s06 .about-card p {
+            font-size: 1.05rem;
+            line-height: 1.9;
+            color: var(--sky-desc);
+        }
+
+        #s06 .about-card p strong {
+            color: var(--sky-title);
+        }
+
+        /* 天藍膠囊按鈕 */
+        .btn-sky {
+            padding: .7rem 1rem;
+            font-weight: 700;
+            color: #fff;
+            background: linear-gradient(135deg, var(--sky-main), var(--sky-deep));
+            border: none;
+            border-radius: 999px;
+            box-shadow: 0 6px 16px var(--sky-shadow);
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+
+        .btn-sky:hover {
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px var(--sky-shadow);
+        }
+
+        /* 手機版 */
+        @media (max-width: 576px) {
+            #s06 {
+                padding: 3rem 0;
+            }
+
+            #s06 .about-photo {
+                min-height: 260px;
+            }
+
+            #s06 .about-card {
+                padding: 1.25rem 1.25rem 1.5rem;
+            }
+        }
+    </style>
+
+    <!-- ==================================================
+     s07 專用 CSS：精選作品集（亮黑底 + 天藍點綴）
+     ================================================== -->
+    <style>
+        #s07 {
+            padding: 4.5rem 0;
+            background: linear-gradient(180deg, #1c1f26 0%, #252932 100%);
+            color: #e5e7eb;
+        }
+
+        #s07 .works-tag {
+            display: block;
+            width: fit-content;
+            margin: 0 auto;
+            color: var(--sky-main);
+            background: rgba(56, 189, 248, .12);
+            border-color: var(--sky-main);
+        }
+
+        #s07 .works-title {
+            font-size: clamp(1.8rem, 3.2vw, 2.6rem);
+            font-weight: 800;
+            color: #f8fafc;
+        }
+
+        #s07 .works-title em {
+            font-style: normal;
+            color: var(--sky-main);
+        }
+
+        #s07 .works-sub {
+            max-width: 40rem;
+            margin: 0 auto;
+            font-size: 1.1rem;
+            color: #9ca3af;
+        }
+
+        /* 作品卡片：沿用圓角、天藍邊框與 hover 上浮 */
+        #s07 .works-card {
+            padding: 1.5rem 1.5rem 1.25rem;
+            background: rgba(255, 255, 255, .05);
+            -webkit-backdrop-filter: blur(6px);
+            backdrop-filter: blur(6px);
+            border: 2px solid rgba(125, 211, 252, .45);
+            border-radius: 28px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .45);
+            transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+        }
+
+        #s07 .works-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--sky-main);
+            box-shadow: 0 12px 28px var(--sky-shadow);
+        }
+
+        #s07 .works-icon {
+            flex: 0 0 auto;
+            color: var(--sky-main);
+            filter: drop-shadow(0 0 10px rgba(56, 189, 248, .45));
+        }
+
+        #s07 .works-name {
+            font-weight: 800;
+            color: #f8fafc;
+        }
+
+        #s07 .works-tech {
+            font-weight: 600;
+            color: var(--sky-border);
+        }
+
+        #s07 .works-desc {
+            line-height: 1.8;
+            color: #cbd5e1;
+        }
+
+        /* 天藍膠囊外框按鈕 */
+        #s07 .btn-works {
+            padding: .6rem 1rem;
+            font-weight: 700;
+            color: var(--sky-main);
+            background: transparent;
+            border: 2px solid var(--sky-main);
+            border-radius: 999px;
+            transition: transform .2s ease, background .2s ease, color .2s ease;
+        }
+
+        #s07 .btn-works:hover {
+            color: #0b0f14;
+            background: linear-gradient(135deg, var(--sky-main), var(--sky-deep));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px var(--sky-shadow);
+        }
+
+        /* 手機版：圖示改在上方，避免擠壓文字 */
+        @media (max-width: 576px) {
+            #s07 {
+                padding: 3rem 0;
+            }
+
+            #s07 .works-card {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            #s07 .works-icon {
+                margin: 0 0 1rem !important;
+            }
+        }
+    </style>
+
+    <!-- ==================================================
+     s08 專用 CSS：學經歷介紹（淺色底 + 天藍點綴）
+     ================================================== -->
+    <style>
+        #s08 {
+            position: relative;
+            padding: 3rem 0;
+            overflow: hidden;
+            background: linear-gradient(180deg, #f8fafc 0%, var(--sky-light) 100%);
+        }
+
+        /* 右側圖片：絕對定位貼齊右邊，並加淺天藍遮罩 */
+        #s08 .exp-photo {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        #s08 .exp-photo::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg,
+                    rgba(240, 249, 255, .85) 0%,
+                    rgba(14, 165, 233, .10) 40%,
+                    rgba(12, 74, 110, .30) 100%);
+        }
+
+        #s08 .exp-title {
+            font-size: clamp(1.8rem, 3.2vw, 2.6rem);
+            font-weight: 800;
+            color: var(--sky-name);
+        }
+
+        #s08 .exp-title em {
+            font-style: normal;
+            color: var(--sky-deep);
+        }
+
+        /* 內容卡：沿用 skill-card 的圓角、天藍邊與外環 */
+        #s08 .exp-card {
+            position: relative;
+            z-index: 1;
+            padding: 1.75rem 2rem;
+            background: rgba(255, 255, 255, .95);
+        }
+
+        #s08 dt {
+            font-weight: 700;
+            color: var(--sky-title);
+        }
+
+        #s08 dd {
+            line-height: 1.8;
+            color: #475569;
+        }
+
+        #s08 dd p {
+            margin-bottom: .35rem;
+        }
+
+        /* 外層項目之間用虛線分隔 */
+        #s08 .exp-card>dl>dt,
+        #s08 .exp-card>dl>dd {
+            padding-top: .85rem;
+            padding-bottom: .5rem;
+            border-top: 2px dotted var(--sky-line);
+        }
+
+        #s08 .exp-card>dl>dt:first-child,
+        #s08 .exp-card>dl>dd:nth-child(2) {
+            border-top: none;
+        }
+
+        /* 巢狀清單：天藍左線，標示時間軸 */
+        #s08 dd dl {
+            padding-left: .75rem;
+            border-left: 4px solid var(--sky-main);
+        }
+
+        #s08 dd dl dt {
+            font-weight: 700;
+            color: var(--sky-deep);
+        }
+
+        #s08 dd dl dd {
+            color: #64748b;
+        }
+
+        /* 手機版：縮小卡片內距，圖片已隱藏 */
+        @media (max-width: 576px) {
+            #s08 .exp-card {
+                padding: 1.1rem 1.2rem;
+            }
+
+            #s08 .exp-card>dl>dt,
+            #s08 .exp-card>dl>dd {
+                border-top: none;
+            }
+        }
+    </style>
+
+    <!-- ==================================================
+     s09 專用 CSS：聯絡我（淺色底 + 天藍點綴）
+     .btn-sky 已在 s06 定義，這裡直接沿用
+     ================================================== -->
+    <style>
+        #s09 {
+            padding: 4.5rem 0;
+            background: linear-gradient(180deg, #f0f9ff 0%, #f8fafc 100%);
+        }
+
+        #s09 .contact-tag {
+            display: block;
+            width: fit-content;
+            margin: 0 auto;
+        }
+
+        #s09 .section-title {
+            font-size: clamp(1.8rem, 3.2vw, 2.6rem);
+            font-weight: 800;
+            color: var(--sky-name);
+        }
+
+        #s09 .section-title em {
+            font-style: normal;
+            font-size: .55em;
+            letter-spacing: .2em;
+            color: var(--sky-deep);
+        }
+
+        #s09 .section-sub {
+            max-width: 36rem;
+            margin: 0 auto;
+            font-size: 1.1rem;
+            color: var(--sky-desc);
+        }
+
+        /* 表單卡片 */
+        #s09 .contact-card {
+            padding: 1.75rem 2rem 1.25rem;
+            background: rgba(255, 255, 255, .92);
+            border: 3px solid var(--sky-border);
+            border-radius: 28px;
+            box-shadow: 0 8px 24px var(--sky-shadow);
+        }
+
+        /* 輸入欄位 */
+        #s09 .form-control,
+        #s09 .form-select {
+            color: var(--sky-name);
+            background-color: #f8fafc;
+            border: 2px solid var(--sky-line);
+            border-radius: 14px;
+        }
+
+        #s09 .form-floating>label {
+            color: var(--sky-desc);
+        }
+
+        #s09 .form-control:focus,
+        #s09 .form-select:focus {
+            background-color: #fff;
+            border-color: var(--sky-main);
+            box-shadow: 0 0 0 .25rem rgba(56, 189, 248, .25);
+        }
+
+        #s09 .contact-count {
+            color: var(--sky-desc);
+        }
+
+        /* 取消按鈕：灰藍膠囊 */
+        #s09 .btn-contact-cancel {
+            padding: .7rem 1.4rem;
+            font-weight: 700;
+            color: var(--sky-title);
+            background: var(--sky-light);
+            border: 2px dashed var(--sky-main);
+            border-radius: 999px;
+        }
+
+        #s09 .btn-contact-cancel:hover {
+            color: #fff;
+            background: var(--sky-deep);
+            border-style: solid;
+        }
+
+        /* 地圖卡片 */
+        #s09 .contact-map {
+            height: 100%;
+            min-height: 500px;
+            overflow: hidden;
+            border: 3px solid var(--sky-border);
+            border-radius: 28px;
+            box-shadow: 0 8px 24px var(--sky-shadow);
+        }
+
+        #s09 .contact-map iframe {
+            display: block;
+            height: 100%;
+            min-height: 500px;
+        }
+
+        @media (max-width: 576px) {
+            #s09 {
+                padding: 3rem 0;
+            }
+
+            #s09 .contact-card {
+                padding: 1.1rem 1.2rem .8rem;
+            }
+
+            #s09 .contact-map,
+            #s09 .contact-map iframe {
+                min-height: 320px;
+            }
+        }
+    </style>
+
+    <!-- ==================================================
+     s10 專用 CSS：未來展望（全幅背景 + 單一銀色面板）
+     .btn-sky / .skill-icon / .skill-title 沿用共用樣式
+     ================================================== -->
+    <style>
+        #s10 {
+            position: relative;
+            padding: 4.5rem 0;
+            background: url(images/programmer-working01.avif) center / cover no-repeat;
+        }
+
+        /* 深藍灰遮罩，讓銀色面板更突出 */
+        #s10::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg,
+                    rgba(12, 74, 110, .55) 0%,
+                    rgba(15, 23, 42, .70) 100%);
+        }
+
+        #s10 .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        #s10 .vision-tag-top {
+            display: block;
+            width: fit-content;
+            margin: 0 auto;
+            color: var(--sky-title);
+            background: #f8fafc;
+        }
+
+        #s10 .vision-heading {
+            font-size: clamp(1.8rem, 3.2vw, 2.6rem);
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 0 3px 14px rgba(0, 0, 0, .5);
+        }
+
+        #s10 .vision-heading em {
+            font-style: normal;
+            color: var(--sky-main);
+        }
+
+        #s10 .vision-heading span {
+            margin-left: .4rem;
+            font-size: .45em;
+            letter-spacing: .2em;
+            color: var(--sky-line);
+        }
+
+        /* 單一銀色面板 */
+        #s10 .vision-panel {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: linear-gradient(145deg,
+                    rgba(248, 250, 252, .94) 0%,
+                    rgba(203, 213, 225, .92) 50%,
+                    rgba(241, 245, 249, .94) 100%);
+            -webkit-backdrop-filter: blur(10px) saturate(130%);
+            backdrop-filter: blur(10px) saturate(130%);
+            border: 2px solid rgba(255, 255, 255, .85);
+            border-radius: 28px;
+            box-shadow:
+                0 20px 50px rgba(0, 0, 0, .40),
+                0 0 0 8px rgba(255, 255, 255, .25);
+        }
+
+        /* 左右欄：垂直排列，按鈕貼底，自動等高 */
+        #s10 .vision-col {
+            display: flex;
+            flex-direction: column;
+            padding: 2rem 2.25rem;
+        }
+
+        /* 中間分隔線 */
+        #s10 .vision-col-right {
+            border-left: 2px dashed #94a3b8;
+        }
+
+        #s10 .vision-label {
+            align-self: flex-start;
+            margin-bottom: .6rem;
+            padding: .25rem 1rem;
+            font-size: .9rem;
+            font-weight: 700;
+            color: var(--sky-title);
+            background: var(--sky-light);
+            border: 1px dashed var(--sky-main);
+            border-radius: 999px;
+        }
+
+        #s10 .vision-title {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 800;
+            color: #1e293b;
+        }
+
+        #s10 .vision-sub {
+            margin: .2rem 0 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--sky-title);
+        }
+
+        #s10 .vision-list {
+            list-style: none;
+            margin: 0 0 1rem;
+            padding: 0;
+        }
+
+        #s10 .vision-list li {
+            display: flex;
+            align-items: center;
+            gap: .8rem;
+            padding: .6rem 0;
+            font-size: 1rem;
+            color: #334155;
+        }
+
+        #s10 .vision-list li+li {
+            border-top: 2px dotted #94a3b8;
+        }
+
+        #s10 .vision-list .skill-icon {
+            width: 2rem;
+            height: 2rem;
+            font-size: .85rem;
+        }
+
+        #s10 .vision-list strong {
+            color: var(--sky-name);
+        }
+
+        #s10 .vision-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .4rem;
+            margin-top: auto;
+            margin-bottom: 1rem;
+        }
+
+        #s10 .vision-tag {
+            padding: .2rem .85rem;
+            font-size: .85rem;
+            font-weight: 700;
+            color: var(--sky-title);
+            background: var(--sky-light);
+            border: 1px solid var(--sky-border);
+            border-radius: 999px;
+        }
+
+        /* 手機版：上下堆疊，分隔線改為橫線 */
+        @media (max-width: 767px) {
+            #s10 {
+                padding: 3rem 0;
+            }
+
+            #s10 .vision-col {
+                padding: 1.5rem 1.25rem;
+            }
+
+            #s10 .vision-col-right {
+                border-left: none;
+                border-top: 2px dashed #94a3b8;
+            }
+        }
+    </style>
+
+    <!-- ==================================================
+     s11 專用 CSS：Footer（暗色底 + 天藍點綴）
+     ================================================== -->
+    <style>
+        #s11 {
+            padding: 2.5rem 0 1.5rem;
+            background: linear-gradient(180deg, #0f172a 0%, #0b1220 100%);
+            border-top: 4px solid var(--sky-main);
+            color: #94a3b8;
+        }
+
+        /* 上排：品牌與社群 */
+        #s11 .footer-top {
+            gap: 1rem;
+            padding-bottom: 1.25rem;
+            border-bottom: 2px dotted rgba(125, 211, 252, .25);
+        }
+
+        #s11 .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            font-weight: 700;
+            color: #f1f5f9;
+        }
+
+        #s11 .footer-brand i {
+            color: var(--sky-main);
+        }
+
+        #s11 .footer-social {
+            display: flex;
+            gap: .9rem;
+        }
+
+        #s11 .footer-social a {
+            display: grid;
+            place-items: center;
+            width: 2.8rem;
+            height: 2.8rem;
+            color: var(--sky-border);
+            background: rgba(255, 255, 255, .05);
+            border: 2px solid rgba(125, 211, 252, .35);
+            border-radius: 50%;
+            transition: transform .2s ease, background .2s ease, color .2s ease;
+        }
+
+        #s11 .footer-social a i {
+            font-size: 1.35rem;
+        }
+
+        #s11 .footer-social a:hover {
+            color: #0b1220;
+            background: var(--sky-main);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px var(--sky-shadow);
+        }
+
+        /* 中排：導覽連結 */
+        #s11 .footer-nav {
+            gap: .5rem;
+            padding: 1rem 0;
+        }
+
+        #s11 .footer-nav .nav-link {
+            padding: .4rem 1.1rem;
+            font-weight: 600;
+            color: #cbd5e1;
+            border: 1px solid transparent;
+            border-radius: 999px;
+            transition: color .2s ease, background .2s ease, border-color .2s ease;
+        }
+
+        #s11 .footer-nav .nav-link:hover,
+        #s11 .footer-nav .nav-link.active {
+            color: var(--sky-main);
+            background: rgba(56, 189, 248, .10);
+            border-color: rgba(56, 189, 248, .45);
+        }
+
+        /* 下排：版權與回到頂端 */
+        #s11 .footer-bottom {
+            gap: .75rem;
+            padding-top: 1rem;
+            border-top: 2px dotted rgba(125, 211, 252, .25);
+            font-size: .9rem;
+        }
+
+        #s11 .footer-copy {
+            color: #94a3b8;
+        }
+
+        #s11 .footer-top-btn {
+            padding: .35rem 1rem;
+            font-weight: 700;
+            color: var(--sky-main);
+            text-decoration: none;
+            border: 2px dashed var(--sky-main);
+            border-radius: 999px;
+            transition: background .2s ease, color .2s ease;
+        }
+
+        #s11 .footer-top-btn:hover {
+            color: #0b1220;
+            background: var(--sky-main);
+            border-style: solid;
+        }
+
+        @media (max-width: 576px) {
+            #s11 .footer-nav {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ##################################################
+         SECTION 01：社群連結列（X / Instagram / Threads）
+         TODO：href="#" 為暫代，請換成你的實際社群網址
+         ################################################## -->
+    <section id="s01" class="bg-secondary">
+        <div class="container">
+            <div class="row">
+                <div class="text-end py-2">
+                    <a href="#" class="link-dark text-decoration-none" aria-label="X">
+                        <i class="fa-brands fa-square-x-twitter fa-canvas-roomy fa-2x"></i>
+                    </a>
+                    <a href="#" class="link-dark text-decoration-none" aria-label="Instagram">
+                        <i class="fa-brands fa-instagram fa-canvas-roomy fa-2x"></i>
+                    </a>
+                    <a href="#" class="link-dark text-decoration-none" aria-label="Threads">
+                        <i class="fa-brands fa-square-threads fa-canvas-roomy fa-2x"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ################ END SECTION 01 ################ -->
+
+
+    <!-- ##################################################
+         SECTION 02：導覽列 navbar（含註冊 / 登入按鈕）
+         選單連結改為頁內錨點，點擊會捲動到對應 section
+         ################################################## -->
+    <section id="s02" class="bg-dark">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#s01">
+                        <i class="fa-brands fa-connectdevelop fa-canvas-roomy fa-2x text-warning"></i>
+                    </a>
+                    <!-- 手機版漢堡選單按鈕 -->
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="#s01"><i
+                                        class="fa-solid fa-house fa-canvas-roomy text-danger"></i>首頁</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#s03">工作經驗</a>
+                            </li>
+                            <!-- 下拉選單：專長項目（切換按鈕的 href="#" 是 Bootstrap 慣用寫法，保留） -->
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    專長項目
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#s03">後端開發</a></li>
+                                    <li><a class="dropdown-item" href="#s03">前端切版</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item" href="#s03">雲端與資料分析</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#s06">聯絡我</a>
+                            </li>
+                        </ul>
+                        <!-- 開啟註冊 / 登入 Modal -->
+                        <div>
+                            <button class="btn btn-outline-warning" data-bs-toggle="modal"
+                                data-bs-target="#registerModal">註冊</button>
+                            <button class="btn btn-outline-success" data-bs-toggle="modal"
+                                data-bs-target="#loginModal">登入</button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </section>
+
+    <!-- s02 附屬：註冊 Modal（左側條款、右側表單；手機上下排列） -->
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true"
+        data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content">
+                <div class="modal-header text-bg-warning">
+                    <!-- 頁面唯一 h1 在 s04，Modal 標題改用 h2，字級仍由 fs-5 控制 -->
+                    <h2 class="modal-title fs-5" id="registerModalLabel">會員註冊</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="registerForm">
+                    <div class="modal-body">
+                        <div class="row">
+                            <!-- 左：會員條款（h2.h1 = 語意為 h2，外觀維持 h1 大小） -->
+                            <div class="col-12 col-md-6 mb-4 mb-md-0">
+                                <h2 class="h1">會員條款與使用守則</h2>
+                                <p>1.帳號安全:會員應妥善保管帳號及密碼,不得將帳號轉借他人使用,並應對帳號內的所有操作負責。</p>
+                                <p>2.個人資料:會員應提供正確且有效的註冊資訊,並同意平台依隱私權政策處理相關個人資料。</p>
+                                <p>3.合法使用:不得利用本平台從事違法行為、散布惡意程式、騷擾他人或侵害他人權益。</p>
+                                <p>4.內容規範:會員發布的文字、圖片及其他內容,不得包含侵權、暴力、歧視或不當資訊。</p>
+                                <p>5.違規處理:若會員違反上述規範,平台有權視情節採取警告、限制功能或停用帳號等措施。</p>
+
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" class="form-check-input" name="agree" id="reg-agree"
+                                        required>
+                                    <label for="reg-agree" class="form-check-label">遵守</label>
+                                </div>
+                            </div>
+                            <!-- 右：註冊欄位 -->
+                            <div class="col-12 col-md-6">
+                                <div class="mb-3">
+                                    <label for="reg-username" class="form-label">帳號</label>
+                                    <input type="text" class="form-control" id="reg-username" name="username"
+                                        placeholder="請輸入大寫英文字母" pattern="[A-Z]+" title="僅限大寫英文字母" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="reg-password" class="form-label">密碼</label>
+                                    <input type="password" class="form-control" id="reg-password" name="password"
+                                        minlength="6" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="reg-repassword" class="form-label">確認密碼</label>
+                                    <input type="password" class="form-control" id="reg-repassword" name="repassword"
+                                        minlength="6" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="reg-email" class="form-label">Email</label>
+                                    <input type="email" class="form-control form-control-lg" id="reg-email" name="email"
+                                        required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <!-- data-switch-modal：由底部 JS 處理 Modal 互相切換 -->
+                        <a href="#" class="me-auto text-decoration-none" data-switch-modal="#loginModal">已經有帳號,直接登入。</a>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                        <button type="submit" class="btn btn-primary">確認</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- s02 附屬：登入 Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header text-bg-success">
+                    <h2 class="modal-title fs-5" id="loginModalLabel">會員登入</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="loginForm">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="login-username" class="form-label">帳號</label>
+                            <input type="text" class="form-control" id="login-username" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="login-password" class="form-label">密碼</label>
+                            <input type="password" class="form-control" id="login-password" name="password" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex">
+                        <a href="#" class="me-auto text-decoration-none"
+                            data-switch-modal="#registerModal">還沒有帳號,去註冊一個帳號。</a>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                        <button type="submit" class="btn btn-primary">確認登入</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- ################ END SECTION 02 ################ -->
+
+
+    <!-- ##################################################
+         SECTION 03：幻燈片 Carousel（技術專長 / 工作經驗 / 學習中）
+         卡片位於右下角，手機版置中靠下
+         每張投影片加上 role="group" + aria-label，讓螢幕閱讀器知道目前是第幾張
+         ################################################## -->
+    <section id="s03">
+        <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="false">
+            <!-- 下方圓點指示器 -->
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"
+                    aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1"
+                    aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2"
+                    aria-label="Slide 3"></button>
+            </div>
+
+            <div class="carousel-inner">
+
+                <!-- Slide 1：技術專長 -->
+                <div class="carousel-item bg-img active" role="group" aria-roledescription="slide"
+                    aria-label="第 1 張，共 3 張：技術專長" style="background-image: url(images/landspace04.avif);">
+                    <div class="carousel-caption d-block">
+                        <div class="skill-card">
+                            <span class="skill-title">⭐ 技術專長</span>
+                            <ul class="skill-list">
+                                <li>
+                                    <i class="fa-solid fa-paw skill-icon"></i>
+                                    <div>
+                                        <span class="skill-name">TypeScript / NestJS</span>
+                                        <small class="skill-desc">後端 API 與服務開發</small>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fa-solid fa-paw skill-icon"></i>
+                                    <div>
+                                        <span class="skill-name">TypeORM</span>
+                                        <small class="skill-desc">資料庫查詢</small>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fa-solid fa-paw skill-icon"></i>
+                                    <div>
+                                        <span class="skill-name">HTML / CSS / Bootstrap 5</span>
+                                        <small class="skill-desc">切版與響應式網頁</small>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fa-solid fa-paw skill-icon"></i>
+                                    <div>
+                                        <span class="skill-name">Redis</span>
+                                        <small class="skill-desc">快取與 Session</small>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 2：工作經驗 -->
+                <div class="carousel-item bg-img" role="group" aria-roledescription="slide"
+                    aria-label="第 2 張，共 3 張：工作經驗" style="background-image: url(images/landspace03.avif);">
+                    <div class="carousel-caption d-block">
+                        <div class="skill-card">
+                            <span class="skill-title">⭐ 工作經驗</span>
+                            <ul class="skill-list">
+                                <li>
+                                    <i class="fa-solid fa-heart skill-icon"></i>
+                                    <div>
+                                        <span class="skill-name">登入驗證系統</span>
+                                        <small class="skill-desc">後端 API 設計與維護</small>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fa-solid fa-heart skill-icon"></i>
+                                    <div>
+                                        <span class="skill-name">Session 管理</span>
+                                        <small class="skill-desc">Redis 儲存與過期機制</small>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fa-solid fa-heart skill-icon"></i>
+                                    <div>
+                                        <span class="skill-name">全端網站開發</span>
+                                        <small class="skill-desc">前後端整合與工具製作</small>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fa-solid fa-heart skill-icon"></i>
+                                    <div>
+                                        <span class="skill-name">API 除錯</span>
+                                        <small class="skill-desc">從錯誤訊息追蹤問題根源</small>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 3：學習中 -->
+                <div class="carousel-item bg-img" role="group" aria-roledescription="slide" aria-label="第 3 張，共 3 張：學習中"
+                    style="background-image: url(images/landspace01.avif);">
+                    <div class="carousel-caption d-block">
+                        <div class="skill-card">
+                            <span class="skill-title">⭐ 學習中</span>
+                            <ul class="skill-list">
+                                <li>
+                                    <i class="fa-solid fa-star skill-icon"></i>
+                                    <div>
+                                        <span class="skill-name">GCP 雲端架構</span>
+                                        <small class="skill-desc">服務整合與部署</small>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fa-solid fa-star skill-icon"></i>
+                                    <div>
+                                        <span class="skill-name">BigQuery / GA4</span>
+                                        <small class="skill-desc">資料查詢與流量分析</small>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fa-solid fa-star skill-icon"></i>
+                                    <div>
+                                        <span class="skill-name">Python</span>
+                                        <small class="skill-desc">資料分析基礎</small>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fa-solid fa-star skill-icon"></i>
+                                    <div>
+                                        <span class="skill-name">AI 輔助開發</span>
+                                        <small class="skill-desc">整合應用與提升效率</small>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 左右切換箭頭 -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
+                data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
+                data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </section>
+    <!-- ################ END SECTION 03 ################ -->
+
+
+    <!-- ##################################################
+         SECTION 04：自我介紹 + 可量化數據（counter 數字跳動）
+         左：圖片與標語（純裝飾背景，文字本身可被閱讀）
+         右：標題（全頁唯一 h1）、副標、四張數據卡
+         ################################################## -->
+    <section id="s04">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- 左：圖片與標語 -->
+                <div class="col-md-5 bg-img about-img" style="background-image: url(images/landspace03.avif);">
+                    <div class="about-img-inner ms-3 my-3">
+                        <span class="skill-title">👋 Hi, 我是柴柴</span>
+
+                        <h2 class="hero-text">
+                            從<mark>後端</mark>出發，<br>走向<mark>雲端</mark>與<mark>數據</mark>
+                            <span class="hero-en">BACKEND · CLOUD · DATA</span>
+                        </h2>
+                    </div>
+                </div>
+
+                <!-- 右：標題、副標與數據卡 -->
+                <div class="col-md-7 py-5 px-4 px-lg-5 text-center">
+                    <span class="skill-title">🐾 關於我</span>
+                    <h1 class="about-title mb-3">把複雜的後端，<br>寫成<em>穩定</em>的體驗</h1>
+                    <p class="about-sub">8 年後端實戰，從登入驗證到 Session 管理，現在正往雲端與資料分析前進。</p>
+
+                    <!-- data-count 為數字動畫的目標值（由底部 JS 處理） -->
+                    <div class="row g-3 mt-4">
+                        <div class="col-6 col-xl-3">
+                            <div class="stat-card">
+                                <i class="fa-solid fa-paw skill-icon"></i>
+                                <div class="stat-number"><span class="counter" data-count="8">0</span><small>年</small>
+                                </div>
+                                <div class="stat-label">後端實戰年資</div>
+                                <small class="stat-desc">API 與登入驗證</small>
+                            </div>
+                        </div>
+                        <div class="col-6 col-xl-3">
+                            <div class="stat-card">
+                                <i class="fa-solid fa-heart skill-icon"></i>
+                                <div class="stat-number"><span class="counter" data-count="20">0</span><small>+件</small>
+                                </div>
+                                <div class="stat-label">累計完成作品</div>
+                                <small class="stat-desc">前後端整合專案</small>
+                            </div>
+                        </div>
+                        <div class="col-6 col-xl-3">
+                            <div class="stat-card">
+                                <i class="fa-solid fa-star skill-icon"></i>
+                                <div class="stat-number"><span class="counter" data-count="4">0</span><small>項</small>
+                                </div>
+                                <div class="stat-label">核心後端技術</div>
+                                <small class="stat-desc">NestJS・TypeORM・Redis</small>
+                            </div>
+                        </div>
+                        <div class="col-6 col-xl-3">
+                            <div class="stat-card">
+                                <i class="fa-solid fa-paw skill-icon"></i>
+                                <div class="stat-number"><span class="counter" data-count="4">0</span><small>項</small>
+                                </div>
+                                <div class="stat-label">進修中新技能</div>
+                                <small class="stat-desc">GCP・BigQuery・Python・AI</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ################ END SECTION 04 ################ -->
+
+
+    <!-- ##################################################
+         SECTION 05：工作信念（個人特質，淺天藍風格）
+         ################################################## -->
+    <section id="s05">
+        <div class="container text-center">
+            <span class="skill-title">💡 我的工作信念</span>
+            <h2 class="section-title mb-3">遇到問題，先<em>拆解</em>再解決</h2>
+            <p class="section-sub">八年的後端經驗，讓我習慣把問題看清楚、把系統做穩，再持續往新技術前進。</p>
+
+            <div class="row g-4 mt-3">
+                <div class="col-md-4">
+                    <div class="stat-card belief-card">
+                        <i class="fa-solid fa-bullseye skill-icon"></i>
+                        <h3>主動解決問題</h3>
+                        <p>遇到錯誤時，先從錯誤訊息、紀錄與邊界案例釐清原因，再逐步拆解、驗證，找出真正的根源，而不是只處理表面症狀。</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card belief-card">
+                        <i class="fa-solid fa-shield-halved skill-icon"></i>
+                        <h3>穩定優先</h3>
+                        <p>從登入驗證到 Session 管理，這類系統一出錯影響就很大。我重視安全、過期機制與錯誤處理，寫出好維護、可長期運作的服務。</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card belief-card">
+                        <i class="fa-solid fa-seedling skill-icon"></i>
+                        <h3>持續學習</h3>
+                        <p>目前正持續學習 GCP、BigQuery、Python 與 AI 輔助開發，並實際做成作品，讓技術能真正應用在工作上。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ################ END SECTION 05 ################ -->
+
+
+    <!-- ##################################################
+         SECTION 06：關於我（左照片、右介紹卡，淺天藍風格）
+         ################################################## -->
+    <section id="s06">
+        <div class="container">
+            <div class="row g-4 align-items-stretch">
+                <!-- 左：照片（role="img" + aria-label 提供替代文字） -->
+                <div class="col-md-5">
+                    <div class="bg-img about-photo" role="img" aria-label="工程師在電腦前工作"
+                        style="background-image: url(images/programmer-working02.avif);"></div>
+                </div>
+                <!-- 右：介紹卡 -->
+                <div class="col-md-7 d-flex">
+                    <div class="skill-card about-card w-100 align-self-center">
+                        <span class="skill-title">🐾 關於我</span>
+                        <h2 class="about-heading">關於我<span>ABOUT ME</span></h2>
+                        <p>我是一位從<strong>後端出發的全端工程師</strong>，對打造穩定、好維護的系統充滿熱情，擅長 API 設計、登入驗證與 Session 管理。</p>
+                        <p>相信最好的作品不只是功能能跑，而是<strong>使用者用得安心、團隊接手得輕鬆</strong>。因此我很重視程式的可讀性、錯誤處理與除錯的過程。</p>
+                        <p>目前正在累積雲端與資料分析方向的作品，包含 GCP、BigQuery、Python 與 AI 整合應用，持續強化自己的實作能力。</p>
+                        <a href="#s04" class="btn btn-sky w-100 mt-2">了解更多</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ################ END SECTION 06 ################ -->
+
+
+    <!-- ##################################################
+     SECTION 07：精選作品集（亮黑底、天藍點綴）
+     TODO：各作品按鈕 href="#" 請自行換成實際連結
+     ################################################## -->
+    <section id="s07">
+        <div class="container my-5">
+            <span class="skill-title works-tag">🚀 精選作品集</span>
+            <div class="h1 text-center fw-bold works-title my-4">精選<em>作品集</em></div>
+            <p class="text-center works-sub">以下是我在學習與工作中累積的練習作品，從簡單的前端切版，到後端登入驗證、Session 管理，再到雲端資料分析，一步步由淺入深。</p>
+
+            <div class="row g-4 mt-2">
+                <!-- 作品 01 -->
+                <div class="col-md-6">
+                    <div class="works-card d-flex align-items-center h-100">
+                        <i class="fa-solid fa-laptop fa-6x works-icon me-3"></i>
+                        <div>
+                            <div class="h3 works-name">響應式履歷</div>
+                            <p class="mb-1 works-tech">使用技術: HTML / CSS / Bootstrap 5</p>
+                            <p class="works-desc">作品簡介: 以 Bootstrap 網格完成手機與桌機的切版，練習輪播、Modal 與數字動畫，學會用變數統一配色，維護更輕鬆。</p>
+                            <a href="#" class="btn btn-works d-block"><i class="fa-solid fa-laptop me-1"></i>作品連結</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- 作品 02 -->
+                <div class="col-md-6">
+                    <div class="works-card d-flex align-items-center h-100">
+                        <i class="fa-solid fa-shield-halved fa-6x works-icon me-3"></i>
+                        <div>
+                            <div class="h3 works-name">登入驗證</div>
+                            <p class="mb-1 works-tech">使用技術: NestJS / Redis / TypeScript</p>
+                            <p class="works-desc">作品簡介: 實作註冊、登入與 Session 過期機制，用 Redis 存放登入狀態，從中學到安全性、錯誤處理與邊界案例的重要。</p>
+                            <a href="#" class="btn btn-works d-block"><i
+                                    class="fa-solid fa-shield-halved me-1"></i>作品連結</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- 作品 03 -->
+                <div class="col-md-6">
+                    <div class="works-card d-flex align-items-center h-100">
+                        <i class="fa-solid fa-database fa-6x works-icon me-3"></i>
+                        <div>
+                            <div class="h3 works-name">資料 API</div>
+                            <p class="mb-1 works-tech">使用技術: NestJS / TypeORM / MySQL</p>
+                            <p class="works-desc">作品簡介: 設計 RESTful API 並以 TypeORM 查詢資料庫，練習分頁、關聯查詢與除錯，體會到從錯誤訊息追根源的價值。</p>
+                            <a href="#" class="btn btn-works d-block"><i class="fa-solid fa-database me-1"></i>作品連結</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- 作品 04 -->
+                <div class="col-md-6">
+                    <div class="works-card d-flex align-items-center h-100">
+                        <i class="fa-solid fa-chart-line fa-6x works-icon me-3"></i>
+                        <div>
+                            <div class="h3 works-name">流量分析</div>
+                            <p class="mb-1 works-tech">使用技術: GCP / BigQuery / Python</p>
+                            <p class="works-desc">作品簡介: 串接 GA4 資料到 BigQuery，用 SQL 與 Python 整理流量指標，學習雲端架構與資料思維，是轉型的重要練習。
+                            </p>
+                            <a href="#" class="btn btn-works d-block"><i
+                                    class="fa-solid fa-chart-line me-1"></i>作品連結</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ################ END SECTION 07 ################ -->
+
+
+    <!-- ##################################################
+     SECTION 08：學經歷介紹（淺色底、天藍點綴）
+     TODO：學歷、公司名稱、期間請改成你的真實資料
+     ################################################## -->
+    <section id="s08">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7 py-5">
+                    <span class="skill-title">🎓 學經歷</span>
+                    <div class="h1 fw-bold exp-title my-3">學經歷<em>介紹</em></div>
+
+                    <div class="skill-card exp-card">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-3">個人特質</dt>
+                            <dd class="col-sm-9">擁有 8 年後端實戰經驗的全端工程師，擅長 API 設計、登入驗證與 Session
+                                管理，遇到問題習慣先拆解、再驗證，目前積極轉往雲端與資料分析。</dd>
+
+                            <dt class="col-sm-3">學歷</dt>
+                            <dd class="col-sm-9">
+                                <p>1. XX 大學 XX 系（請自行填寫）</p>
+                                <p>2. 政府職業訓練：雲端與資料分析相關課程（請自行調整）</p>
+                                <p class="mb-0">3. 自主進修：GCP、BigQuery、Python、AI 輔助開發</p>
+                            </dd>
+
+                            <dt class="col-sm-3">工作年資</dt>
+                            <dd class="col-sm-9">後端／全端開發共 8 年，累計完成 20 件以上前後端整合專案。</dd>
+
+                            <dt class="col-sm-3">XX 公司經歷</dt>
+                            <dd class="col-sm-9">
+                                <dl class="row mb-0">
+                                    <dt class="col-sm-4">20XX ~ 20XX</dt>
+                                    <dd class="col-sm-8">後端工程師：使用 TypeScript／NestJS 開發 API，負責登入驗證與 Redis Session 機制。
+                                    </dd>
+                                </dl>
+                            </dd>
+
+                            <dt class="col-sm-3">XX 公司經歷</dt>
+                            <dd class="col-sm-9">
+                                <dl class="row mb-0">
+                                    <dt class="col-sm-4">20XX ~ 至今</dt>
+                                    <dd class="col-sm-8">全端工程師：負責前後端整合、TypeORM 資料庫查詢、API 除錯與內部工具開發。</dd>
+                                </dl>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右側圖片：桌機顯示，貼齊 section 右側 -->
+        <div class="row justify-content-end">
+            <div class="col-md-5 bg-img exp-photo d-none d-md-block"
+                style="background-image: url(images/programmer-working01.avif);"></div>
+        </div>
+    </section>
+    <!-- ################ END SECTION 08 ################ -->
+
+
+    <!-- ##################################################
+     SECTION 09：聯絡我（淺色底、天藍點綴）
+     TODO：表單尚未串接後端，送出後只會顯示提示
+     ################################################## -->
+    <section id="s09">
+        <div class="container py-4">
+            <span class="skill-title contact-tag">✉️ 聯絡我</span>
+            <div class="h1 text-center section-title my-4">
+                聯絡我 <em>CONTACT ME</em>
+            </div>
+            <p class="text-center section-sub mb-4">有面試邀約、專案討論或接案需求，都歡迎留言，我會盡快回覆。</p>
+
+            <div class="row g-4">
+                <!-- 左：表單 -->
+                <div class="col-md-6">
+                    <form id="contactForm" class="contact-card" novalidate>
+                        <div class="mb-3 form-floating">
+                            <input type="text" class="form-control form-control-lg" id="contact-name" name="name"
+                                placeholder="姓名" autocomplete="name" required>
+                            <label for="contact-name">姓名</label>
+                            <div class="invalid-feedback">請輸入姓名</div>
+                        </div>
+
+                        <div class="mb-3 form-floating">
+                            <input type="email" class="form-control form-control-lg" id="contact-email" name="email"
+                                placeholder="電子信箱" autocomplete="email" required>
+                            <label for="contact-email">電子信箱</label>
+                            <div class="invalid-feedback">請輸入正確的電子信箱格式</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="contact-subject" class="visually-hidden">聯絡主題</label>
+                            <select id="contact-subject" name="subject" class="form-select form-select-lg" required>
+                                <option value="" class="text-center" disabled selected>--- 聯絡主題 ---</option>
+                                <option value="面試邀約">面試邀約</option>
+                                <option value="專案討論">專案討論</option>
+                                <option value="接案洽詢">接案洽詢</option>
+                                <option value="其它">其它</option>
+                            </select>
+                            <div class="invalid-feedback">請選擇聯絡主題</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="contact-message" class="visually-hidden">訊息內容</label>
+                            <textarea id="contact-message" name="message" class="form-control" rows="8" minlength="10"
+                                maxlength="500" placeholder="請輸入訊息內容（至少 10 個字）....." required></textarea>
+                            <div class="d-flex justify-content-between">
+                                <div class="invalid-feedback">請輸入至少 10 個字的訊息</div>
+                                <small class="ms-auto contact-count"><span id="msgCount">0</span> / 500</small>
+                            </div>
+                        </div>
+
+                        <div class="text-end mt-3">
+                            <button type="reset" class="btn btn-contact-cancel">取消</button>
+                            <button type="submit" class="btn btn-sky px-4">送出</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- 右：地圖 -->
+                <div class="col-md-6">
+                    <div class="contact-map">
+                        <iframe title="聯絡地點地圖"
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14560.365550356555!2d120.60847195!3d24.16852755!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x34693e048d342aa9%3A0x2b6f18a6783fa3b!2z5Yue5YuV6YOo5Yue5YuV5Yqb55m85bGV572y5Lit5b2w5oqV5YiG572y77yI6Ie65Lit6IG36KiT5bGA77yJ!5e0!3m2!1szh-TW!2stw!4v1793674139217!5m2!1szh-TW!2stw"
+                            width="100%" height="500" style="border:0;" allowfullscreen="" loading="lazy"
+                            referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ################ END SECTION 09 ################ -->
+
+
+    <!-- ##################################################
+     SECTION 10：未來展望（單一銀色面板、全幅背景）
+     ################################################## -->
+    <section id="s10">
+        <div class="container">
+            <span class="skill-title vision-tag-top">🔭 未來展望</span>
+            <div class="h1 text-center vision-heading my-4">未來<em>展望</em>
+                <span>FUTURE OUTLOOK</span>
+            </div>
+
+            <div class="vision-panel">
+                <div class="row g-0">
+                    <!-- 左：未來願景 -->
+                    <div class="col-md-6 vision-col">
+                        <div class="vision-label">Future Vision</div>
+                        <h3 class="vision-title">未來願景</h3>
+                        <div class="vision-sub">持續精進，累積實力</div>
+                        <ul class="vision-list">
+                            <li><i class="fa-solid fa-paw skill-icon"></i>
+                                <span><strong>深化後端</strong>：NestJS、API 設計、Redis</span>
+                            </li>
+                            <li><i class="fa-solid fa-paw skill-icon"></i>
+                                <span><strong>學習雲端</strong>：GCP 部署與服務整合</span>
+                            </li>
+                            <li><i class="fa-solid fa-paw skill-icon"></i>
+                                <span><strong>資料分析</strong>：BigQuery、GA4、Python</span>
+                            </li>
+                            <li><i class="fa-solid fa-paw skill-icon"></i>
+                                <span><strong>前端補強</strong>：Vue.js 元件化開發</span>
+                            </li>
+                            <li><i class="fa-solid fa-paw skill-icon"></i>
+                                <span><strong>AI 輔助</strong>：提升開發與除錯效率</span>
+                            </li>
+                        </ul>
+                        <div class="vision-tags">
+                            <span class="vision-tag">NestJS</span>
+                            <span class="vision-tag">GCP</span>
+                            <span class="vision-tag">BigQuery</span>
+                            <span class="vision-tag">Vue.js</span>
+                        </div>
+                        <a href="#s07" class="btn btn-sky w-100">查看我的作品</a>
+                    </div>
+
+                    <!-- 右：職涯發展 -->
+                    <div class="col-md-6 vision-col vision-col-right">
+                        <div class="vision-label">Career Development</div>
+                        <h3 class="vision-title">職涯發展</h3>
+                        <div class="vision-sub">探索 AI，走向雲端與數據</div>
+                        <ul class="vision-list">
+                            <li><i class="fa-solid fa-paw skill-icon"></i>
+                                <span><strong>AI 整合</strong>：將 AI 接入後端服務</span>
+                            </li>
+                            <li><i class="fa-solid fa-paw skill-icon"></i>
+                                <span><strong>智慧應用</strong>：客服、資料摘要</span>
+                            </li>
+                            <li><i class="fa-solid fa-paw skill-icon"></i>
+                                <span><strong>雲端數據</strong>：GCP + BigQuery 分析</span>
+                            </li>
+                            <li><i class="fa-solid fa-paw skill-icon"></i>
+                                <span><strong>提示詞</strong>：練習 Prompt 與 AI 除錯</span>
+                            </li>
+                            <li><i class="fa-solid fa-paw skill-icon"></i>
+                                <span><strong>目標職缺</strong>：雲端／資料分析工程師</span>
+                            </li>
+                        </ul>
+                        <div class="vision-tags">
+                            <span class="vision-tag">AI 整合</span>
+                            <span class="vision-tag">雲端架構</span>
+                            <span class="vision-tag">資料分析</span>
+                        </div>
+                        <a href="#s09" class="btn btn-sky w-100">與我聯絡</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ################ END SECTION 10 ################ -->
+
+
+    <!-- ##################################################
+     SECTION 11：Footer（暗色底、天藍點綴）
+     TODO：href="#" 的連結請換成你的實際網址
+     ################################################## -->
+    <section id="s11">
+        <div class="container">
+            <!-- <div class="footer-top d-flex flex-column flex-md-row align-items-center justify-content-between">
+                <a class="footer-brand text-decoration-none" href="#s01">
+                    <i class="fa-brands fa-connectdevelop fa-2x"></i>
+                    <span> Backend · Cloud · Data</span>
+                </a>
+
+                <div class="footer-social">
+                    <a href="#" aria-label="X"><i class="fa-brands fa-square-x-twitter fa-2x"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram fa-2x"></i></a>
+                    <a href="#" aria-label="Threads"><i class="fa-brands fa-square-threads fa-2x"></i></a>
+                </div>
+            </div> -->
+
+            <ul class="nav justify-content-center footer-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="#s07">作品集</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#s08">學經歷</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#s09">聯絡我</a>
+                </li>
+            </ul>
+
+            <div class="footer-bottom d-flex flex-column flex-md-row align-items-center justify-content-between">
+                <span class="footer-copy">&copy; 2026 All Rights Reserved.</span>
+                <a href="#s01" class="footer-top-btn">
+                    <i class="fa-solid fa-arrow-up me-1"></i>回到頂端
+                </a>
+            </div>
+        </div>
+    </section>
+    <!-- ################ END SECTION 11 ################ -->
+
+
+    <!-- ==================================================
+         JavaScript
+         ================================================== -->
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script>
+        // [s02] Modal 互相切換：先關閉目前的，等關完再開下一個，避免遮罩疊加
+        document.querySelectorAll('[data-switch-modal]').forEach(function (link) {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                var currentEl = link.closest('.modal');
+                var current = bootstrap.Modal.getInstance(currentEl);
+                var next = bootstrap.Modal.getOrCreateInstance(
+                    document.querySelector(link.dataset.switchModal)
+                );
+                // once: true，事件只觸發一次，避免重複綁定
+                currentEl.addEventListener('hidden.bs.modal', function () {
+                    next.show();
+                }, { once: true });
+                current.hide();
+            });
+        });
+
+        // [s02] 註冊表單：確認密碼需與密碼一致（目前尚未串接後端）
+        document.getElementById('registerForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            var pw = document.getElementById('reg-password');
+            var re = document.getElementById('reg-repassword');
+            if (pw.value !== re.value) {
+                re.setCustomValidity('兩次密碼不一致');
+                re.reportValidity();
+                return;
+            }
+            re.setCustomValidity('');
+            alert('註冊表單驗證通過(尚未串接後端)');
+        });
+        // 使用者重新輸入確認密碼時，清除先前的錯誤狀態
+        document.getElementById('reg-repassword').addEventListener('input', function () {
+            this.setCustomValidity('');
+        });
+
+        // [s02] 登入表單（目前尚未串接後端）
+        document.getElementById('loginForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            alert('登入表單驗證通過(尚未串接後端)');
+        });
+
+        // [s04] 數字進入畫面時，從 0 跳到目標值
+        (function () {
+            var counters = document.querySelectorAll('#s04 .counter');
+            // 使用者系統設定「減少動態效果」時，直接顯示最終數字
+            var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            function run(el) {
+                var target = parseInt(el.dataset.count, 10);
+                if (reduce) { el.textContent = target; return; }
+                var duration = 1500; // 動畫時間（毫秒）
+                var start = null;
+                function step(ts) {
+                    if (start === null) start = ts;
+                    var p = Math.min((ts - start) / duration, 1);
+                    var eased = 1 - Math.pow(1 - p, 3); // easeOutCubic：先快後慢
+                    el.textContent = Math.round(target * eased);
+                    if (p < 1) requestAnimationFrame(step);
+                }
+                requestAnimationFrame(step);
+            }
+
+            // 舊瀏覽器不支援 IntersectionObserver：直接顯示數字
+            if (!('IntersectionObserver' in window)) {
+                counters.forEach(function (el) { el.textContent = el.dataset.count; });
+                return;
+            }
+
+            // 元素露出 40% 時才開始動畫，且每個數字只播放一次
+            var io = new IntersectionObserver(function (entries, obs) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        run(entry.target);
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.4 });
+
+            counters.forEach(function (el) { io.observe(el); });
+        })();
+
+        // [s09] 聯絡表單：驗證、字數計算、送出提示（尚未串接後端）
+        (function () {
+            var form = document.getElementById('contactForm');
+            var msg = document.getElementById('contact-message');
+            var count = document.getElementById('msgCount');
+
+            msg.addEventListener('input', function () {
+                count.textContent = msg.value.length;
+            });
+
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                if (!form.checkValidity()) {
+                    form.classList.add('was-validated');
+                    return;
+                }
+                var data = Object.fromEntries(new FormData(form).entries());
+                console.log(data); // TODO：改成 fetch 送到你的後端 API
+                alert('訊息已送出（尚未串接後端）');
+                form.reset();
+                form.classList.remove('was-validated');
+                count.textContent = 0;
+            });
+
+            form.addEventListener('reset', function () {
+                form.classList.remove('was-validated');
+                count.textContent = 0;
+            });
+        })();
+    </script>
+</body>
+
+</html>
