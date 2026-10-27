@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>個人履歷 - 陳小明</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+
+    <style>
+        :root {
+            --primary: #14263e;
+            --secondary: #264765;
+            --accent: #42bcb2;
+            --light: #f0f4f8;
+            --gray: #526579;
+            --primary-dark: #285775;
+            --accent-light: #77e0d6;
+            --accent-muted: #a2e4dd;
+            --accent-dark: #168f8a;
+            --bg-overlay-opaque: rgba(16, 30, 53, 0.95);
+            --bg-overlay-translucent: rgba(16, 30, 53, 0.88);
+            --shadow-color: rgba(0, 0, 0, 0.12);
+        }
+
+        body {
+            background-color: var(--light);
+            font-family: Arial, "Microsoft JhengHei", sans-serif;
+        }
+
+        /* 共用標題 */
+        .section-title {
+            color: var(--primary);
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        /* 個人介紹 */
+        .profile-section {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid var(--accent);
+            object-fit: cover;
+        }
+
+        .profile-section h1 {
+            font-size: 48px;
+            font-weight: 900;
+        }
+
+        .profile-section h4 {
+            color: var(--accent-light);
+        }
+
+        /* Roller 共用區域 */
+        .box {
+            height: 230px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            background-color: var(--secondary);
+            box-shadow: 0 5px 15px var(--shadow-color);
+        }
+
+        .box-title {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+        }
+
+        .box-title h3 {
+            font-weight: 900;
+        }
+
+        .box-title p {
+            color: var(--accent-muted);
+            letter-spacing: 2px;
+        }
+
+        /* Roller 遮罩共用設定 */
+        .rollerbox-t,
+        .rollerbox-b,
+        .rollerbox-l,
+        .rollerbox-r {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-overlay-opaque);
+            color: white;
+            transform: translate(0);
+            transition: transform 0.7s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 25px;
+        }
+
+        /* Roller Top */
+        .roller-t .rollerbox-t {
+            transform: translateY(-100%);
+        }
+
+        .roller-t:hover .rollerbox-t {
+            transform: translateY(0);
+        }
+
+        /* Roller Bottom */
+        .roller-b .rollerbox-b {
+            transform: translateY(100%);
+        }
+
+        .roller-b:hover .rollerbox-b {
+            transform: translateY(0);
+        }
+
+        /* Roller Left */
+        .roller-l .rollerbox-l {
+            transform: translateX(-100%);
+        }
+
+        .roller-l:hover .rollerbox-l {
+            transform: translateX(0);
+        }
+
+        /* Roller Right */
+        .roller-r .rollerbox-r {
+            transform: translateX(100%);
+        }
+
+        .roller-r:hover .rollerbox-r {
+            transform: translateX(0);
+        }
+
+        /* Timeline Section */
+        .timeline-section {
+            background-color: white;
+            padding: 70px 0;
+        }
+
+        .timeline-section .box {
+            height: 280px;
+        }
+
+        .timeline-section .box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .timeline-section .rollerbox-t,
+        .timeline-section .rollerbox-b,
+        .timeline-section .rollerbox-l,
+        .timeline-section .rollerbox-r {
+            background-color: var(--bg-overlay-translucent);
+        }
+
+        .timeline-section .rollerbox-t h3,
+        .timeline-section .rollerbox-b h3,
+        .timeline-section .rollerbox-l h3,
+        .timeline-section .rollerbox-r h3 {
+            font-weight: 900;
+        }
+
+        .timeline-content {
+            padding: 30px;
+        }
+
+        .timeline-content h5 {
+            color: var(--accent-dark);
+            font-weight: 700;
+        }
+
+        .timeline-content h3 {
+            color: var(--primary);
+            font-weight: 900;
+            margin: 15px 0;
+        }
+
+        .timeline-content p {
+            color: var(--gray);
+            font-size: 18px;
+            line-height: 1.9;
+        }
+
+        .timeline-divider {
+            width: 80px;
+            height: 4px;
+            background-color: var(--accent);
+            margin: 20px 0;
+        }
+
+        /* 頁尾 */
+        footer {
+            background-color: var(--primary);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        footer h3 {
+            color: var(--accent-light);
+        }
+
+        /* RWD */
+        @media screen and (max-width: 768px) {
+            .profile-section h1 {
+                font-size: 36px;
+            }
+
+            .timeline-content {
+                padding: 20px 5px;
+            }
+
+            .timeline-content h3 {
+                font-size: 24px;
+            }
+
+            .timeline-section .box {
+                height: 230px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 個人介紹 -->
+    <header class="profile-section">
+        <div class="container">
+            <img src="https://i.pravatar.cc/300?img=12" class="profile-avatar" alt="個人照片">
+
+            <h1 class="mt-4">陳小明</h1>
+            <h4>Junior Full Stack Developer</h4>
+
+            <p class="mt-4 fs-5">
+                前端網頁設計 | 後端程式開發 | 資料庫整合
+            </p>
+
+            <p>
+                熱愛程式設計與技術研究，
+                期望透過持續學習與專案實作，
+                成為具備獨立開發能力的全端工程師。
+            </p>
+        </div>
+    </header>
+
+
+    <!-- 個人履歷 Roller -->
+    <section class="container py-5">
+
+        <h2 class="section-title">個人履歷 RESUME</h2>
+
+        <div class="row g-4">
+
+            <!-- 關於我 -->
+            <div class="col-md-6">
+                <div class="box roller-t">
+                    <div class="box-title">
+                        <h3>關於我</h3>
+                        <p>ABOUT ME</p>
+                    </div>
+
+                    <div class="rollerbox-t">
+                        <h4>自我介紹</h4>
+                        <p>
+                            具備積極學習與團隊合作精神，
+                            喜歡將創意轉化成實際功能，
+                            並持續探索新的網頁開發技術。
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 專業技能 -->
+            <div class="col-md-6">
+                <div class="box roller-b">
+                    <div class="box-title">
+                        <h3>專業技能</h3>
+                        <p>TECHNICAL SKILLS</p>
+                    </div>
+
+                    <div class="rollerbox-b">
+                        <h4>開發技術</h4>
+                        <p>
+                            HTML5 / CSS3 / JavaScript<br>
+                            Bootstrap / jQuery / Vue.js<br>
+                            Python / Flask / MySQL<br>
+                            Git / GitHub
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 專案作品 -->
+            <div class="col-md-6">
+                <div class="box roller-l">
+                    <div class="box-title">
+                        <h3>專案作品</h3>
+                        <p>MY PROJECTS</p>
+                    </div>
+
+                    <div class="rollerbox-l">
+                        <h4>旅遊資訊整合網站</h4>
+                        <p>
+                            使用 Bootstrap 製作 RWD 版面，
+                            串接 OpenData API，
+                            完成旅遊景點與美食資訊查詢。
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 求職目標 -->
+            <div class="col-md-6">
+                <div class="box roller-r">
+                    <div class="box-title">
+                        <h3>求職目標</h3>
+                        <p>CAREER GOAL</p>
+                    </div>
+
+                    <div class="rollerbox-r">
+                        <h4>全端軟體工程師</h4>
+                        <p>
+                            期望投入網站系統開發，
+                            運用前端、後端與資料庫技術，
+                            參與企業實際專案開發。
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- Timeline Section 圖文交錯 -->
+    <section class="timeline-section">
+        <div class="container">
+
+            <h2 class="section-title">
+                學習與專案歷程 TIMELINE
+            </h2>
+
+            <!-- 第一筆：左圖右文 -->
+            <div class="row align-items-center mb-5">
+
+                <div class="col-md-6 mt-3">
+                    <div class="box roller-r">
+                        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1000" alt="全端程式設計">
+
+                        <div class="rollerbox-r">
+                            <h3>全端程式設計</h3>
+                            <p>FULL STACK DEVELOPMENT</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mt-3">
+                    <div class="timeline-content">
+                        <h5>2026 / 09 - 現在</h5>
+                        <h3>AI 輔助全端程式設計訓練</h3>
+                        <div class="timeline-divider"></div>
+                        <p>
+                            參與全端程式設計職業訓練，
+                            學習 HTML、CSS、JavaScript、
+                            Bootstrap、Vue.js 與後端開發技術，
+                            建立完整的網站開發基礎。
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- 第二筆：左文右圖 -->
+            <div class="row align-items-center mb-5">
+
+                <div class="col-md-6 mt-3">
+                    <div class="timeline-content">
+                        <h5>2026 / 07</h5>
+                        <h3>旅遊資訊整合網站</h3>
+                        <div class="timeline-divider"></div>
+                        <p>
+                            運用 Bootstrap 建立響應式網頁，
+                            透過 jQuery AJAX 串接政府 OpenData，
+                            呈現各地旅遊景點、美食餐廳與相關資訊，
+                            培養資料處理與前端整合能力。
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mt-3">
+                    <div class="box roller-l">
+                        <img src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1000" alt="旅遊資訊網站">
+
+                        <div class="rollerbox-l">
+                            <h3>旅遊資訊整合網站</h3>
+                            <p>TRAVEL WEBSITE PROJECT</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- 第三筆：左圖右文 -->
+            <div class="row align-items-center mb-5">
+
+                <div class="col-md-6 mt-3">
+                    <div class="box roller-t">
+                        <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1000" alt="個人作品集">
+
+                        <div class="rollerbox-t">
+                            <h3>個人履歷網站</h3>
+                            <p>PERSONAL PORTFOLIO</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mt-3">
+                    <div class="timeline-content">
+                        <h5>2026 / 05</h5>
+                        <h3>個人履歷網站設計</h3>
+                        <div class="timeline-divider"></div>
+                        <p>
+                            使用 HTML、CSS 與 Bootstrap
+                            製作個人履歷網站，
+                            加入 Flexbox、CSS 動畫及 Roller
+                            互動效果，提升網頁視覺設計能力。
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- 第四筆：左文右圖 -->
+            <div class="row align-items-center mb-5">
+
+                <div class="col-md-6 mt-3">
+                    <div class="timeline-content">
+                        <h5>2025 / 12</h5>
+                        <h3>開始學習網頁程式設計</h3>
+                        <div class="timeline-divider"></div>
+                        <p>
+                            從 HTML 網頁結構與 CSS 樣式開始，
+                            學習網頁切版、排版技巧與基礎程式邏輯，
+                            逐步培養網頁開發的興趣與能力。
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mt-3">
+                    <div class="box roller-b">
+                        <img src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=1000" alt="學習程式設計">
+
+                        <div class="rollerbox-b">
+                            <h3>程式設計入門</h3>
+                            <p>MY CODING JOURNEY</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- 聯絡資訊 -->
+    <footer>
+        <div class="container">
+            <h3 class="fw-bold mb-4">CONTACT ME</h3>
+
+            <p>Email：demo@example.com</p>
+            <p>GitHub：github.com/demo</p>
+            <p>所在地：臺中市</p>
+
+            <hr class="my-4">
+
+            <p class="mb-0">
+                © 2026 Chen Xiao Ming |
+                Personal Portfolio
+            </p>
+        </div>
+    </footer>
+
+    <script src="js/bootstrap.bundle.min.js"></script>
+
+    <!-- Code injected by live-server -->
+    <script>
+        // <![CDATA[  <-- For SVG support
+        if ('WebSocket' in window) {
+            (function () {
+                function refreshCSS() {
+                    var sheets = [].slice.call(document.getElementsByTagName("link"));
+                    var head = document.getElementsByTagName("head")[0];
+                    for (var i = 0; i < sheets.length; ++i) {
+                        var elem = sheets[i];
+                        var parent = elem.parentElement || head;
+                        parent.removeChild(elem);
+                        var rel = elem.rel;
+                        if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+                            var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+                            elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+                        }
+                        parent.appendChild(elem);
+                    }
+                }
+                var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+                var address = protocol + window.location.host + window.location.pathname + '/ws';
+                var socket = new WebSocket(address);
+                socket.onmessage = function (msg) {
+                    if (msg.data == 'reload') window.location.reload();
+                    else if (msg.data == 'refreshcss') refreshCSS();
+                };
+                if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+                    console.log('Live reload enabled.');
+                    sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+                }
+            })();
+        }
+        else {
+            console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+        }
+        // ]]>
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>學習歷程首頁</title>
+    <!-- Bootstrap 5 CSS -->
+    <link class="main-css" rel="stylesheet" href="css/bootstrap.min.css">
+    <!-- 原有自訂 CSS -->
+    <link rel="stylesheet" href="css/myall.css">
+    <style>
+        /* 使用整體 Flex 佈局，徹底揮別死板的固定高度計算 */
+        body { background-color: #f4f7f6; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+        /* 全新美化的頂部標題列：改用內襯撐開，加入微光漸層背景與精緻陰影 */
+        .top-header {
+            background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            border-bottom: 1px solid #e9ecef;
+            z-index: 1020;
+        }
+
+        .main-title {
+            letter-spacing: 2px;
+            background: linear-gradient(45deg, #198754, #0b5ed7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* 綠色閃爍 Live 小圓點動畫 */
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #198754;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 0 0 rgba(25, 135, 84, 0.7);
+            animation: pulse 1.6s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(25, 135, 84, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(25, 135, 84, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(25, 135, 84, 0); }
+        }
+
+        /* 主要內容主區塊：全自動彈性收縮，完美填滿剩餘高度 */
+        .main-content { flex: 1; min-height: 0; }
+
+        /* 左側目錄獨立捲動 */
+        .scrollable-menu { height: 100%; overflow-y: auto; padding-right: 15px; }
+
+        /* 時間軸線條樣式 */
+        .timeline-container { border-left: 2px solid #dee2e6; margin-left: 6px; }
+        .timeline-marker { transform: translateX(-7px); box-shadow: 0 0 0 4px rgba(25, 135, 84, 0.2); }
+
+        /* 點擊選取時的底色與動態過渡 */
+        .item-card { transition: background-color 0.25s ease, border-color 0.25s ease; }
+        .portfolio-item.active-preview .item-card { background-color: #d1e7dd !important; border-color: #a3cfbb !important; }
+
+        /* 右側固定預覽區域 */
+        .preview-wrapper { height: 100%; padding-bottom: 20px; }
+        .preview-container { height: 100%; border: 1px solid #dee2e6; border-radius: 12px; overflow: hidden; background-color: #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
+        .preview-iframe { width: 100%; height: 100%; border: none; }
+    </style>
+</head>
+
+<body>
+    <!-- 1. 全新美化置頂標題列 -->
+    <div class="top-header text-center py-4">
+        <h1 class="main-title fw-extrabold display-6 mb-2">學習歷程時間軸</h1>
+        <div class="d-flex align-items-center justify-content-center gap-2">
+            <span class="pulse-dot"></span>
+            <p class="text-muted small mb-0 font-monospace">CODE PORTFOLIO</p>
+        </div>
+    </div>
+
+    <!-- 2. 下方彈性主區塊 -->
+    <div class="container-fluid main-content px-4 mt-3">
+        <div class="row h-100 pb-2">
+
+            <!-- 左側：獨立捲動的目錄項目列 (佔 3 格寬度) -->
+            <div class="col-md-3 scrollable-menu">
+                <div class="timeline-container ps-2 position-relative">
+
+            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20261015-ch8-forms.html">
+                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
+                <div class="text-success small fw-bold font-monospace mb-1">2026/10/15</div>
+                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
+                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">ch8. Forms(表單)</h5>
+                    <div class="text-muted small font-monospace text-break mb-0">
+                        20261015-ch8-forms.html
+                    </div>
+                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
+                </div>
+            </div>
+
+            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20261015-ch8-forms-ex01-ai01-2.html">
+                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
+                <div class="text-success small fw-bold font-monospace mb-1">2026/10/15</div>
+                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
+                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">AI 輔助全端程式設計｜線上報名（教學模擬）</h5>
+                    <div class="text-muted small font-monospace text-break mb-0">
+                        20261015-ch8-forms-ex01-ai01-2.html
+                    </div>
+                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
+                </div>
+            </div>
+
+            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20261015-ch8-forms-ex01-ai01-1.html">
+                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
+                <div class="text-success small fw-bold font-monospace mb-1">2026/10/15</div>
+                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
+                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">AI 輔助全端程式設計｜線上報名（教學模擬）</h5>
+                    <div class="text-muted small font-monospace text-break mb-0">
+                        20261015-ch8-forms-ex01-ai01-1.html
+                    </div>
+                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
+                </div>
+            </div>
+
+            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20261015-ch8-forms-ex01-2.html">
+                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
+                <div class="text-success small fw-bold font-monospace mb-1">2026/10/15</div>
+                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
+                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">ch8 表單排版(JS)</h5>
+                    <div class="text-muted small font-monospace text-break mb-0">
+                        20261015-ch8-forms-ex01-2.html
+                    </div>
+                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
+                </div>
+            </div>
+
+            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20261015-ch8-forms-ex01-1.html">
+                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
+                <div class="text-success small fw-bold font-monospace mb-1">2026/10/15</div>
+                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
+                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">ch8 表單排版(JS)</h5>
+                    <div class="text-muted small font-monospace text-break mb-0">
+                        20261015-ch8-forms-ex01-1.html
+                    </div>
+                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
+                </div>
+            </div>
+
+            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20261013-ch7-flex-roller.html">
+                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
+                <div class="text-success small fw-bold font-monospace mb-1">2026/10/13</div>
+                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
+                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">卷軸roller</h5>
+                    <div class="text-muted small font-monospace text-break mb-0">
+                        20261013-ch7-flex-roller.html
+                    </div>
+                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
+                </div>
+            </div>
+
+            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20261013-ch7-flex-ex02-2.html">
+                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
+                <div class="text-success small fw-bold font-monospace mb-1">2026/10/13</div>
+                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
+                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">個人履歷 - 陳小明</h5>
+                    <div class="text-muted small font-monospace text-break mb-0">
+                        20261013-ch7-flex-ex02-2.html
+                    </div>
+                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
+                </div>
+            </div>
+
+            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20261013-ch7-flex-ex01-1.html">
+                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
+                <div class="text-success small fw-bold font-monospace mb-1">2026/10/13</div>
+                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
+                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">個人履歷 - 陳小明</h5>
+                    <div class="text-muted small font-monospace text-break mb-0">
+                        20261013-ch7-flex-ex01-1.html
+                    </div>
+                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
+                </div>
+            </div>
+
+            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20261008-ch7-flex.html">
+                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
+                <div class="text-success small fw-bold font-monospace mb-1">2026/10/08</div>
+                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
+                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">ch7. Flex</h5>
+                    <div class="text-muted small font-monospace text-break mb-0">
+                        20261008-ch7-flex.html
+                    </div>
+                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
+                </div>
+            </div>
+
+            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20261008-ch6-ex02-ai01.html">
+                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
+                <div class="text-success small fw-bold font-monospace mb-1">2026/10/08</div>
+                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
+                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">切版練習02</h5>
+                    <div class="text-muted small font-monospace text-break mb-0">
+                        20261008-ch6-ex02-ai01.html
+                    </div>
+                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
+                </div>
+            </div>
+
+            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20261008-ch6-ex02-3.html">
+                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
+                <div class="text-success small fw-bold font-monospace mb-1">2026/10/08</div>
+                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
+                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">切版練習02</h5>
+                    <div class="text-muted small font-monospace text-break mb-0">
+                        20261008-ch6-ex02-3.html
+                    </div>
+                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
+                </div>
+            </div>
+
+            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20261008-ch6-ex02-2.html">
+                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
+                <div class="text-success small fw-bold font-monospace mb-1">2026/10/08</div>
+                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
+                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">切版練習02</h5>
+                    <div class="text-muted small font-monospace text-break mb-0">
+                        20261008-ch6-ex02-2.html
+                    </div>
+                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
+                </div>
+            </div>
+
+            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20261008-ch6-ex02-1.html">
+                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
+                <div class="text-success small fw-bold font-monospace mb-1">2026/10/08</div>
+                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
+                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">切版練習02</h5>
+                    <div class="text-muted small font-monospace text-break mb-0">
+                        20261008-ch6-ex02-1.html
+                    </div>
+                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
+                </div>
+            </div>
+
+            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20261006-ch6.html">
+                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
+                <div class="text-success small fw-bold font-monospace mb-1">2026/10/06</div>
+                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
+                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">ch6. Bootstrap 切版</h5>
+                    <div class="text-muted small font-monospace text-break mb-0">
+                        20261006-ch6.html
+                    </div>
+                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
+                </div>
+            </div>
+
+            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20261006-ch6-ex01.html">
+                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
+                <div class="text-success small fw-bold font-monospace mb-1">2026/10/06</div>
+                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
+                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">切版練習01</h5>
+                    <div class="text-muted small font-monospace text-break mb-0">
+                        20261006-ch6-ex01.html
+                    </div>
+                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
+                </div>
+            </div>
+
+            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20261001-ch5-bs-table-2.html">
+                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
+                <div class="text-success small fw-bold font-monospace mb-1">2026/10/01</div>
+                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
+                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">opendata - 地方美食餐廳列表</h5>
+                    <div class="text-muted small font-monospace text-break mb-0">
+                        20261001-ch5-bs-table-2.html
+                    </div>
+                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
+                </div>
+            </div>
+
+            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20261001-ch5-bs-table-1.html">
+                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
+                <div class="text-success small fw-bold font-monospace mb-1">2026/10/01</div>
+                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
+                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">Bootstrap - Table(表格)</h5>
+                    <div class="text-muted small font-monospace text-break mb-0">
+                        20261001-ch5-bs-table-1.html
+                    </div>
+                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
+                </div>
+            </div>
+
+            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20261001-ch1-bs.html">
+                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
+                <div class="text-success small fw-bold font-monospace mb-1">2026/10/01</div>
+                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
+                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">Bootstarp</h5>
+                    <div class="text-muted small font-monospace text-break mb-0">
+                        20261001-ch1-bs.html
+                    </div>
+                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
+                </div>
+            </div>
+
+            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20260929-javascript-travelfood.html">
+                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
+                <div class="text-success small fw-bold font-monospace mb-1">2026/09/29</div>
+                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
+                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">OpenData - 地方美食資料練習</h5>
+                    <div class="text-muted small font-monospace text-break mb-0">
+                        20260929-javascript-travelfood.html
+                    </div>
+                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
+                </div>
+            </div>
+
+            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20260929-javascript-travelfood-ai01.html">
+                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
+                <div class="text-success small fw-bold font-monospace mb-1">2026/09/29</div>
+                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
+                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">OpenData - 地方美食資料練習</h5>
+                    <div class="text-muted small font-monospace text-break mb-0">
+                        20260929-javascript-travelfood-ai01.html
+                    </div>
+                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
+                </div>
+            </div>
+
+            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20260924-javascript.html">
+                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
+                <div class="text-success small fw-bold font-monospace mb-1">2026/09/24</div>
+                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
+                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">JavaScript 語法簡介</h5>
+                    <div class="text-muted small font-monospace text-break mb-0">
+                        20260924-javascript.html
+                    </div>
+                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
+                </div>
+            </div>
+
+            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20260923-ex01.html">
+                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
+                <div class="text-success small fw-bold font-monospace mb-1">2026/09/23</div>
+                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
+                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">練習01. 使用CSS語法配置版面</h5>
+                    <div class="text-muted small font-monospace text-break mb-0">
+                        20260923-ex01.html
+                    </div>
+                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
+                </div>
+            </div>
+
+            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20260923-ex01-ai02.html">
+                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
+                <div class="text-success small fw-bold font-monospace mb-1">2026/09/23</div>
+                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
+                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">練習01. 使用CSS語法配置版面</h5>
+                    <div class="text-muted small font-monospace text-break mb-0">
+                        20260923-ex01-ai02.html
+                    </div>
+                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
+                </div>
+            </div>
+
+            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20260923-ex01-ai01-5.html">
+                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
+                <div class="text-success small fw-bold font-monospace mb-1">2026/09/23</div>
+                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
+                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">練習01. 使用CSS語法配置版面</h5>
+                    <div class="text-muted small font-monospace text-break mb-0">
+                        20260923-ex01-ai01-5.html
+                    </div>
+                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
+                </div>
+            </div>
+
+            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20260923-ex01-ai01-4.html">
+                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
+                <div class="text-success small fw-bold font-monospace mb-1">2026/09/23</div>
+                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
+                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">練習01. 使用CSS語法配置版面</h5>
+                    <div class="text-muted small font-monospace text-break mb-0">
+                        20260923-ex01-ai01-4.html
+                    </div>
+                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
+                </div>
+            </div>
+
+            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20260923-ex01-ai01-3.html">
+                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
+                <div class="text-success small fw-bold font-monospace mb-1">2026/09/23</div>
+                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
+                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">練習01. 使用CSS語法配置版面</h5>
+                    <div class="text-muted small font-monospace text-break mb-0">
+                        20260923-ex01-ai01-3.html
+                    </div>
+                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
+                </div>
+            </div>
+
+            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20260923-ex01-ai01-2.html">
+                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
+                <div class="text-success small fw-bold font-monospace mb-1">2026/09/23</div>
+                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
+                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">練習01. 使用CSS語法配置版面</h5>
+                    <div class="text-muted small font-monospace text-break mb-0">
+                        20260923-ex01-ai01-2.html
+                    </div>
+                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
+                </div>
+            </div>
+
+            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20260923-ex01-ai01-1.html">
+                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
+                <div class="text-success small fw-bold font-monospace mb-1">2026/09/23</div>
+                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
+                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">練習01. 使用CSS語法配置版面</h5>
+                    <div class="text-muted small font-monospace text-break mb-0">
+                        20260923-ex01-ai01-1.html
+                    </div>
+                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
+                </div>
+            </div>
+
+            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20260922-1.html">
+                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
+                <div class="text-success small fw-bold font-monospace mb-1">2026/09/22</div>
+                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
+                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">HTML與CSS基礎語法</h5>
+                    <div class="text-muted small font-monospace text-break mb-0">
+                        20260922-1.html
+                    </div>
+                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
+                </div>
+            </div>
+                </div>
+            </div>
+
+            <!-- 右側：固定尺寸的預覽框 (佔 9 格寬度，即與左側目錄形成 3:7 比例) -->
+            <div class="col-md-9 preview-wrapper">
+                <div class="preview-container">
+                    <iframe id="preview-box" class="preview-iframe" src="about:blank"></iframe>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- jQuery & Bootstrap JS -->
+    <script src="js/jquery-4.0.0.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // 點擊目錄卡片或預覽按鈕時觸發
+            $(document).on('click', '.portfolio-item', function(e) {
+                const $item = $(this);
+                const url = $item.data('url');
+
+                // 1. 更換選取項目的底色 (移除其他、加入當前)
+                $('.portfolio-item').removeClass('active-preview');
+                $item.addClass('active-preview');
+
+                // 2. 將網頁網址填入 iframe 內實現即時預覽
+                $('#preview-box').attr('src', url);
+            });
+
+            // 預設自動點擊選取第一個作品進行預覽
+            $('.portfolio-item').first().trigger('click');
+        });
+    </script>
+</body>
+
+</html>

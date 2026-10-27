@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenData - 地方美食資料練習</title>
+    <link rel="stylesheet" href="css/myall.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .wrapper {
+            width: 1024px;
+            margin-top: 50px;
+            margin-bottom: 0;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 2px 2px 2px 2px #ccc;
+            padding: 15px;
+            overflow: hidden;
+            background-color: gray;
+        }
+
+        .demo {
+            width: 31.3%;
+            box-shadow: 2px 2px 1px 1px #727171;
+            float: left;
+            margin: 15px 1%;
+        }
+
+        .demo .logo {
+            width: 100%;
+            height: 220px;
+            background-image: url(images/miss.jpg);
+            background-position: center center;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-color: black;
+        }
+
+        @media screen and (max-width: 1024px) {
+            .wrapper {
+                width: 94%;
+                padding: 15px;
+            }
+
+            .demo {
+                width: 98%;
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+    <!-- <div id="demo1" style="color: purple;"></div> -->
+
+    <div class="title-style-a">地方美食餐廳列表</div>
+    <div class="wrapper" id="foodlist">
+        <div class="demo">
+            <div class="logo"></div>
+            <p class="_name">店家:xxx</p>
+            <p class="_tel">電話:xxx</p>
+        </div>
+    </div>
+
+    <script src="js/jquery-4.0.0.js"></script>
+    <script src="js/TravelFood.js"></script>
+
+    <script>
+        food.forEach((item, index) => {
+            console.log(index);
+            console.log(item.Name);
+            console.log(item.Tel);
+            console.log(item.PicURL);
+
+            // $("#foodlist").append('<div class="demo"><div class="logo" style="background-image: url(' + item.PicURL + ');"></div><p class="_name">店家:' + item.Name + '</p><p class="_tel">電話:' + item.Tel + '</p></div>');
+
+            $("#foodlist").append(`
+                <div class="demo">
+                    <div class="logo" style="background-image: url(${item.PicURL});"></div>
+                    <p class="_name">店家:${item.Name}</p>
+                    <p class="_tel">電話:${item.Tel}</p>
+                </div>
+            `);
+
+        });
+
+        // console.log(food);
+
+        // food.forEach(function (item, index) {
+        //     console.log(item.Name);
+
+        //     $("#demo1").append('<p>' + item.Name + '</p>');
+        // })
+
+        // food.forEach((item, index) => {
+        //     console.log(index);
+        //     console.log(item.Name);
+        // });
+    </script>
+
+</body>
+
+</html>

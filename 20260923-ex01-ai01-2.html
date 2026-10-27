@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>練習01. 使用CSS語法配置版面</title>
+
+    <style>
+        :root {
+            /* 100% 復刻星巴克官網配色變數 */
+            --color-sb-web-bg: #ffffff;
+            /* 極簡亮白：官網主背景 */
+            --color-sb-web-light: #f7f7f7;
+            /* 典藏微光輕灰：內容區區塊背景 */
+            --color-sb-web-text: #212121;
+            /* 炭石墨黑：主要文字與大標題 */
+
+            --color-sb-web-green: #006241;
+            /* 美人魚品牌綠：導覽Hover與行動按鈕 */
+            --color-sb-web-nav-btn: #333333;
+            /* 石墨深灰：導覽列按鈕預設色 */
+            --color-sb-web-footer: #1e1e1e;
+            /* 深夜炭黑：頁尾與展開選單背景 */
+            --color-sb-web-shadow: rgba(0, 0, 0, 0.15);
+            /* 霧感黑影：輕量化按鈕陰影 */
+
+            --color-sb-web-white: #ffffff;
+            /* 純白：按鈕文字 */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--color-sb-web-bg);
+        }
+
+        .wrapper {
+            width: 1024px;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .logo {
+            width: 1024px;
+            height: 160px;
+            background-color: var(--color-sb-web-bg);
+            background-image: url(images/visax-UTapWkVlEFQ-unsplash.jpg);
+            background-position: center center;
+            background-size: cover;
+        }
+
+        .nav {
+            background-color: var(--color-sb-web-bg);
+            text-align: center;
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+
+        .nav ul {
+            display: inline-block;
+        }
+
+        .nav ul li {
+            float: left;
+            list-style-type: none;
+        }
+
+        .nav ul li a {
+            text-decoration: none;
+            background-color: var(--color-sb-web-nav-btn);
+            color: var(--color-sb-web-white);
+            padding-top: 15px;
+            padding-bottom: 15px;
+            padding-left: 20px;
+            padding-right: 20px;
+            margin-left: 5px;
+            margin-right: 5px;
+            border-radius: 10px;
+            box-shadow: 2px 2px 2px 2px var(--color-sb-web-shadow);
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .nav ul li a:hover {
+            background-color: var(--color-sb-web-green);
+            color: var(--color-sb-web-white);
+        }
+
+        .content {
+            padding: 30px 80px;
+            background-color: var(--color-sb-web-light);
+        }
+
+        .content h1 {
+            text-align: center;
+            color: var(--color-sb-web-text);
+            font-size: 48px;
+        }
+
+        .content p {
+            font-size: 24px;
+            margin-top: 20px;
+            color: var(--color-sb-web-text);
+        }
+
+        .content a {
+            display: block;
+            background-color: var(--color-sb-web-green);
+            width: 130px;
+            height: 40px;
+            margin-top: 20px;
+            margin-bottom: 0px;
+            margin-left: auto;
+            margin-right: auto;
+            color: var(--color-sb-web-white);
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            line-height: 40px;
+            border-radius: 10px;
+            box-shadow: 2px 2px 2px 2px var(--color-sb-web-shadow);
+            text-decoration: none;
+        }
+
+        .footer {
+            background-color: var(--color-sb-web-footer);
+            color: var(--color-sb-web-white);
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="banner">
+            <div class="logo"></div>
+            <div class="nav">
+                <ul>
+                    <li><a href="#">首頁</a></li>
+                    <li><a href="#">最新消息</a></li>
+                    <li><a href="#">合作店家</a></li>
+                    <li><a href="#">關於我們</a></li>
+                    <li><a href="#">聯絡我們</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="content">
+            <h1>歡迎光臨</h1>
+            <P>沒人出發同時命運，特徵醫療考試巨大郵件導致挑戰多年明顯家長排行分類，豐原收入恐怖你也信號滑鼠本網引起看不到幾年為止雙方，普通立場首頁一步轉移使用以後，選項開發商好了留下提出不足時尚我也，咱們人群，試。</P>
+            <P>豐原組織，不管具備人士我把，做法防治聲音污染他是提出，她們進口收入是我下午恐怕蔬菜差距開展家人如果您勞動，生態這位，比賽雖然廣大一套不知農村內容對比接收不滿輔助擔任辛苦證實，種子經營許可證抱著，你就。</P>
+            <p>類似簡歷各國文件那就信箱並在所在經濟發展，風格低價好評視頻行為行情組成隱藏毫不一句話歐美，實行我真。</p>
+            <a href="#">了解更多</a>
+        </div>
+        <div class="footer">Copyright © 2026</div>
+    </div>
+</body>
+
+</html>

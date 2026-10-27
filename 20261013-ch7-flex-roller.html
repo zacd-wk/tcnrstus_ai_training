@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>卷軸roller</title>
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+
+    <style>
+        .box {
+            height: 180px;
+        }
+
+        .roller {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .roller .rollerbox-l {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(223, 126, 126, 0.3);
+            transform: translateX(-100%);
+            transition: transform 2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .roller:hover .rollerbox-l,
+        .roller:hover .rollerbox-r,
+        .roller:hover .rollerbox-t,
+        .roller:hover .rollerbox-b {
+            transform: translateX(0);
+        }
+
+        .roller .rollerbox-r {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(223, 126, 126, 0.3);
+            transform: translateX(100%);
+            transition: transform 2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .roller .rollerbox-t {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(223, 126, 126, 0.3);
+            transform: translateY(-100%);
+            transition: transform 2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .roller .rollerbox-b {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(223, 126, 126, 0.3);
+            transform: translateY(100%);
+            transition: transform 2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-6 mt-3">
+                <div class="box bg-info roller">
+                    <div class="rollerbox-l">達到一時，跟我每一。</div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6 mt-3">
+                <div class="box bg-info roller">
+                    <div class="rollerbox-r">達到一時，跟我每一。</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-6 mt-3">
+                <div class="box bg-info roller">
+                    <div class="rollerbox-t">達到一時，跟我每一。</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-6 mt-3">
+                <div class="box bg-info roller">
+                    <div class="rollerbox-b">達到一時，跟我每一。</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript 語法簡介</title>
+    <link rel="stylesheet" href="css/myall.css">
+</head>
+
+<body>
+    <p id="demo1" style="color: red;">JAVASCRIPT 練習1</p>
+    <p id="demo2" style="color: orange;">JAVASCRIPT 練習2</p>
+
+    <div id="demo3" style="color: brown;">JAVASCRIPT 練習3</div>
+    <div id="demo4" style="color: green;">JAVASCRIPT 練習4</div>
+
+    <div id="demo5" style="color: blue;">顯示所有車子的品牌，並加上序號(forEach) e.g. 0:a 1:b</div>
+    <div id="demo6" style="color: purple;">顯示所有人的基本資料，並加上序號(forEach) e.g. 編號1, 姓名a, 年齡10歲</div>
+
+    <script src="js/jquery-4.0.0.js"></script>
+    <script>
+        // js
+        document.getElementById("demo1").innerHTML = "Hello World 1";
+
+        // jq
+        $("#demo2").html("Hello World 2");
+
+        for (i = 3; i <= 4; i++) {
+            $("#demo3").append('<p>Hello World ' + i + "</p>");
+        }
+
+        for (i = 1; i <= 2; i++) {
+            $("#demo4").append('<img src="images/visax-UTapWkVlEFQ-unsplash.jpg" width="200px" alt="">');
+        }
+
+        for (i = 1; i <= 3; i++) {
+            console.log("Hello World " + i);
+        }
+
+        console.log("--- 分隔線 ---");
+
+        // 九九乘法表
+        for (i = 1; i <= 9; i++) {
+            for (j = 1; j <= 9; j++)
+                console.log(i + " x " + j + " = " + i * j);
+        }
+
+        console.log("--- 分隔線 ---");
+
+        const car = ["a", "b", "c"];
+        console.log(car);
+        console.log(car[0]);
+        console.log(car[1]);
+        console.log(car[2]);
+
+        console.log("--- 分隔線 ---");
+
+        for (i = 0; i < 3; i++) {
+            console.log(car[i]);
+        }
+
+        console.log("--- 分隔線 ---");
+
+        for (i = 0; i < car.length; i++) {
+            console.log(car[i]);
+        }
+
+        console.log("--- 分隔線 ---");
+
+        car.forEach(function (item) {
+            console.log(item);
+        })
+
+        console.log("--- 分隔線 ---");
+
+        car.forEach(function (item, index) {
+            console.log(index)
+            console.log(item);
+
+            $("#demo5").append('<p>' + index + ':' + item + '</p>');
+        })
+
+        console.log("--- 分隔線 ---");
+
+        const persons = [
+            {
+                name: 'a',
+                age: 10,
+            },
+            {
+                name: 'b',
+                age: 20,
+            },
+        ];
+        console.log(persons);
+
+        console.log("--- 分隔線 ---");
+
+        persons.forEach(function (item) {
+            console.log(item);
+        })
+
+        console.log("--- 分隔線 ---");
+
+        persons.forEach(function (item) {
+            console.log(item.name);
+        })
+
+        console.log("--- 分隔線 ---");
+
+        persons.forEach(function (item, index) {
+            $("#demo6").append('<p>編號' + (index + 1) + ', 姓名' + item.name + ', 年齡' + item.age + '</p>');
+        })
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bootstrap - Table(表格)</title>
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/myall.css">
+
+    <style>
+        @media screen and (max-width: 768px) {
+            .table-rwd thead {
+                display: none;
+            }
+
+            .table-rwd tbody tr {
+                display: block;
+                margin-top: 15px;
+                border: 1px solid orange;
+                border-radius: 5px;
+            }
+
+            .table-rwd tbody tr td {
+                display: block;
+                overflow: hidden;
+            }
+
+            .table-rwd tbody tr td::before {
+                content: attr(data-th) " : ";
+                font-weight: 900;
+                color: blueviolet;
+                font-size: 20px;
+                display: block;
+                float: left;
+                width: 30%;
+                text-align: right;
+                padding-right: 10px;
+            }
+
+            .table-rwd tbody tr td span {
+                display: block;
+                float: left;
+                width: 70%;
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="contain">
+        <div class="display-2 text-center mt-4">飲料產品列表</div>
+        <table class="table mt-4 table-bordered table-hover table-sm table-rwd">
+            <thead class="table-dark">
+                <tr>
+                    <th>產品編號</th>
+                    <th>產品名稱</th>
+                    <th>產品價格</th>
+                    <th>產品數量</th>
+                    <th>產品備註</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td data-th="產品編號"><span>01</span></td>
+                    <td data-th="產品名稱"><span>美式咖啡</span></td>
+                    <td data-th="產品價格"><span>60</span></td>
+                    <td data-th="產品數量"><span>10</span></td>
+                    <td data-th="產品備註">
+                        <span>平均成了年度人群人體股份，不禁互動病毒此刻優化他就關係天地新聞崗位評分意見，言論我看小孩備案我也，能量分類是因為要求當時或是，戰士旅遊，走到書記熱情直接簡介早就一台先生正在公佈鍵盤東京推薦速度類似種。</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>02</td>
+                    <td>拿鐵咖波</td>
+                    <td>60</td>
+                    <td>10</td>
+                    <td>無糖去冰</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/jquery-4.0.0.min.js"></script>
+</body>
+
+</html>

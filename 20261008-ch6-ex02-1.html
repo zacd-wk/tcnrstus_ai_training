@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>切版練習02</title>
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/myall.css">
+
+    <style>
+        .box01 {
+            height: 160px;
+            width: 100%;
+        }
+
+        .box02 {
+            height: 160px;
+            width: 100%;
+        }
+
+        @media (min-width: 992px) {
+            .box02 {
+                border-radius: 50%;
+
+                height: auto;
+                width: 90%;
+                aspect-ratio: 1 / 1;
+
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="box01 bg-primary"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6 col-md-3 mt-3">
+            <div class="box02 bg-success"></div>
+        </div>
+        <div class="col-sm-6 col-md-3 mt-3">
+            <div class="box02 bg-success"></div>
+        </div>
+        <div class="col-sm-6 col-md-3 mt-3">
+            <div class="box02 bg-success"></div>
+        </div>
+        <div class="col-sm-6 col-md-3 mt-3">
+            <div class="box02 bg-success"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 col-lg-4 mt-3">
+            <div class="box01 bg-dark"></div>
+        </div>
+        <div class="col-md-6 col-lg-4 mt-3">
+            <div class="box01 bg-dark"></div>
+        </div>
+        <div class="col-md-6 col-lg-4 mt-3">
+            <div class="box01 bg-dark"></div>
+        </div>
+        <div class="col-md-6 col-lg-4 mt-3">
+            <div class="box01 bg-dark"></div>
+        </div>
+        <div class="col-md-6 col-lg-4 mt-3">
+            <div class="box01 bg-dark"></div>
+        </div>
+        <div class="col-md-6 col-lg-4 mt-3">
+            <div class="box01 bg-dark"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 d-none d-md-block mt-3">
+            <div class="box01 bg-secondary"></div>
+        </div>
+    </div>
+
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/jquery-4.0.0.min.js"></script>
+</body>
+
+</html>
