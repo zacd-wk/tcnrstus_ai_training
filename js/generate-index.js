@@ -1,17 +1,28 @@
 const fs = require('fs');
 const path = require('path');
 
-// 網頁根目錄路徑
+// 網頁根目錄路徑(腳本放在根目錄的子資料夾內)
 const rootDir = path.join(__dirname, '..');
 
-// 定義要完全排除的資料夾名稱
-const excludeDirs = ['.vscode', 'css', 'images', 'js', 'other'];
-// 定義要排除的特定根目錄 HTML 檔案
-const excludeFiles = ['index.html', 'template.html', 'index00.html'];
+// 輸出檔名(不再覆蓋履歷 index.html)
+const OUTPUT_FILE = 'tcnrstus_ai_training_portfolio.html';
 
-/**
- * 遞迴搜尋指定目錄下的所有 HTML 檔案
- */
+// 完全排除的資料夾
+const excludeDirs = ['.vscode', 'css', 'images', 'js', 'other'];
+// 排除的根目錄 HTML(原本的排除清單 + 本腳本的輸出檔,避免自己掃描自己)
+const excludeFiles = ['index.html', 'template.html', 'index00.html', OUTPUT_FILE];
+
+// HTML 跳脫,避免標題或檔名內的特殊字元破壞版面
+function escapeHtml(str) {
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+// 遞迴搜尋所有 HTML 檔案
 function getAllHtmlFiles(dirPath, relativePath = '') {
     let results = [];
     const list = fs.readdirSync(dirPath);
@@ -27,7 +38,6 @@ function getAllHtmlFiles(dirPath, relativePath = '') {
         } else if (stat.isFile()) {
             if (item.toLowerCase().endsWith('.html')) {
                 if (relativePath === '' && excludeFiles.includes(item)) return;
-
                 results.push({
                     absolutePath: itemPath,
                     webPath: itemRelativePath.replace(/\\/g, '/')
@@ -42,7 +52,7 @@ function getAllHtmlFiles(dirPath, relativePath = '') {
 try {
     const allHtmlFiles = getAllHtmlFiles(rootDir);
 
-    // 排序：有日期的放上面（由新到舊），沒日期的放最下面
+    // 排序:有日期的在上(由新到舊),沒日期的在最下
     allHtmlFiles.sort((a, b) => {
         const fileA = path.basename(a.webPath);
         const fileB = path.basename(b.webPath);
@@ -57,162 +67,271 @@ try {
 
     let listItems = '';
 
-    allHtmlFiles.forEach((fileInfo, index) => {
+    allHtmlFiles.forEach(fileInfo => {
         const content = fs.readFileSync(fileInfo.absolutePath, 'utf8');
 
-        const titleMatch = content.match(/<title>(.*?)<\/title>/i);
-        const displayTitle = (titleMatch && titleMatch[1]) ? titleMatch[1].trim() : path.basename(fileInfo.webPath);
+        // 支援跨行 <title>,並壓縮多餘空白
+        const titleMatch = content.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+        const rawTitle = (titleMatch && titleMatch[1].replace(/\s+/g, ' ').trim())
+            || path.basename(fileInfo.webPath);
 
         const fileNameOnly = path.basename(fileInfo.webPath);
         const dateMatch = fileNameOnly.match(/^(\d{4})(\d{2})(\d{2})/);
         const displayDate = dateMatch ? `${dateMatch[1]}/${dateMatch[2]}/${dateMatch[3]}` : '其他項目';
 
         const dirName = path.dirname(fileInfo.webPath);
-        const folderBadge = dirName !== '.' ? `<span class="badge bg-secondary me-1">${dirName}</span>` : '';
+        const folderBadge = dirName !== '.'
+            ? `<span class="tl-folder">${escapeHtml(dirName)}</span>` : '';
 
-        // 生成時間軸節點 HTML，將預覽按鈕改為絕對定位，使其永久維持在字卡的最右下角
+        const urlAttr = escapeHtml(encodeURI(fileInfo.webPath));
+        const fileAttr = escapeHtml(fileInfo.webPath);
+        const searchAttr = escapeHtml((rawTitle + ' ' + fileInfo.webPath).toLowerCase());
+
         listItems += `
-            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="${fileInfo.webPath}">
-                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
-                <div class="text-success small fw-bold font-monospace mb-1">${displayDate}</div>
-                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
-                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">${displayTitle}</h5>
-                    <div class="text-muted small font-monospace text-break mb-0">
-                        ${folderBadge}${fileNameOnly}
-                    </div>
-                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
-                </div>
-            </div>\n`;
+                    <div class="tl-item" role="button" tabindex="0" data-url="${urlAttr}" data-file="${fileAttr}" data-search="${searchAttr}">
+                        <span class="tl-dot"></span>
+                        <div class="tl-date">${displayDate}</div>
+                        <div class="tl-card">
+                            <h2 class="tl-title">${escapeHtml(rawTitle)}</h2>
+                            <div class="tl-file">${folderBadge}${escapeHtml(fileNameOnly)}</div>
+                            <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
+                        </div>
+                    </div>\n`;
     });
 
-    // 4. 定義新版美化模板
-    const template = `<!DOCTYPE html>
-<html lang="zh-tw">
+    const total = allHtmlFiles.length;
 
+    const template = `<!DOCTYPE html>
+<html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>學習歷程首頁</title>
-    <!-- Bootstrap 5 CSS -->
-    <link class="main-css" rel="stylesheet" href="css/bootstrap.min.css">
-    <!-- 原有自訂 CSS -->
-    <link rel="stylesheet" href="css/myall.css">
+    <title>AI輔助全端設計課程練習 | Zac.D</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* 使用整體 Flex 佈局，徹底揮別死板的固定高度計算 */
-        body { background-color: #f4f7f6; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-
-        /* 全新美化的頂部標題列：改用內襯撐開，加入微光漸層背景與精緻陰影 */
-        .top-header {
-            background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-            border-bottom: 1px solid #e9ecef;
-            z-index: 1020;
+        :root{
+            --bg-main:#080B11;
+            --bg-card:#111622;
+            --accent-cyan:#00F2FE;
+            --accent-green:#00FF87;
+            --text-primary:#E2E8F0;
+            --text-secondary:#94A3B8;
+            --border-color:rgba(0,242,254,.15);
+            --glow-cyan:0 0 18px rgba(0,242,254,.35);
+            --font-mono:'JetBrains Mono',Consolas,monospace;
+            --font-main:'Noto Sans TC','Segoe UI',sans-serif;
+            --top-h:60px;
         }
-
-        .main-title {
-            letter-spacing: 2px;
-            background: linear-gradient(45deg, #198754, #0b5ed7);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        html,body{height:100%}
+        body{
+            margin:0;display:flex;flex-direction:column;overflow:hidden;
+            background:var(--bg-main);color:var(--text-primary);font-family:var(--font-main);
+            background-image:
+                radial-gradient(circle at 15% 10%,rgba(0,242,254,.06),transparent 40%),
+                radial-gradient(circle at 85% 90%,rgba(0,255,135,.04),transparent 40%);
         }
+        ::selection{background:var(--accent-cyan);color:var(--bg-main)}
+        ::-webkit-scrollbar{width:8px}
+        ::-webkit-scrollbar-track{background:transparent}
+        ::-webkit-scrollbar-thumb{background:linear-gradient(var(--accent-cyan),var(--accent-green));border-radius:4px}
 
-        /* 綠色閃爍 Live 小圓點動畫 */
-        .pulse-dot {
-            width: 8px;
-            height: 8px;
-            background-color: #198754;
-            border-radius: 50%;
-            display: inline-block;
-            box-shadow: 0 0 0 0 rgba(25, 135, 84, 0.7);
-            animation: pulse 1.6s infinite;
+        .g-grad-text{background:linear-gradient(90deg,var(--accent-cyan),var(--accent-green));-webkit-background-clip:text;background-clip:text;color:transparent}
+
+        /* 頂部列 */
+        .topbar{flex:0 0 var(--top-h);height:var(--top-h);display:flex;align-items:center;gap:.8rem;padding:0 1rem;
+            background:rgba(8,11,17,.85);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+            border-bottom:1px solid var(--border-color);z-index:50}
+        .brand{font-family:var(--font-mono);font-weight:700;color:var(--text-primary);text-decoration:none;white-space:nowrap;font-size:.95rem}
+        .brand .slash{color:var(--accent-cyan)}
+        .brand .core{color:var(--accent-green)}
+        .count{font-family:var(--font-mono);font-size:.72rem;color:var(--accent-cyan);border:1px solid var(--border-color);padding:.15rem .6rem;border-radius:20px;white-space:nowrap}
+        .spacer{flex:1}
+        .btn-x{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--font-mono);font-size:.82rem;color:var(--accent-cyan);
+            background:transparent;border:1px solid var(--accent-cyan);border-radius:6px;padding:.35rem .9rem;text-decoration:none;transition:all .3s;cursor:pointer;white-space:nowrap}
+        .btn-x:hover{background:var(--accent-cyan);color:var(--bg-main);box-shadow:var(--glow-cyan)}
+        .menu-btn{display:none}
+
+        /* 主版面 */
+        .layout{flex:1;min-height:0;display:flex}
+        .sidebar{flex:0 0 380px;width:380px;display:flex;flex-direction:column;min-height:0;
+            background:rgba(17,22,34,.55);border-right:1px solid var(--border-color)}
+        .side-head{padding:1rem 1rem .8rem;border-bottom:1px solid var(--border-color)}
+        .side-title{font-weight:700;font-size:1.05rem;margin:0 0 .15rem}
+        .side-sub{font-family:var(--font-mono);font-size:.72rem;color:var(--text-secondary);margin:0 0 .8rem}
+        .search{position:relative}
+        .search i{position:absolute;left:.75rem;top:50%;transform:translateY(-50%);color:var(--text-secondary);font-size:.85rem}
+        .search input{width:100%;background:rgba(8,11,17,.8);border:1px solid var(--border-color);border-radius:8px;
+            color:var(--text-primary);font-family:var(--font-mono);font-size:.85rem;padding:.5rem .8rem .5rem 2.1rem;outline:none}
+        .search input:focus{border-color:var(--accent-cyan);box-shadow:var(--glow-cyan)}
+        .search input::placeholder{color:#475569}
+        .list{flex:1;min-height:0;overflow-y:auto;padding:1.2rem 1rem 2rem 1.3rem}
+
+        /* 時間軸 */
+        .tl{position:relative;padding-left:1.3rem}
+        .tl::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;
+            background:linear-gradient(180deg,var(--accent-cyan),var(--accent-green),transparent);opacity:.55}
+        .tl-item{position:relative;margin-bottom:1.3rem;cursor:pointer;outline:none}
+        .tl-item.hidden{display:none}
+        .tl-dot{position:absolute;left:calc(-1.3rem - 5px);top:6px;width:12px;height:12px;border-radius:50%;
+            background:var(--bg-main);border:2px solid var(--accent-cyan);box-shadow:0 0 8px rgba(0,242,254,.6);transition:all .3s}
+        .tl-date{font-family:var(--font-mono);font-size:.74rem;font-weight:700;color:var(--accent-green);margin-bottom:.35rem}
+        .tl-card{position:relative;padding:.9rem 1rem 2.4rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:12px;transition:all .3s}
+        .tl-item:hover .tl-card,.tl-item:focus-visible .tl-card{border-color:rgba(0,242,254,.5);transform:translateX(4px)}
+        .tl-item.active .tl-card{border-color:var(--accent-cyan);background:rgba(0,242,254,.08);box-shadow:var(--glow-cyan)}
+        .tl-item.active .tl-dot{background:var(--accent-cyan);box-shadow:0 0 14px var(--accent-cyan)}
+        .tl-title{font-size:.95rem;font-weight:700;line-height:1.5;margin:0 0 .45rem}
+        .tl-file{font-family:var(--font-mono);font-size:.7rem;color:var(--text-secondary);word-break:break-all}
+        .tl-folder{display:inline-block;color:var(--accent-cyan);border:1px solid var(--border-color);border-radius:4px;padding:0 .4rem;margin-right:.4rem}
+        .tl-go{position:absolute;right:.8rem;bottom:.7rem;font-family:var(--font-mono);font-size:.7rem;color:var(--accent-cyan);
+            border:1px solid var(--border-color);border-radius:6px;padding:.1rem .6rem;transition:all .3s}
+        .tl-item:hover .tl-go,.tl-item.active .tl-go{background:var(--accent-cyan);color:var(--bg-main);border-color:var(--accent-cyan)}
+        .no-result{display:none;text-align:center;color:var(--text-secondary);font-family:var(--font-mono);font-size:.85rem;padding:2rem 0}
+        .no-result.show{display:block}
+
+        /* 預覽區 */
+        .preview{flex:1;min-width:0;min-height:0;display:flex;flex-direction:column;padding:1rem}
+        .term{flex:1;min-height:0;display:flex;flex-direction:column;background:#05080d;border:1px solid var(--border-color);
+            border-radius:12px;overflow:hidden;box-shadow:0 0 40px rgba(0,242,254,.1)}
+        .term-bar{flex:0 0 auto;display:flex;align-items:center;gap:.5rem;padding:.55rem 1rem;background:var(--bg-card);border-bottom:1px solid var(--border-color)}
+        .dot{width:12px;height:12px;border-radius:50%;flex:0 0 auto}
+        .dot.d1{background:#ff5f56}.dot.d2{background:#ffbd2e}.dot.d3{background:#27c93f}
+        .term-title{flex:1;min-width:0;margin-left:.5rem;font-family:var(--font-mono);font-size:.76rem;color:var(--text-secondary);
+            white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .open-new{flex:0 0 auto;font-family:var(--font-mono);font-size:.74rem;color:var(--accent-cyan);text-decoration:none;
+            border:1px solid var(--border-color);border-radius:6px;padding:.15rem .6rem;transition:all .3s}
+        .open-new:hover{background:var(--accent-cyan);color:var(--bg-main)}
+        .open-new.disabled{opacity:.4;pointer-events:none}
+        .term-body{position:relative;flex:1;min-height:0;background:#fff}
+        .term-body iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+
+        .scrim{display:none}
+
+        /* 手機 / 平板:目錄改為可滑出的面板 */
+        @media (max-width:991.98px){
+            .menu-btn{display:inline-flex}
+            .brand .brand-sub{display:none}
+            .sidebar{position:fixed;top:var(--top-h);bottom:0;left:0;width:min(88vw,380px);flex:none;z-index:60;
+                background:var(--bg-card);transform:translateX(-100%);transition:transform .3s ease}
+            body.menu-open .sidebar{transform:none}
+            body.menu-open .scrim{display:block;position:fixed;top:var(--top-h);left:0;right:0;bottom:0;background:rgba(0,0,0,.6);z-index:55}
+            .preview{padding:.5rem}
         }
-
-        @keyframes pulse {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(25, 135, 84, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(25, 135, 84, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(25, 135, 84, 0); }
+        @media (max-width:575.98px){
+            .count{display:none}
+            .btn-x{padding:.35rem .6rem;font-size:.76rem}
         }
-
-        /* 主要內容主區塊：全自動彈性收縮，完美填滿剩餘高度 */
-        .main-content { flex: 1; min-height: 0; }
-
-        /* 左側目錄獨立捲動 */
-        .scrollable-menu { height: 100%; overflow-y: auto; padding-right: 15px; }
-
-        /* 時間軸線條樣式 */
-        .timeline-container { border-left: 2px solid #dee2e6; margin-left: 6px; }
-        .timeline-marker { transform: translateX(-7px); box-shadow: 0 0 0 4px rgba(25, 135, 84, 0.2); }
-
-        /* 點擊選取時的底色與動態過渡 */
-        .item-card { transition: background-color 0.25s ease, border-color 0.25s ease; }
-        .portfolio-item.active-preview .item-card { background-color: #d1e7dd !important; border-color: #a3cfbb !important; }
-
-        /* 右側固定預覽區域 */
-        .preview-wrapper { height: 100%; padding-bottom: 20px; }
-        .preview-container { height: 100%; border: 1px solid #dee2e6; border-radius: 12px; overflow: hidden; background-color: #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
-        .preview-iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
 
 <body>
-    <!-- 1. 全新美化置頂標題列 -->
-    <div class="top-header text-center py-4">
-        <h1 class="main-title fw-extrabold display-6 mb-2">學習歷程時間軸</h1>
-        <div class="d-flex align-items-center justify-content-center gap-2">
-            <span class="pulse-dot"></span>
-            <p class="text-muted small mb-0 font-monospace">CODE PORTFOLIO</p>
-        </div>
-    </div>
+    <header class="topbar">
+        <button class="btn-x menu-btn" id="menuBtn" type="button"><i class="bi bi-list-ul"></i> 目錄</button>
+        <a class="brand" href="index.html">
+            <span class="slash">&lt;/&gt;</span> Zac.D <span class="slash">//</span> <span class="core">AI</span><span class="brand-sub"> Training Portfolio</span>
+        </a>
+        <span class="count"><span id="shownCount">${total}</span> / ${total} WORKS</span>
+        <span class="spacer"></span>
+        <a class="btn-x" href="index.html"><i class="bi bi-arrow-left"></i> 回到履歷</a>
+    </header>
 
-    <!-- 2. 下方彈性主區塊 -->
-    <div class="container-fluid main-content px-4 mt-3">
-        <div class="row h-100 pb-2">
-
-            <!-- 左側：獨立捲動的目錄項目列 (佔 3 格寬度) -->
-            <div class="col-md-3 scrollable-menu">
-                <div class="timeline-container ps-2 position-relative">
-` + listItems + `                </div>
-            </div>
-
-            <!-- 右側：固定尺寸的預覽框 (佔 9 格寬度，即與左側目錄形成 3:7 比例) -->
-            <div class="col-md-9 preview-wrapper">
-                <div class="preview-container">
-                    <iframe id="preview-box" class="preview-iframe" src="about:blank"></iframe>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="side-head">
+                <h1 class="side-title g-grad-text">AI輔助全端設計課程練習</h1>
+                <p class="side-sub">// learning timeline · auto generated</p>
+                <div class="search">
+                    <i class="bi bi-search"></i>
+                    <input id="searchInput" type="search" placeholder="搜尋標題或檔名..." autocomplete="off">
                 </div>
             </div>
+            <div class="list">
+                <div class="tl">
+${listItems}                </div>
+                <div class="no-result" id="noResult">[ERR] 找不到符合的作品</div>
+            </div>
+        </aside>
 
-        </div>
+        <main class="preview">
+            <div class="term">
+                <div class="term-bar">
+                    <span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span>
+                    <span class="term-title" id="termTitle">zac@ai-core: ~/ (select a file)</span>
+                    <a class="open-new disabled" id="openNew" href="#" target="_blank" rel="noopener noreferrer"><i class="bi bi-box-arrow-up-right"></i> 新分頁開啟</a>
+                </div>
+                <div class="term-body">
+                    <iframe id="previewFrame" src="about:blank" title="作品預覽"></iframe>
+                </div>
+            </div>
+        </main>
     </div>
+    <div class="scrim" id="scrim"></div>
 
-    <!-- jQuery & Bootstrap JS -->
-    <script src="js/jquery-4.0.0.js"></script>
-    <script src="js/bootstrap.bundle.min.js"></script>
     <script>
-        \$(document).ready(function() {
-            // 點擊目錄卡片或預覽按鈕時觸發
-            \$(document).on('click', '.portfolio-item', function(e) {
-                const \$item = \$(this);
-                const url = \$item.data('url');
+    (function () {
+        var items = document.querySelectorAll('.tl-item');
+        var frame = document.getElementById('previewFrame');
+        var titleEl = document.getElementById('termTitle');
+        var openBtn = document.getElementById('openNew');
+        var search = document.getElementById('searchInput');
+        var countEl = document.getElementById('shownCount');
+        var empty = document.getElementById('noResult');
 
-                // 1. 更換選取項目的底色 (移除其他、加入當前)
-                $('.portfolio-item').removeClass('active-preview');
-                \$item.addClass('active-preview');
+        function select(item) {
+            items.forEach(function (el) { el.classList.remove('active'); });
+            item.classList.add('active');
+            var url = item.getAttribute('data-url');
+            var file = item.getAttribute('data-file');
+            frame.src = url;
+            titleEl.textContent = 'zac@ai-core: ~/' + file;
+            openBtn.href = url;
+            openBtn.classList.remove('disabled');
+            try { history.replaceState(null, '', '#' + encodeURIComponent(file)); } catch (e) {}
+            document.body.classList.remove('menu-open');
+        }
 
-                // 2. 將網頁網址填入 iframe 內實現即時預覽
-                $('#preview-box').attr('src', url);
+        items.forEach(function (item) {
+            item.addEventListener('click', function () { select(item); });
+            item.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(item); }
             });
-
-            // 預設自動點擊選取第一個作品進行預覽
-            $('.portfolio-item').first().trigger('click');
         });
+
+        search.addEventListener('input', function () {
+            var q = search.value.trim().toLowerCase();
+            var shown = 0;
+            items.forEach(function (el) {
+                var hit = !q || el.getAttribute('data-search').indexOf(q) > -1;
+                el.classList.toggle('hidden', !hit);
+                if (hit) shown++;
+            });
+            countEl.textContent = shown;
+            empty.classList.toggle('show', shown === 0);
+        });
+
+        document.getElementById('menuBtn').addEventListener('click', function () {
+            document.body.classList.toggle('menu-open');
+        });
+        document.getElementById('scrim').addEventListener('click', function () {
+            document.body.classList.remove('menu-open');
+        });
+
+        // 預設選取:網址 hash 指定的作品,否則第一筆
+        var hashFile = '';
+        try { hashFile = decodeURIComponent(location.hash.slice(1)); } catch (e) {}
+        var target = null;
+        items.forEach(function (el) { if (hashFile && el.getAttribute('data-file') === hashFile) target = el; });
+        if (!target && items.length) target = items[0];
+        if (target) select(target);
+    })();
     </script>
 </body>
-
 </html>`;
 
-    fs.writeFileSync(path.join(rootDir, 'index.html'), template, 'utf8');
-    console.log(`成功！已自動更新 index.html (標題列外觀升級，擠壓問題完美修復)`);
+    fs.writeFileSync(path.join(rootDir, OUTPUT_FILE), template, 'utf8');
+    console.log(`成功!已產生 ${OUTPUT_FILE},共收錄 ${total} 筆作品`);
 
 } catch (error) {
-    console.error('執行過程中發生錯誤：', error);
+    console.error('執行過程中發生錯誤:', error);
 }
