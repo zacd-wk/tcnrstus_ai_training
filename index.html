@@ -1,471 +1,3742 @@
 <!DOCTYPE html>
-<html lang="zh-tw">
+<html lang="zh-Hant">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>學習歷程首頁</title>
-    <!-- Bootstrap 5 CSS -->
-    <link class="main-css" rel="stylesheet" href="css/bootstrap.min.css">
-    <!-- 原有自訂 CSS -->
-    <link rel="stylesheet" href="css/myall.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Zac.D // AI-Core | 後端工程師</title>
+
+    <!-- CDN: Bootstrap 5 / Animate.css / SweetAlert2 / Bootstrap Icons / Fonts -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <!-- CDN: jQuery / Bootstrap JS / WOW.js / SweetAlert2 -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Global Style: CSS Variables -->
     <style>
-        /* 使用整體 Flex 佈局，徹底揮別死板的固定高度計算 */
-        body { background-color: #f4f7f6; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-
-        /* 全新美化的頂部標題列：改用內襯撐開，加入微光漸層背景與精緻陰影 */
-        .top-header {
-            background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-            border-bottom: 1px solid #e9ecef;
-            z-index: 1020;
+        :root {
+            --bg-main: #080B11;
+            --bg-card: #111622;
+            --accent-cyan: #00F2FE;
+            --accent-green: #00FF87;
+            --accent-blue: #4FACFE;
+            --text-primary: #E2E8F0;
+            --text-secondary: #94A3B8;
+            --border-color: rgba(0, 242, 254, .15);
+            --glow-cyan: 0 0 18px rgba(0, 242, 254, .35);
+            --font-mono: 'JetBrains Mono', Consolas, monospace;
+            --font-main: 'Noto Sans TC', 'Segoe UI', sans-serif;
+            --nav-h: 70px;
         }
 
-        .main-title {
-            letter-spacing: 2px;
-            background: linear-gradient(45deg, #198754, #0b5ed7);
+        html {
+            scroll-behavior: smooth
+        }
+
+        body {
+            background: var(--bg-main);
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            overflow-x: hidden;
+            background-image:
+                radial-gradient(circle at 15% 10%, rgba(0, 242, 254, .06), transparent 40%),
+                radial-gradient(circle at 85% 90%, rgba(0, 255, 135, .04), transparent 40%);
+            background-attachment: fixed;
+        }
+
+        body>nav,
+        body>section,
+        body>footer {
+            position: relative
+        }
+
+        [id^="section"] {
+            scroll-margin-top: var(--nav-h)
+        }
+
+        ::selection {
+            background: var(--accent-cyan);
+            color: var(--bg-main)
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-main)
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(var(--accent-cyan), var(--accent-green));
+            border-radius: 4px
+        }
+
+        a {
+            color: var(--accent-cyan)
+        }
+
+        /* 共用標題(各 Section 以自身 ID 前綴覆寫細節) */
+        .g-title {
+            font-weight: 700;
+            letter-spacing: .5px
+        }
+
+        .g-title .tag {
+            font-family: var(--font-mono);
+            color: var(--accent-cyan);
+            font-size: .85rem;
+            display: block;
+            margin-bottom: .4rem
+        }
+
+        .g-grad-text {
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green));
             -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent
         }
 
-        /* 綠色閃爍 Live 小圓點動畫 */
-        .pulse-dot {
-            width: 8px;
-            height: 8px;
-            background-color: #198754;
-            border-radius: 50%;
-            display: inline-block;
-            box-shadow: 0 0 0 0 rgba(25, 135, 84, 0.7);
-            animation: pulse 1.6s infinite;
+        /* SweetAlert2 暗色主題 */
+        .swal2-popup.swal-dark {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--glow-cyan);
+            font-family: var(--font-mono)
         }
 
-        @keyframes pulse {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(25, 135, 84, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(25, 135, 84, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(25, 135, 84, 0); }
+        .swal2-popup.swal-dark .swal2-title {
+            color: var(--accent-cyan);
+            font-size: 1.15rem
         }
 
-        /* 主要內容主區塊：全自動彈性收縮，完美填滿剩餘高度 */
-        .main-content { flex: 1; min-height: 0; }
+        .swal2-popup.swal-dark .swal2-html-container {
+            color: var(--text-primary)
+        }
 
-        /* 左側目錄獨立捲動 */
-        .scrollable-menu { height: 100%; overflow-y: auto; padding-right: 15px; }
-
-        /* 時間軸線條樣式 */
-        .timeline-container { border-left: 2px solid #dee2e6; margin-left: 6px; }
-        .timeline-marker { transform: translateX(-7px); box-shadow: 0 0 0 4px rgba(25, 135, 84, 0.2); }
-
-        /* 點擊選取時的底色與動態過渡 */
-        .item-card { transition: background-color 0.25s ease, border-color 0.25s ease; }
-        .portfolio-item.active-preview .item-card { background-color: #d1e7dd !important; border-color: #a3cfbb !important; }
-
-        /* 右側固定預覽區域 */
-        .preview-wrapper { height: 100%; padding-bottom: 20px; }
-        .preview-container { height: 100%; border: 1px solid #dee2e6; border-radius: 12px; overflow: hidden; background-color: #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
-        .preview-iframe { width: 100%; height: 100%; border: none; }
+        .swal2-popup.swal-dark .swal2-confirm {
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green));
+            color: var(--bg-main);
+            font-weight: 700
+        }
     </style>
 </head>
 
 <body>
-    <!-- 1. 全新美化置頂標題列 -->
-    <div class="top-header text-center py-4">
-        <h1 class="main-title fw-extrabold display-6 mb-2">學習歷程時間軸</h1>
-        <div class="d-flex align-items-center justify-content-center gap-2">
-            <span class="pulse-dot"></span>
-            <p class="text-muted small mb-0 font-monospace">CODE PORTFOLIO</p>
+
+    <!-- ========== Section 1: Navbar & System Start ========== -->
+    <nav id="section1" class="navbar navbar-expand-xl fixed-top">
+        <style>
+            #section1 {
+                height: auto;
+                min-height: var(--nav-h);
+                background: rgba(8, 11, 17, .82);
+                backdrop-filter: blur(14px);
+                -webkit-backdrop-filter: blur(14px);
+                border-bottom: 1px solid var(--border-color);
+                z-index: 1040
+            }
+
+            #section1 .navbar-brand {
+                font-family: var(--font-mono);
+                font-weight: 700;
+                color: var(--text-primary);
+                letter-spacing: .5px
+            }
+
+            #section1 .navbar-brand .slash {
+                color: var(--accent-cyan)
+            }
+
+            #section1 .navbar-brand .core {
+                color: var(--accent-green)
+            }
+
+            #section1 .navbar-toggler {
+                border: 1px solid var(--border-color);
+                color: var(--accent-cyan);
+                padding: .35rem .6rem
+            }
+
+            #section1 .navbar-toggler:focus {
+                box-shadow: var(--glow-cyan)
+            }
+
+            #section1 .nav-link {
+                color: var(--text-secondary);
+                font-size: .82rem;
+                padding: .5rem .55rem;
+                position: relative;
+                transition: color .25s
+            }
+
+            #section1 .nav-link::after {
+                content: "";
+                position: absolute;
+                left: 50%;
+                bottom: 2px;
+                width: 0;
+                height: 2px;
+                background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green));
+                transition: all .3s;
+                transform: translateX(-50%)
+            }
+
+            #section1 .nav-link:hover,
+            #section1 .nav-link.active {
+                color: var(--accent-cyan)
+            }
+
+            #section1 .nav-link:hover::after,
+            #section1 .nav-link.active::after {
+                width: 70%
+            }
+
+            #section1 .nav-link:focus-visible,
+            #section1 .nav-link:active {
+                color: var(--accent-cyan)
+            }
+
+            #section1 .nav-link:focus-visible::after,
+            #section1 .nav-link:active::after {
+                width: 70%
+            }
+
+            #section1 .btn-terminal {
+                font-family: var(--font-mono);
+                font-size: .85rem;
+                color: var(--accent-cyan);
+                background: transparent;
+                border: 1px solid var(--accent-cyan);
+                border-radius: 6px;
+                padding: .4rem 1rem;
+                transition: all .3s
+            }
+
+            #section1 .btn-terminal:hover {
+                background: var(--accent-cyan);
+                color: var(--bg-main);
+                box-shadow: var(--glow-cyan)
+            }
+
+            #section1 .navbar-collapse {
+                max-height: calc(100vh - var(--nav-h));
+                overflow-y: auto
+            }
+
+            @media (max-width:1199.98px) {
+                #section1 .navbar-collapse {
+                    max-height: calc(100vh - var(--nav-h));
+                    max-height: calc(100dvh - var(--nav-h));
+                    overflow-y: auto;
+                    padding: .6rem 0 1rem;
+                    border-top: 1px solid var(--border-color);
+                    background: rgba(8, 11, 17, .97);
+                }
+
+                #section1 .navbar-nav {
+                    display: grid;
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: .25rem .75rem
+                }
+
+                /* 讓連結只包住文字, 底線才會落在文字正下方, 與 PC 版一致 */
+                #section1 .nav-link {
+                    display: inline-block;
+                    font-size: .95rem;
+                    padding: .6rem .75rem
+                }
+
+                #section1 .btn-terminal {
+                    width: 100%;
+                    margin-top: .8rem;
+                    padding: .6rem 1rem
+                }
+            }
+
+            /* 平板寬度:三欄 */
+            @media (min-width:768px) and (max-width:1199.98px) {
+                #section1 .navbar-nav {
+                    grid-template-columns: repeat(3, 1fr)
+                }
+            }
+
+            /* Modal 科技面板 */
+            #section1Modal .modal-content {
+                background: var(--bg-card);
+                border: 1px solid var(--border-color);
+                box-shadow: 0 0 40px rgba(0, 242, 254, .18);
+                color: var(--text-primary);
+                border-radius: 14px;
+                overflow: hidden
+            }
+
+            #section1Modal .panel-wrap {
+                display: flex;
+                flex-wrap: wrap
+            }
+
+            #section1Modal .panel-side {
+                flex: 1 1 220px;
+                padding: 2rem 1.5rem;
+                background: linear-gradient(160deg, rgba(0, 242, 254, .12), rgba(0, 255, 135, .04));
+                border-right: 1px solid var(--border-color);
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                gap: .8rem
+            }
+
+            #section1Modal .panel-side .sys {
+                font-family: var(--font-mono);
+                font-size: .75rem;
+                color: var(--accent-green);
+                line-height: 1.8
+            }
+
+            #section1Modal .panel-side h5 {
+                font-family: var(--font-mono);
+                color: var(--accent-cyan);
+                margin: 0
+            }
+
+            #section1Modal .panel-main {
+                flex: 1 1 320px;
+                padding: 2rem 1.75rem;
+                position: relative
+            }
+
+            #section1Modal .btn-close {
+                position: absolute;
+                top: 14px;
+                right: 14px;
+                filter: invert(1) brightness(.8)
+            }
+
+            #section1Modal .tab-switch {
+                display: flex;
+                gap: .5rem;
+                margin-bottom: 1.2rem
+            }
+
+            #section1Modal .tab-switch button {
+                flex: 1;
+                background: transparent;
+                border: 1px solid var(--border-color);
+                color: var(--text-secondary);
+                font-family: var(--font-mono);
+                font-size: .85rem;
+                padding: .45rem;
+                border-radius: 6px;
+                transition: all .25s
+            }
+
+            #section1Modal .tab-switch button.on {
+                color: var(--bg-main);
+                background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green));
+                border-color: transparent;
+                font-weight: 700
+            }
+
+            #section1Modal label {
+                font-family: var(--font-mono);
+                font-size: .75rem;
+                color: var(--text-secondary);
+                margin-bottom: .25rem
+            }
+
+            #section1Modal .form-control {
+                background: rgba(8, 11, 17, .8);
+                border: 1px solid var(--border-color);
+                color: var(--text-primary);
+                font-family: var(--font-mono);
+                font-size: .9rem
+            }
+
+            #section1Modal .form-control:focus {
+                border-color: var(--accent-cyan);
+                box-shadow: var(--glow-cyan);
+                background: rgba(8, 11, 17, .95);
+                color: var(--text-primary)
+            }
+
+            #section1Modal .form-control::placeholder {
+                color: #475569
+            }
+
+            #section1Modal .btn-submit {
+                width: 100%;
+                border: 0;
+                font-weight: 700;
+                font-family: var(--font-mono);
+                color: var(--bg-main);
+                background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green));
+                padding: .6rem;
+                border-radius: 8px;
+                transition: transform .2s, box-shadow .2s
+            }
+
+            #section1Modal .btn-submit:hover {
+                transform: translateY(-2px);
+                box-shadow: var(--glow-cyan)
+            }
+
+            #section1Modal .reg-only {
+                display: none
+            }
+
+            @media (max-width:575.98px) {
+                #section1Modal .panel-side {
+                    display: none
+                }
+            }
+
+            #section1Modal .panel-side .hint {
+                color: var(--accent-cyan)
+            }
+
+            #section1Modal .panel-side .guide {
+                animation: s1fade .35s ease
+            }
+
+            @keyframes s1fade {
+                from {
+                    opacity: 0;
+                    transform: translateY(4px)
+                }
+
+                to {
+                    opacity: 1;
+                    transform: none
+                }
+            }
+
+            #section1Modal {
+                --s1-err: #FF5C7A
+            }
+
+            #section1Modal .form-control.is-invalid {
+                border-color: var(--s1-err);
+                background-image: none;
+                box-shadow: 0 0 10px rgba(255, 92, 122, .25)
+            }
+
+            #section1Modal .form-control.is-valid {
+                border-color: var(--accent-green);
+                background-image: none;
+                box-shadow: 0 0 10px rgba(0, 255, 135, .2)
+            }
+
+            #section1Modal .invalid-feedback {
+                color: var(--s1-err);
+                font-family: var(--font-mono);
+                font-size: .74rem;
+                margin-top: .35rem
+            }
+
+            #section1Modal .invalid-feedback::before {
+                content: "[ERR] "
+            }
+        </style>
+
+        <div class="container-fluid px-3 px-xl-4">
+            <a class="navbar-brand" href="#section2">
+                <span class="slash">&lt;/&gt;</span>
+                Zac.D <span class="slash">//</span>
+                <span class="core">AI</span><span class="brand-sub"> Resume</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu"
+                aria-controls="navMenu" aria-expanded="false" aria-label="切換選單">
+                <i class="bi bi-list fs-4"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navMenu">
+                <ul class="navbar-nav mx-auto mb-2 mb-xl-0 align-items-xl-center">
+                    <!-- <li class="nav-item"><a class="nav-link" href="#section1">導覽</a></li> -->
+                    <li class="nav-item"><a class="nav-link" href="#section2">首頁</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#section3">關於</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#section4">技能</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#section5">學歷</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#section6">實戰I</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#section7">實戰II</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#section8">實戰III</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#section9">指標</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#section10">作品</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#section11">AI</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#section12">哲學</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#section13">部落格</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#section14">FAQ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#section15">聯絡</a></li>
+                </ul>
+                <button class="btn-terminal" type="button" data-bs-toggle="modal" data-bs-target="#section1Modal">
+                    <i class="bi bi-terminal me-1"></i>Terminal 登入
+                </button>
+            </div>
         </div>
-    </div>
 
-    <!-- 2. 下方彈性主區塊 -->
-    <div class="container-fluid main-content px-4 mt-3">
-        <div class="row h-100 pb-2">
+        <script>
+            $(function () {
+                // 啟動 WOW.js(整站共用, 於 DOM Ready 後初始化)
+                new WOW({ offset: 60, mobile: true }).init();
 
-            <!-- 左側：獨立捲動的目錄項目列 (佔 3 格寬度) -->
-            <div class="col-md-3 scrollable-menu">
-                <div class="timeline-container ps-2 position-relative">
+                var mode = 'login';
+                $('#section1Modal .tab-switch button').on('click', function () {
+                    mode = $(this).data('mode');
+                    $('#section1Modal .tab-switch button').removeClass('on');
+                    $(this).addClass('on');
+                    $('#section1Modal .reg-only').toggle(mode === 'register');
 
-            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20261027-ch8-forms-ex01-ai01-2.html">
-                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
-                <div class="text-success small fw-bold font-monospace mb-1">2026/10/27</div>
-                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
-                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">AI 輔助全端程式設計｜線上報名（教學模擬）</h5>
-                    <div class="text-muted small font-monospace text-break mb-0">
-                        20261027-ch8-forms-ex01-ai01-2.html
-                    </div>
-                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
-                </div>
-            </div>
+                    // 切換左側說明內容
+                    $('#section1Modal .guide').hide();
+                    $('#section1Modal .guide-' + mode).show();
 
-            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20261027-ch8-forms-ex01-ai01-1.html">
-                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
-                <div class="text-success small fw-bold font-monospace mb-1">2026/10/27</div>
-                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
-                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">AI 輔助全端程式設計｜線上報名（教學模擬）</h5>
-                    <div class="text-muted small font-monospace text-break mb-0">
-                        20261027-ch8-forms-ex01-ai01-1.html
-                    </div>
-                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
-                </div>
-            </div>
+                    // 切換左側標題(你問的這行)
+                    $('#s1GuideTitle').text(mode === 'login' ? '> LOGIN_GUIDE' : '> REGISTER_GUIDE');
 
-            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20261015-ch8-forms.html">
-                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
-                <div class="text-success small fw-bold font-monospace mb-1">2026/10/15</div>
-                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
-                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">ch8. Forms(表單)</h5>
-                    <div class="text-muted small font-monospace text-break mb-0">
-                        20261015-ch8-forms.html
-                    </div>
-                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
-                </div>
-            </div>
+                    $('#s1SubmitBtn').html(mode === 'login'
+                        ? '<i class="bi bi-shield-lock me-1"></i>EXECUTE LOGIN'
+                        : '<i class="bi bi-person-plus me-1"></i>CREATE ACCOUNT');
+                });
 
-            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20261015-ch8-forms-ex01-2.html">
-                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
-                <div class="text-success small fw-bold font-monospace mb-1">2026/10/15</div>
-                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
-                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">ch8 表單排版(JS)</h5>
-                    <div class="text-muted small font-monospace text-break mb-0">
-                        20261015-ch8-forms-ex01-2.html
-                    </div>
-                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
-                </div>
-            </div>
+                // 假登入 / 註冊
+                // ===== 格式驗證規則 =====
+                var rules = {
+                    user: function (v) {
+                        if (!v) return '請輸入帳號';
+                        if (v.length < 3 || v.length > 20) return '帳號長度需為 3 到 20 個字元';
+                        if (!/^[A-Za-z0-9_.-]+$/.test(v)) return '帳號只能包含英數字、底線(_)、點(.)、連字號(-)';
+                        return '';
+                    },
+                    email: function (v) {
+                        if (!v) return '請輸入信箱';
+                        if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) return '信箱格式不正確, 例如 name@example.com';
+                        return '';
+                    },
+                    pass: function (v) {
+                        if (!v) return '請輸入密碼';
+                        if (v.length < 8) return '密碼至少 8 個字元';
+                        if (v.length > 64) return '密碼最多 64 個字元';
+                        if (mode === 'register' && !(/[A-Za-z]/.test(v) && /\d/.test(v))) return '密碼需同時包含英文字母與數字';
+                        return '';
+                    }
+                };
 
-            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20261015-ch8-forms-ex01-1.html">
-                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
-                <div class="text-success small fw-bold font-monospace mb-1">2026/10/15</div>
-                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
-                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">ch8 表單排版(JS)</h5>
-                    <div class="text-muted small font-monospace text-break mb-0">
-                        20261015-ch8-forms-ex01-1.html
-                    </div>
-                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
-                </div>
-            </div>
+                function checkField($input, key) {
+                    var msg = rules[key]($.trim($input.val()) && key !== 'pass' ? $.trim($input.val()) : $input.val());
+                    $input.toggleClass('is-invalid', !!msg).toggleClass('is-valid', !msg && $input.val() !== '');
+                    $input.siblings('.invalid-feedback').text(msg);
+                    return !msg;
+                }
 
-            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20261013-ch7-flex-roller.html">
-                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
-                <div class="text-success small fw-bold font-monospace mb-1">2026/10/13</div>
-                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
-                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">卷軸roller</h5>
-                    <div class="text-muted small font-monospace text-break mb-0">
-                        20261013-ch7-flex-roller.html
-                    </div>
-                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
-                </div>
-            </div>
+                function clearValidation() {
+                    $('#section1Form .form-control').removeClass('is-invalid is-valid');
+                    $('#section1Form .invalid-feedback').text('');
+                }
 
-            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20261013-ch7-flex-ex02-2.html">
-                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
-                <div class="text-success small fw-bold font-monospace mb-1">2026/10/13</div>
-                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
-                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">個人履歷 - 陳小明</h5>
-                    <div class="text-muted small font-monospace text-break mb-0">
-                        20261013-ch7-flex-ex02-2.html
-                    </div>
-                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
-                </div>
-            </div>
+                $('#s1User').on('blur input', function (e) {
+                    if (mode !== 'register') return;
+                    if (e.type === 'blur' || $(this).hasClass('is-invalid')) checkField($(this), 'user');
+                });
+                $('#s1Email').on('blur input', function (e) {
+                    if (e.type === 'blur' || $(this).hasClass('is-invalid')) checkField($(this), 'email');
+                });
+                $('#s1Pass').on('blur input', function (e) {
+                    if (mode !== 'register') return;
+                    if (e.type === 'blur' || $(this).hasClass('is-invalid')) checkField($(this), 'pass');
+                });
 
-            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20261013-ch7-flex-ex01-1.html">
-                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
-                <div class="text-success small fw-bold font-monospace mb-1">2026/10/13</div>
-                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
-                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">個人履歷 - 陳小明</h5>
-                    <div class="text-muted small font-monospace text-break mb-0">
-                        20261013-ch7-flex-ex01-1.html
-                    </div>
-                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
-                </div>
-            </div>
+                // 登入模式:重新輸入時, 只清除上一次送出的錯誤提示
+                $('#s1User, #s1Pass').on('input', function () {
+                    if (mode === 'login') clearValidation();
+                });
 
-            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20261008-ch7-flex.html">
-                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
-                <div class="text-success small fw-bold font-monospace mb-1">2026/10/08</div>
-                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
-                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">ch7. Flex</h5>
-                    <div class="text-muted small font-monospace text-break mb-0">
-                        20261008-ch7-flex.html
-                    </div>
-                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
-                </div>
-            </div>
+                // 切換登入/註冊時清除提示
+                $('#section1Modal .tab-switch button').on('click', clearValidation);
+                document.getElementById('section1Modal').addEventListener('hidden.bs.modal', function () {
+                    $('#section1Form')[0].reset(); clearValidation();
+                });
 
-            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20261008-ch6-ex02-ai01.html">
-                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
-                <div class="text-success small fw-bold font-monospace mb-1">2026/10/08</div>
-                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
-                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">切版練習02</h5>
-                    <div class="text-muted small font-monospace text-break mb-0">
-                        20261008-ch6-ex02-ai01.html
-                    </div>
-                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
-                </div>
-            </div>
+                // ===== 送出 =====
+                $('#section1Form').on('submit', function (e) {
+                    e.preventDefault();
 
-            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20261008-ch6-ex02-3.html">
-                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
-                <div class="text-success small fw-bold font-monospace mb-1">2026/10/08</div>
-                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
-                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">切版練習02</h5>
-                    <div class="text-muted small font-monospace text-break mb-0">
-                        20261008-ch6-ex02-3.html
-                    </div>
-                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
-                </div>
-            </div>
+                    if (mode === 'login') {
+                        // 登入:送出後才檢查, 格式不符一律回報帳號或密碼不存在
+                        var u = $.trim($('#s1User').val()), p = $('#s1Pass').val();
+                        var loginOk = !rules.user(u) && !rules.pass(p);
+                        if (!loginOk) {
+                            clearValidation();
+                            var loginErrMsg = '帳號或密碼不存在, 請重新確認';
+                            $('#s1User, #s1Pass')
+                                .addClass('is-invalid')
+                                .siblings('.invalid-feedback').text(loginErrMsg);
+                            $('#s1User').trigger('focus');
+                            return;
+                        }
+                    } else {
+                        // 註冊:維持完整欄位驗證
+                        var ok = checkField($('#s1User'), 'user');
+                        ok = checkField($('#s1Email'), 'email') && ok;
+                        ok = checkField($('#s1Pass'), 'pass') && ok;
+                        if (!ok) {
+                            $('#section1Form .is-invalid').first().trigger('focus');
+                            return;
+                        }
+                    }
 
-            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20261008-ch6-ex02-2.html">
-                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
-                <div class="text-success small fw-bold font-monospace mb-1">2026/10/08</div>
-                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
-                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">切版練習02</h5>
-                    <div class="text-muted small font-monospace text-break mb-0">
-                        20261008-ch6-ex02-2.html
-                    </div>
-                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
-                </div>
-            </div>
+                    var user = $.trim($('#s1User').val());
+                    var safeUser = $('<div>').text(user).html();
 
-            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20261008-ch6-ex02-1.html">
-                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
-                <div class="text-success small fw-bold font-monospace mb-1">2026/10/08</div>
-                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
-                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">切版練習02</h5>
-                    <div class="text-muted small font-monospace text-break mb-0">
-                        20261008-ch6-ex02-1.html
-                    </div>
-                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
-                </div>
-            </div>
+                    bootstrap.Modal.getInstance(document.getElementById('section1Modal')).hide();
+                    Swal.fire({
+                        icon: 'success',
+                        title: mode === 'login' ? '[AI驗證成功]' : '[帳號建立成功]',
+                        html: mode === 'login'
+                            ? '歡迎回來, 高級管理員 ' + safeUser
+                            : '歡迎加入,' + safeUser,
+                        timer: 2600, timerProgressBar: true,
+                        customClass: { popup: 'swal-dark' }
+                    });
+                });
 
-            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20261006-ch6.html">
-                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
-                <div class="text-success small fw-bold font-monospace mb-1">2026/10/06</div>
-                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
-                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">ch6. Bootstrap 切版</h5>
-                    <div class="text-muted small font-monospace text-break mb-0">
-                        20261006-ch6.html
-                    </div>
-                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
-                </div>
-            </div>
+                // 手機點選連結後自動收合選單
+                $('#section1 .nav-link').on('click', function () {
+                    var el = document.getElementById('navMenu');
+                    if ($(el).hasClass('show')) bootstrap.Collapse.getOrCreateInstance(el).hide();
+                });
 
-            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20261006-ch6-ex01.html">
-                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
-                <div class="text-success small fw-bold font-monospace mb-1">2026/10/06</div>
-                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
-                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">切版練習01</h5>
-                    <div class="text-muted small font-monospace text-break mb-0">
-                        20261006-ch6-ex01.html
-                    </div>
-                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
-                </div>
-            </div>
-
-            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20261001-ch5-bs-table-2.html">
-                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
-                <div class="text-success small fw-bold font-monospace mb-1">2026/10/01</div>
-                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
-                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">opendata - 地方美食餐廳列表</h5>
-                    <div class="text-muted small font-monospace text-break mb-0">
-                        20261001-ch5-bs-table-2.html
-                    </div>
-                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
-                </div>
-            </div>
-
-            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20261001-ch5-bs-table-1.html">
-                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
-                <div class="text-success small fw-bold font-monospace mb-1">2026/10/01</div>
-                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
-                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">Bootstrap - Table(表格)</h5>
-                    <div class="text-muted small font-monospace text-break mb-0">
-                        20261001-ch5-bs-table-1.html
-                    </div>
-                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
-                </div>
-            </div>
-
-            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20261001-ch1-bs.html">
-                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
-                <div class="text-success small fw-bold font-monospace mb-1">2026/10/01</div>
-                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
-                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">Bootstrap</h5>
-                    <div class="text-muted small font-monospace text-break mb-0">
-                        20261001-ch1-bs.html
-                    </div>
-                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
-                </div>
-            </div>
-
-            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20260929-javascript-travelfood.html">
-                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
-                <div class="text-success small fw-bold font-monospace mb-1">2026/09/29</div>
-                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
-                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">OpenData - 地方美食資料練習</h5>
-                    <div class="text-muted small font-monospace text-break mb-0">
-                        20260929-javascript-travelfood.html
-                    </div>
-                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
-                </div>
-            </div>
-
-            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20260929-javascript-travelfood-ai01.html">
-                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
-                <div class="text-success small fw-bold font-monospace mb-1">2026/09/29</div>
-                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
-                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">OpenData - 地方美食資料練習</h5>
-                    <div class="text-muted small font-monospace text-break mb-0">
-                        20260929-javascript-travelfood-ai01.html
-                    </div>
-                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
-                </div>
-            </div>
-
-            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20260924-javascript.html">
-                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
-                <div class="text-success small fw-bold font-monospace mb-1">2026/09/24</div>
-                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
-                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">JavaScript 語法簡介</h5>
-                    <div class="text-muted small font-monospace text-break mb-0">
-                        20260924-javascript.html
-                    </div>
-                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
-                </div>
-            </div>
-
-            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20260923-ex01.html">
-                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
-                <div class="text-success small fw-bold font-monospace mb-1">2026/09/23</div>
-                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
-                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">練習01. 使用CSS語法配置版面</h5>
-                    <div class="text-muted small font-monospace text-break mb-0">
-                        20260923-ex01.html
-                    </div>
-                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
-                </div>
-            </div>
-
-            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20260923-ex01-ai02.html">
-                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
-                <div class="text-success small fw-bold font-monospace mb-1">2026/09/23</div>
-                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
-                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">練習01. 使用CSS語法配置版面</h5>
-                    <div class="text-muted small font-monospace text-break mb-0">
-                        20260923-ex01-ai02.html
-                    </div>
-                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
-                </div>
-            </div>
-
-            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20260923-ex01-ai01-5.html">
-                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
-                <div class="text-success small fw-bold font-monospace mb-1">2026/09/23</div>
-                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
-                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">練習01. 使用CSS語法配置版面</h5>
-                    <div class="text-muted small font-monospace text-break mb-0">
-                        20260923-ex01-ai01-5.html
-                    </div>
-                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
-                </div>
-            </div>
-
-            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20260923-ex01-ai01-4.html">
-                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
-                <div class="text-success small fw-bold font-monospace mb-1">2026/09/23</div>
-                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
-                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">練習01. 使用CSS語法配置版面 (RWD)</h5>
-                    <div class="text-muted small font-monospace text-break mb-0">
-                        20260923-ex01-ai01-4.html
-                    </div>
-                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
-                </div>
-            </div>
-
-            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20260923-ex01-ai01-3.html">
-                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
-                <div class="text-success small fw-bold font-monospace mb-1">2026/09/23</div>
-                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
-                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">練習01. 使用CSS語法配置版面</h5>
-                    <div class="text-muted small font-monospace text-break mb-0">
-                        20260923-ex01-ai01-3.html
-                    </div>
-                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
-                </div>
-            </div>
-
-            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20260923-ex01-ai01-2.html">
-                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
-                <div class="text-success small fw-bold font-monospace mb-1">2026/09/23</div>
-                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
-                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">練習01. 使用CSS語法配置版面</h5>
-                    <div class="text-muted small font-monospace text-break mb-0">
-                        20260923-ex01-ai01-2.html
-                    </div>
-                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
-                </div>
-            </div>
-
-            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20260923-ex01-ai01-1.html">
-                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
-                <div class="text-success small fw-bold font-monospace mb-1">2026/09/23</div>
-                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
-                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">練習01. 使用CSS語法配置版面</h5>
-                    <div class="text-muted small font-monospace text-break mb-0">
-                        20260923-ex01-ai01-1.html
-                    </div>
-                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
-                </div>
-            </div>
-
-            <div class="timeline-item mb-4 position-relative ps-4 portfolio-item" data-url="20260922-1.html">
-                <div class="timeline-marker position-absolute top-0 start-0 bg-success rounded-circle" style="width:12px; height:12px; margin-top:6px;"></div>
-                <div class="text-success small fw-bold font-monospace mb-1">2026/09/22</div>
-                <div class="p-3 pb-5 bg-white border border-light-subtle rounded shadow-sm item-card position-relative" style="cursor: pointer;">
-                    <h5 class="fw-bold text-dark mb-2" style="padding-right: 15px;">HTML與CSS基礎語法</h5>
-                    <div class="text-muted small font-monospace text-break mb-0">
-                        20260922-1.html
-                    </div>
-                    <button class="btn btn-success btn-sm px-3 preview-btn position-absolute" style="right: 1rem; bottom: 1rem;">預覽</button>
-                </div>
-            </div>
-                </div>
-            </div>
-
-            <!-- 右側：固定尺寸的預覽框 (佔 9 格寬度，即與左側目錄形成 3:7 比例) -->
-            <div class="col-md-9 preview-wrapper">
-                <div class="preview-container">
-                    <iframe id="preview-box" class="preview-iframe" src="about:blank"></iframe>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- jQuery & Bootstrap JS -->
-    <script src="js/jquery-4.0.0.js"></script>
-    <script src="js/bootstrap.bundle.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            // 點擊目錄卡片或預覽按鈕時觸發
-            $(document).on('click', '.portfolio-item', function(e) {
-                const $item = $(this);
-                const url = $item.data('url');
-
-                // 1. 更換選取項目的底色 (移除其他、加入當前)
-                $('.portfolio-item').removeClass('active-preview');
-                $item.addClass('active-preview');
-
-                // 2. 將網頁網址填入 iframe 內實現即時預覽
-                $('#preview-box').attr('src', url);
+                // Scroll Spy(簡易版)
+                var ids = $('#section1 .nav-link').map(function () { return $(this).attr('href'); }).get();
+                $(window).on('scroll', function () {
+                    var y = $(window).scrollTop() + 120, cur = null;
+                    ids.forEach(function (id) {
+                        var $t = $(id);
+                        if ($t.length && $t.offset().top <= y) cur = id;
+                    });
+                    $('#section1 .nav-link').removeClass('active').filter('[href="' + cur + '"]').addClass('active');
+                });
             });
+        </script>
+    </nav>
 
-            // 預設自動點擊選取第一個作品進行預覽
-            $('.portfolio-item').first().trigger('click');
-        });
-    </script>
+    <!-- 登入 / 註冊 Modal -->
+    <div class="modal fade" id="section1Modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="panel-wrap">
+                    <div class="panel-side">
+                        <h5 id="s1GuideTitle">&gt; LOGIN_GUIDE</h5>
+                        <div class="sys" id="s1Guide">
+                            <!-- 登入說明 -->
+                            <div class="guide guide-login">
+                                [01] 輸入帳號與密碼<br>
+                                [02] 點擊 EXECUTE LOGIN<br>
+                                [03] 系統驗證身分並建立 Session<br>
+                                <span class="hint">[OK] 本站為展示用, 任意帳密皆可登入_</span>
+                            </div>
+                            <!-- 註冊說明 -->
+                            <div class="guide guide-register" style="display:none">
+                                [01] 設定使用者名稱<br>
+                                [02] 填寫 Email 與密碼<br>
+                                [03] 點擊 CREATE ACCOUNT<br>
+                                [04] 系統建立帳號並自動登入<br>
+                                <span class="hint">[OK] 展示用, 不會儲存任何資料_</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-main">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="tab-switch">
+                            <button type="button" class="on" data-mode="login">LOGIN</button>
+                            <button type="button" data-mode="register">REGISTER</button>
+                        </div>
+                        <form id="section1Form" novalidate>
+                            <div class="mb-3">
+                                <label for="s1User">USERNAME</label>
+                                <input type="text" class="form-control" id="s1User" placeholder="root_zac"
+                                    autocomplete="off" maxlength="20">
+                                <div class="invalid-feedback"></div>
+                            </div>
+                            <div class="mb-3 reg-only">
+                                <label for="s1Email">EMAIL</label>
+                                <input type="email" class="form-control" id="s1Email" placeholder="you@example.com"
+                                    autocomplete="off">
+                                <div class="invalid-feedback"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="s1Pass">PASSWORD</label>
+                                <input type="password" class="form-control" id="s1Pass" placeholder="••••••••"
+                                    maxlength="64">
+                                <div class="invalid-feedback"></div>
+                            </div>
+                            <button type="submit" class="btn-submit" id="s1SubmitBtn"><i
+                                    class="bi bi-shield-lock me-1"></i>EXECUTE LOGIN</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ========== Section 1: End ========== -->
+
+
+    <!-- ========== Section 2: Hero Carousel Start ========== -->
+    <section id="section2" class="wow fadeIn" data-wow-duration="1.2s">
+        <style>
+            #section2 {
+                padding: 0;
+                height: 100vh;
+                min-height: 560px;
+                position: relative;
+                overflow: hidden
+            }
+
+            #section2 .carousel,
+            #section2 .carousel-inner,
+            #section2 .carousel-item {
+                height: 100%
+            }
+
+            #section2 .carousel-item img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                filter: brightness(.45) saturate(1.2)
+            }
+
+            #section2 .overlay {
+                position: absolute;
+                inset: 0;
+                z-index: 5;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                padding: var(--nav-h) 1.2rem 0;
+                background: linear-gradient(180deg, rgba(8, 11, 17, .55) 0%, rgba(8, 11, 17, .2) 50%, var(--bg-main) 100%);
+                pointer-events: none
+            }
+
+            #section2 .overlay>div {
+                max-width: 900px;
+                pointer-events: auto
+            }
+
+            #section2 .badge-tag {
+                display: inline-block;
+                font-family: var(--font-mono);
+                font-size: .82rem;
+                color: var(--accent-cyan);
+                border: 1px solid var(--border-color);
+                background: rgba(17, 22, 34, .6);
+                backdrop-filter: blur(6px);
+                padding: .35rem .9rem;
+                border-radius: 30px;
+                margin-bottom: 1.2rem
+            }
+
+            #section2 .hero-name {
+                font-size: clamp(2.4rem, 7vw, 5rem);
+                font-weight: 700;
+                margin: 0;
+                line-height: 1.1
+            }
+
+            #section2 .hero-role {
+                color: var(--text-secondary);
+                font-size: clamp(.95rem, 2.2vw, 1.2rem);
+                margin: .8rem 0 1.6rem
+            }
+
+            #section2 .typer {
+                font-family: var(--font-mono);
+                font-size: clamp(1.05rem, 2.8vw, 1.8rem);
+                color: var(--accent-green);
+                min-height: 2.6em;
+                text-shadow: 0 0 12px rgba(0, 255, 135, .4)
+            }
+
+            #section2 .cursor {
+                display: inline-block;
+                width: .6ch;
+                background: var(--accent-cyan);
+                margin-left: 2px;
+                animation: s2blink 1s steps(1) infinite
+            }
+
+            @keyframes s2blink {
+                50% {
+                    opacity: 0
+                }
+            }
+
+            #section2 .btn-hero {
+                font-family: var(--font-mono);
+                border-radius: 8px;
+                padding: .6rem 1.5rem;
+                margin: .3rem;
+                font-weight: 700;
+                transition: all .3s;
+                text-decoration: none;
+                display: inline-block
+            }
+
+            #section2 .btn-fill {
+                background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green));
+                color: var(--bg-main)
+            }
+
+            #section2 .btn-fill:hover {
+                box-shadow: var(--glow-cyan);
+                transform: translateY(-3px);
+                color: var(--bg-main)
+            }
+
+            #section2 .btn-line {
+                border: 1px solid var(--accent-cyan);
+                color: var(--accent-cyan)
+            }
+
+            #section2 .btn-line:hover {
+                background: rgba(0, 242, 254, .12);
+                box-shadow: var(--glow-cyan);
+                color: var(--accent-cyan)
+            }
+
+            #section2 .carousel-indicators {
+                z-index: 6;
+                margin-bottom: 1.5rem
+            }
+
+            #section2 .carousel-indicators [data-bs-target] {
+                width: 34px;
+                height: 3px;
+                border: 0;
+                background: var(--accent-cyan);
+                opacity: .35
+            }
+
+            #section2 .carousel-indicators .active {
+                opacity: 1;
+                box-shadow: var(--glow-cyan)
+            }
+
+            #section2 .carousel-control-prev,
+            #section2 .carousel-control-next {
+                z-index: 6;
+                width: 8%
+            }
+
+            #section2 .scanline {
+                position: absolute;
+                inset: 0;
+                z-index: 4;
+                pointer-events: none;
+                background: repeating-linear-gradient(0deg, rgba(0, 242, 254, .03) 0 1px, transparent 1px 3px)
+            }
+
+            #section2 .slide-cap {
+                position: absolute;
+                z-index: 6;
+                left: 1.2rem;
+                bottom: 1.6rem;
+                font-family: var(--font-mono);
+                font-size: .72rem;
+                color: var(--text-secondary)
+            }
+
+            @media (max-width:575.98px) {
+
+                #section2 .carousel-control-prev,
+                #section2 .carousel-control-next {
+                    display: none
+                }
+
+                #section2 .slide-cap {
+                    display: none
+                }
+            }
+        </style>
+
+        <div id="s2Carousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="6000">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#s2Carousel" data-bs-slide-to="0" class="active"
+                    aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#s2Carousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#s2Carousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            </div>
+            <div class="carousel-inner">
+                <div class="carousel-item active" data-cap="AI DATA MATRIX // node-01">
+                    <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1920&q=80"
+                        alt="AI 數據矩陣">
+                </div>
+                <div class="carousel-item" data-cap="HIGH-CONCURRENCY LINES // node-02">
+                    <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1920&q=80"
+                        alt="高併發伺服器線路">
+                </div>
+                <div class="carousel-item" data-cap="CODE WATERFALL // node-03">
+                    <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1920&q=80"
+                        alt="代碼瀑布">
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#s2Carousel" data-bs-slide="prev"><span
+                    class="carousel-control-prev-icon"></span><span class="visually-hidden">上一張</span></button>
+            <button class="carousel-control-next" type="button" data-bs-target="#s2Carousel" data-bs-slide="next"><span
+                    class="carousel-control-next-icon"></span><span class="visually-hidden">下一張</span></button>
+        </div>
+        <div class="scanline"></div>
+        <div class="slide-cap" id="s2Cap">AI DATA MATRIX // node-01</div>
+
+        <div class="overlay">
+            <div>
+                <span class="badge-tag"><i class="bi bi-cpu me-1"></i>SYSTEM ONLINE · v2026.AI</span>
+                <h1 class="hero-name g-grad-text">Zac.D</h1>
+                <p class="hero-role">大數據平台應用 - 後端工程師 (PHP / Node.js)</p>
+                <div class="typer"><span id="s2Text"></span><span class="cursor">&nbsp;</span></div>
+                <div class="mt-4">
+                    <a href="#section6" class="btn-hero btn-fill"><i class="bi bi-rocket-takeoff me-1"></i>查看實戰專案</a>
+                    <a href="#section15" class="btn-hero btn-line"><i class="bi bi-terminal me-1"></i>建立連線</a>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            $(function () {
+                var phrases = ['編織高效能的後端神經網路', '精準定義業務需求, 善用 AI 工具極大化產出品質'];
+                var pi = 0, ci = 0, del = false, $t = $('#s2Text');
+                (function tick() {
+                    var p = phrases[pi], wait = del ? 35 : 90;
+                    ci += del ? -1 : 1;
+                    $t.text(p.substring(0, ci));
+                    if (!del && ci === p.length) { del = true; wait = 1800; }
+                    else if (del && ci === 0) { del = false; pi = (pi + 1) % phrases.length; wait = 400; }
+                    setTimeout(tick, wait);
+                })();
+                document.getElementById('s2Carousel').addEventListener('slid.bs.carousel', function (e) {
+                    $('#s2Cap').text($(e.relatedTarget).data('cap'));
+                });
+            });
+        </script>
+    </section>
+    <!-- ========== Section 2: End ========== -->
+
+
+    <!-- ========== Section 3: About Zac.D Start ========== -->
+    <section id="section3">
+        <style>
+            #section3 {
+                padding: 6rem 0;
+                position: relative
+            }
+
+            #section3 .sec-head {
+                text-align: center;
+                margin-bottom: 3rem
+            }
+
+            #section3 .sec-head h2 {
+                font-size: clamp(1.7rem, 4vw, 2.5rem)
+            }
+
+            #section3 .sec-head .tag {
+                font-family: var(--font-mono);
+                color: var(--accent-cyan);
+                font-size: .85rem;
+                display: block;
+                margin-bottom: .4rem
+            }
+
+            #section3 .avatar-box {
+                position: relative;
+                width: min(320px, 80vw);
+                aspect-ratio: 1/1;
+                margin: 0 auto
+            }
+
+            #section3 .ring {
+                position: absolute;
+                inset: 0;
+                border-radius: 50%;
+                border: 1px dashed var(--accent-cyan);
+                animation: s3spin 24s linear infinite;
+                opacity: .6
+            }
+
+            #section3 .ring.r2 {
+                inset: 12%;
+                border-style: solid;
+                border-color: rgba(0, 255, 135, .4);
+                animation-direction: reverse;
+                animation-duration: 16s
+            }
+
+            #section3 .ring.r3 {
+                inset: -6%;
+                border: 1px dotted var(--border-color);
+                animation-duration: 40s
+            }
+
+            @keyframes s3spin {
+                to {
+                    transform: rotate(360deg)
+                }
+            }
+
+            #section3 .avatar-core {
+                position: absolute;
+                inset: 22%;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: radial-gradient(circle at 30% 30%, rgba(0, 242, 254, .35), var(--bg-card) 65%);
+                border: 1px solid var(--accent-cyan);
+                box-shadow: var(--glow-cyan), inset 0 0 30px rgba(0, 242, 254, .2)
+            }
+
+            #section3 .avatar-core span {
+                font-family: var(--font-mono);
+                font-weight: 700;
+                font-size: clamp(2rem, 6vw, 3rem)
+            }
+
+            #section3 .chip {
+                position: absolute;
+                font-family: var(--font-mono);
+                font-size: .7rem;
+                color: var(--accent-green);
+                background: var(--bg-card);
+                border: 1px solid var(--border-color);
+                padding: .2rem .5rem;
+                border-radius: 4px;
+                animation: s3float 4s ease-in-out infinite
+            }
+
+            #section3 .chip.c1 {
+                top: 4%;
+                right: 2%
+            }
+
+            #section3 .chip.c2 {
+                bottom: 10%;
+                left: -2%;
+                animation-delay: 1s
+            }
+
+            #section3 .chip.c3 {
+                bottom: 0;
+                right: 10%;
+                animation-delay: 2s
+            }
+
+            @keyframes s3float {
+                50% {
+                    transform: translateY(-8px)
+                }
+            }
+
+            #section3 .info-card {
+                background: rgba(17, 22, 34, .75);
+                backdrop-filter: blur(10px);
+                border: 1px solid var(--border-color);
+                border-radius: 16px;
+                padding: 2rem
+            }
+
+            #section3 dl {
+                margin: 0
+            }
+
+            #section3 dt {
+                color: var(--accent-cyan);
+                font-family: var(--font-mono);
+                font-size: .88rem;
+                font-weight: 500;
+                padding: .8rem 0
+            }
+
+            #section3 dd {
+                color: var(--text-primary);
+                font-size: .95rem;
+                line-height: 1.85;
+                padding: .8rem 0;
+                margin: 0;
+                border-bottom: 1px solid var(--border-color)
+            }
+
+            #section3 dt {
+                border-bottom: 1px solid var(--border-color)
+            }
+
+            #section3 dl .row:last-child dt,
+            #section3 dl .row:last-child dd {
+                border-bottom: 0
+            }
+
+            #section3 .soft {
+                display: inline-block;
+                font-size: .8rem;
+                color: var(--accent-green);
+                border: 1px solid rgba(0, 255, 135, .3);
+                background: rgba(0, 255, 135, .06);
+                padding: .15rem .6rem;
+                border-radius: 20px;
+                margin: .15rem .1rem
+            }
+
+            @media (max-width:575.98px) {
+                #section3 {
+                    padding: 4rem 0
+                }
+
+                #section3 .info-card {
+                    padding: 1.2rem
+                }
+
+                #section3 dt {
+                    padding: .8rem 0 0;
+                    border-bottom: 0
+                }
+
+                #section3 dd {
+                    padding: .2rem 0 .8rem
+                }
+            }
+        </style>
+
+        <div class="container">
+            <div class="sec-head wow fadeInDown">
+                <span class="tag">// 03 · ABOUT</span>
+                <h2 class="g-title">核心人設簡介 <span class="g-grad-text">About Zac.D</span></h2>
+            </div>
+            <div class="row g-5 align-items-center">
+                <div class="col-lg-4 wow fadeInLeft" data-wow-delay=".2s">
+                    <div class="avatar-box">
+                        <div class="ring r3"></div>
+                        <div class="ring"></div>
+                        <div class="ring r2"></div>
+                        <div class="avatar-core"><span class="g-grad-text">ZD</span></div>
+                        <span class="chip c1">&lt;NodeJS/&gt;</span>
+                        <span class="chip c2">SELECT * FROM life;</span>
+                        <span class="chip c3">AI.copilot()</span>
+                    </div>
+                </div>
+                <div class="col-lg-8 wow fadeInRight" data-wow-delay=".3s">
+                    <div class="info-card">
+                        <dl>
+                            <div class="row">
+                                <dt class="col-sm-3">姓名 / Name</dt>
+                                <dd class="col-sm-9">Zac.D</dd>
+                            </div>
+                            <div class="row">
+                                <dt class="col-sm-3">職稱 / Role</dt>
+                                <dd class="col-sm-9">大數據平台應用 - 後端工程師 (PHP / Node.js)</dd>
+                            </div>
+                            <div class="row">
+                                <dt class="col-sm-3">核心職責</dt>
+                                <dd class="col-sm-9">負責多級分銷系統(Affiliate System)的核心 API 開發、業務流程規劃、高效能資料表設計及線上問題排查。技術棧以
+                                    PHP、Node.js、MySQL、Redis、Git 為核心, 並具備 GoLang 實務開發經驗。</dd>
+                            </div>
+                            <div class="row">
+                                <dt class="col-sm-3">大數據與雲端</dt>
+                                <dd class="col-sm-9">因應大規模數據與高併發架構, 深入實踐 BigQuery 分析、Dataform 數據建模、GCP 雲端維運、CI/CD
+                                    自動化優化、壓力測試、單元測試與 Docker 容器化部署。</dd>
+                            </div>
+                            <div class="row">
+                                <dt class="col-sm-3">領域經驗</dt>
+                                <dd class="col-sm-9">用戶端架構、自動化風控系統、FinTech 核心金流出入帳, 以及第三方 API 整合服務的對接與維護。</dd>
+                            </div>
+                            <div class="row">
+                                <dt class="col-sm-3">軟實力</dt>
+                                <dd class="col-sm-9">熱衷流程優化與系統化工程, 擅長將重複性工作 <b style="color:var(--accent-cyan)">SOP
+                                        化</b>, 主動推動團隊內部統一開發規範。
+                                    <br><span class="soft">SOP 化</span><span class="soft">開發規範</span><span
+                                        class="soft">跨團隊溝通</span><span class="soft">問題排查</span>
+                                </dd>
+                            </div>
+                            <div class="row">
+                                <dt class="col-sm-3">AI 整合工作流</dt>
+                                <dd class="col-sm-9">面對生成式 AI 技術浪潮, 已將 AI 深度整合至日常開發、Code Review 與架構設計的完整工作流中。</dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            $(function () {
+                // 頭像微視差:滑鼠移動時環形輕微位移(桌機)
+                $('#section3 .avatar-box').on('mousemove', function (e) {
+                    var r = this.getBoundingClientRect();
+                    var x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+                    $(this).find('.avatar-core').css('transform', 'translate(' + x * 12 + 'px,' + y * 12 + 'px)');
+                }).on('mouseleave', function () {
+                    $(this).find('.avatar-core').css('transform', '');
+                });
+            });
+        </script>
+    </section>
+    <!-- ========== Section 3: End ========== -->
+
+
+    <!-- ========== Section 4: Skills Dashboard Start ========== -->
+    <section id="section4">
+        <style>
+            #section4 {
+                padding: 6rem 0;
+                background: linear-gradient(180deg, transparent, rgba(17, 22, 34, .45), transparent)
+            }
+
+            #section4 .sec-head {
+                text-align: center;
+                margin-bottom: 3rem
+            }
+
+            #section4 .sec-head h2 {
+                font-size: clamp(1.7rem, 4vw, 2.5rem)
+            }
+
+            #section4 .sec-head .tag {
+                font-family: var(--font-mono);
+                color: var(--accent-cyan);
+                font-size: .85rem;
+                display: block;
+                margin-bottom: .4rem
+            }
+
+            #section4 .camp {
+                height: 100%;
+                background: rgba(17, 22, 34, .8);
+                backdrop-filter: blur(10px);
+                border: 1px solid var(--border-color);
+                border-radius: 16px;
+                padding: 1.6rem;
+                transition: all .35s
+            }
+
+            #section4 .camp:hover {
+                border-color: rgba(0, 242, 254, .5);
+                box-shadow: var(--glow-cyan);
+                transform: translateY(-4px)
+            }
+
+            #section4 .camp-title {
+                display: flex;
+                align-items: center;
+                gap: .7rem;
+                font-weight: 700;
+                font-size: 1.15rem;
+                margin-bottom: 1.3rem
+            }
+
+            #section4 .camp-title i {
+                font-size: 1.4rem;
+                color: var(--accent-cyan);
+                width: 44px;
+                height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 10px;
+                background: rgba(0, 242, 254, .08);
+                border: 1px solid var(--border-color)
+            }
+
+            #section4 .camp-title small {
+                display: block;
+                font-family: var(--font-mono);
+                font-size: .7rem;
+                color: var(--text-secondary);
+                font-weight: 400
+            }
+
+            #section4 .skill-row {
+                margin-bottom: 1rem
+            }
+
+            #section4 .skill-row:last-child {
+                margin-bottom: 0
+            }
+
+            #section4 .skill-meta {
+                display: flex;
+                justify-content: space-between;
+                font-family: var(--font-mono);
+                font-size: .82rem;
+                margin-bottom: .35rem
+            }
+
+            #section4 .skill-meta .pct {
+                color: var(--accent-green)
+            }
+
+            #section4 .progress {
+                height: 8px;
+                background: rgba(148, 163, 184, .12);
+                border-radius: 20px;
+                overflow: visible
+            }
+
+            #section4 .progress-bar {
+                width: 0;
+                border-radius: 20px;
+                background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green));
+                box-shadow: 0 0 10px rgba(0, 242, 254, .5);
+                transition: width 1.4s cubic-bezier(.22, 1, .36, 1)
+            }
+
+            @media (max-width:575.98px) {
+                #section4 {
+                    padding: 4rem 0
+                }
+
+                #section4 .camp {
+                    padding: 1.2rem
+                }
+            }
+        </style>
+
+        <div class="container">
+            <div class="sec-head wow fadeInDown">
+                <span class="tag">// 04 · SKILLS</span>
+                <h2 class="g-title">技術棧能量儀表板 <span class="g-grad-text">Skills Dashboard</span></h2>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-6 wow fadeInUp">
+                    <div class="camp">
+                        <div class="camp-title"><i class="bi bi-hdd-network"></i>
+                            <div>核心後端<small>Backend &amp; Core</small></div>
+                        </div>
+                        <div class="skill-row">
+                            <div class="skill-meta"><span>PHP / Laravel / Symfony</span><span class="pct">95%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" data-val="95" role="progressbar" aria-valuemin="0"
+                                    aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                        <div class="skill-row">
+                            <div class="skill-meta"><span>Node.js / Express / NestJS</span><span class="pct">92%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" data-val="92" role="progressbar" aria-valuemin="0"
+                                    aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                        <div class="skill-row">
+                            <div class="skill-meta"><span>GoLang</span><span class="pct">75%</span></div>
+                            <div class="progress">
+                                <div class="progress-bar" data-val="75" role="progressbar" aria-valuemin="0"
+                                    aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                        <div class="skill-row">
+                            <div class="skill-meta"><span>Java / Python</span><span class="pct">65%</span></div>
+                            <div class="progress">
+                                <div class="progress-bar" data-val="65" role="progressbar" aria-valuemin="0"
+                                    aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 wow fadeInUp" data-wow-delay=".15s">
+                    <div class="camp">
+                        <div class="camp-title"><i class="bi bi-database"></i>
+                            <div>數據與串流<small>Data &amp; Streaming</small></div>
+                        </div>
+                        <div class="skill-row">
+                            <div class="skill-meta"><span>MySQL</span><span class="pct">93%</span></div>
+                            <div class="progress">
+                                <div class="progress-bar" data-val="93" role="progressbar" aria-valuemin="0"
+                                    aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                        <div class="skill-row">
+                            <div class="skill-meta"><span>Redis</span><span class="pct">90%</span></div>
+                            <div class="progress">
+                                <div class="progress-bar" data-val="90" role="progressbar" aria-valuemin="0"
+                                    aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                        <div class="skill-row">
+                            <div class="skill-meta"><span>BigQuery / Dataform</span><span class="pct">85%</span></div>
+                            <div class="progress">
+                                <div class="progress-bar" data-val="85" role="progressbar" aria-valuemin="0"
+                                    aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                        <div class="skill-row">
+                            <div class="skill-meta"><span>Kafka / KSQL</span><span class="pct">78%</span></div>
+                            <div class="progress">
+                                <div class="progress-bar" data-val="78" role="progressbar" aria-valuemin="0"
+                                    aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 wow fadeInUp">
+                    <div class="camp">
+                        <div class="camp-title"><i class="bi bi-activity"></i>
+                            <div>維運觀測<small>DevOps &amp; Observability</small></div>
+                        </div>
+                        <div class="skill-row">
+                            <div class="skill-meta"><span>GCP</span><span class="pct">82%</span></div>
+                            <div class="progress">
+                                <div class="progress-bar" data-val="82" role="progressbar" aria-valuemin="0"
+                                    aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                        <div class="skill-row">
+                            <div class="skill-meta"><span>Docker / Git / CI-CD</span><span class="pct">88%</span></div>
+                            <div class="progress">
+                                <div class="progress-bar" data-val="88" role="progressbar" aria-valuemin="0"
+                                    aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                        <div class="skill-row">
+                            <div class="skill-meta"><span>Datadog / Kibana</span><span class="pct">86%</span></div>
+                            <div class="progress">
+                                <div class="progress-bar" data-val="86" role="progressbar" aria-valuemin="0"
+                                    aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                        <div class="skill-row">
+                            <div class="skill-meta"><span>k6 壓力測試</span><span class="pct">80%</span></div>
+                            <div class="progress">
+                                <div class="progress-bar" data-val="80" role="progressbar" aria-valuemin="0"
+                                    aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 wow fadeInUp" data-wow-delay=".15s">
+                    <div class="camp">
+                        <div class="camp-title"><i class="bi bi-palette"></i>
+                            <div>前端 / 工具<small>Frontend UI &amp; Tools</small></div>
+                        </div>
+                        <div class="skill-row">
+                            <div class="skill-meta"><span>HTML / CSS / JS</span><span class="pct">78%</span></div>
+                            <div class="progress">
+                                <div class="progress-bar" data-val="78" role="progressbar" aria-valuemin="0"
+                                    aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                        <div class="skill-row">
+                            <div class="skill-meta"><span>React</span><span class="pct">60%</span></div>
+                            <div class="progress">
+                                <div class="progress-bar" data-val="60" role="progressbar" aria-valuemin="0"
+                                    aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                        <div class="skill-row">
+                            <div class="skill-meta"><span>Figma</span><span class="pct">62%</span></div>
+                            <div class="progress">
+                                <div class="progress-bar" data-val="62" role="progressbar" aria-valuemin="0"
+                                    aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                        <div class="skill-row">
+                            <div class="skill-meta"><span>Android</span><span class="pct">50%</span></div>
+                            <div class="progress">
+                                <div class="progress-bar" data-val="50" role="progressbar" aria-valuemin="0"
+                                    aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            $(function () {
+                // 進入視窗時才觸發進度條動畫
+                var fill = function ($bars) {
+                    $bars.each(function () {
+                        var v = $(this).data('val');
+                        $(this).css('width', v + '%').attr('aria-valuenow', v);
+                    });
+                };
+                if ('IntersectionObserver' in window) {
+                    var io = new IntersectionObserver(function (entries) {
+                        entries.forEach(function (en) {
+                            if (en.isIntersecting) { fill($(en.target).find('.progress-bar')); io.unobserve(en.target); }
+                        });
+                    }, { threshold: .3 });
+                    $('#section4 .camp').each(function () { io.observe(this); });
+                } else { fill($('#section4 .progress-bar')); }
+            });
+        </script>
+    </section>
+    <!-- ========== Section 4: End ========== -->
+
+
+    <!-- ========== Section 5: Education & Certifications Timeline Start ========== -->
+    <section id="section5">
+        <style>
+            #section5 {
+                padding: 6rem 0
+            }
+
+            #section5 .sec-head {
+                text-align: center;
+                margin-bottom: 3.5rem
+            }
+
+            #section5 .sec-head h2 {
+                font-size: clamp(1.7rem, 4vw, 2.5rem)
+            }
+
+            #section5 .sec-head .tag {
+                font-family: var(--font-mono);
+                color: var(--accent-cyan);
+                font-size: .85rem;
+                display: block;
+                margin-bottom: .4rem
+            }
+
+            #section5 .timeline {
+                position: relative;
+                max-width: 900px;
+                margin: 0 auto;
+                padding: 0
+            }
+
+            #section5 .timeline::before {
+                content: "";
+                position: absolute;
+                left: 50%;
+                top: 0;
+                bottom: 0;
+                width: 2px;
+                transform: translateX(-50%);
+                background: linear-gradient(180deg, var(--accent-cyan), var(--accent-green), transparent);
+                box-shadow: 0 0 12px rgba(0, 242, 254, .5)
+            }
+
+            #section5 .t-item {
+                position: relative;
+                width: 50%;
+                padding: 0 2.8rem 2.8rem 0
+            }
+
+            #section5 .t-item:nth-child(even) {
+                margin-left: 50%;
+                padding: 0 0 2.8rem 2.8rem
+            }
+
+            #section5 .t-item::before {
+                content: "";
+                position: absolute;
+                top: 1.4rem;
+                right: -9px;
+                width: 18px;
+                height: 18px;
+                border-radius: 50%;
+                background: var(--bg-main);
+                border: 3px solid var(--accent-cyan);
+                box-shadow: 0 0 14px var(--accent-cyan);
+                z-index: 2
+            }
+
+            #section5 .t-item:nth-child(even)::before {
+                right: auto;
+                left: -9px
+            }
+
+            #section5 .t-card {
+                background: rgba(17, 22, 34, .85);
+                backdrop-filter: blur(10px);
+                border: 1px solid var(--border-color);
+                border-radius: 14px;
+                padding: 1.4rem 1.5rem;
+                transition: all .35s;
+                position: relative
+            }
+
+            #section5 .t-card:hover {
+                border-color: rgba(0, 242, 254, .55);
+                box-shadow: var(--glow-cyan);
+                transform: translateY(-4px)
+            }
+
+            #section5 .t-year {
+                display: inline-block;
+                font-family: var(--font-mono);
+                font-size: .82rem;
+                font-weight: 700;
+                color: var(--bg-main);
+                background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green));
+                padding: .15rem .7rem;
+                border-radius: 20px;
+                margin-bottom: .7rem
+            }
+
+            #section5 .t-card h3 {
+                font-size: 1.1rem;
+                font-weight: 700;
+                margin: 0 0 .4rem
+            }
+
+            #section5 .t-card p {
+                margin: 0;
+                color: var(--text-secondary);
+                font-size: .9rem;
+                line-height: 1.7
+            }
+
+            #section5 .t-icon {
+                position: absolute;
+                top: 1rem;
+                right: 1.1rem;
+                font-size: 1.6rem;
+                color: var(--accent-cyan);
+                opacity: .35
+            }
+
+            @media (max-width:767.98px) {
+                #section5 {
+                    padding: 4rem 0
+                }
+
+                #section5 .timeline::before {
+                    left: 14px
+                }
+
+                #section5 .t-item,
+                #section5 .t-item:nth-child(even) {
+                    width: 100%;
+                    margin-left: 0;
+                    padding: 0 0 2rem 3rem
+                }
+
+                #section5 .t-item::before,
+                #section5 .t-item:nth-child(even)::before {
+                    left: 5px;
+                    right: auto
+                }
+            }
+        </style>
+
+        <div class="container">
+            <div class="sec-head wow fadeInDown">
+                <span class="tag">// 05 · TIMELINE</span>
+                <h2 class="g-title">學歷與認證時間軸 <span class="g-grad-text">Education &amp; Certs</span></h2>
+            </div>
+            <div class="timeline">
+                <div class="t-item wow fadeInLeft">
+                    <div class="t-card">
+                        <i class="bi bi-patch-check t-icon"></i>
+                        <span class="t-year">2025</span>
+                        <h3>助理雲端工程師證照</h3>
+                        <p>Google Cloud Associate Cloud Engineer。具備 GCP 資源部署、IAM 權限管理與雲端維運的實務與認證實力。</p>
+                    </div>
+                </div>
+                <div class="t-item wow fadeInRight" data-wow-delay=".15s">
+                    <div class="t-card">
+                        <i class="bi bi-mortarboard t-icon"></i>
+                        <span class="t-year">2010 - 2014</span>
+                        <h3>臺灣科技大學 資訊工程系</h3>
+                        <p>奠定資料結構、演算法、作業系統與網路的資訊工程核心基礎。</p>
+                    </div>
+                </div>
+                <div class="t-item wow fadeInLeft" data-wow-delay=".3s">
+                    <div class="t-card">
+                        <i class="bi bi-motherboard t-icon"></i>
+                        <span class="t-year">2007 - 2010</span>
+                        <h3>台中高工 電子科</h3>
+                        <p>從電子電路與硬體底層出發, 培養系統化思考與動手實作的工程底子。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            $(function () {
+                // 時間軸卡片滑入時, 節點短暫脈衝提示
+                $('#section5 .t-card').on('mouseenter', function () {
+                    $(this).closest('.t-item').css('--pulse', 1);
+                });
+            });
+        </script>
+    </section>
+    <!-- ========== Section 5: End ========== -->
+
+
+    <!-- ========== Section 6: Work Experience Part 1 Start ========== -->
+    <section id="section6">
+        <style>
+            #section6 {
+                padding: 6rem 0;
+                background: linear-gradient(180deg, transparent, rgba(17, 22, 34, .45), transparent)
+            }
+
+            #section6 .sec-head {
+                text-align: center;
+                margin-bottom: 3rem
+            }
+
+            #section6 .sec-head h2 {
+                font-size: clamp(1.7rem, 4vw, 2.5rem)
+            }
+
+            #section6 .sec-head .tag {
+                font-family: var(--font-mono);
+                color: var(--accent-cyan);
+                font-size: .85rem;
+                display: block;
+                margin-bottom: .4rem
+            }
+
+            #section6 .card {
+                height: 100%;
+                background: rgba(17, 22, 34, .85);
+                backdrop-filter: blur(10px);
+                border: 1px solid var(--border-color);
+                border-radius: 16px;
+                color: var(--text-primary);
+                transition: all .35s;
+                position: relative;
+                overflow: hidden
+            }
+
+            #section6 .card::before {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 3px;
+                background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green))
+            }
+
+            #section6 .card:hover {
+                transform: translateY(-6px);
+                border-color: rgba(0, 242, 254, .55);
+                box-shadow: var(--glow-cyan)
+            }
+
+            #section6 .card-body {
+                padding: 1.8rem
+            }
+
+            #section6 .ico {
+                width: 56px;
+                height: 56px;
+                border-radius: 14px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.7rem;
+                color: var(--accent-cyan);
+                background: rgba(0, 242, 254, .08);
+                border: 1px solid var(--border-color);
+                margin-bottom: 1.1rem;
+                box-shadow: inset 0 0 14px rgba(0, 242, 254, .12)
+            }
+
+            #section6 .year {
+                font-family: var(--font-mono);
+                font-size: .8rem;
+                color: var(--accent-green)
+            }
+
+            #section6 .card h3 {
+                font-size: 1.1rem;
+                font-weight: 700;
+                line-height: 1.5;
+                margin: .3rem 0 .8rem
+            }
+
+            #section6 .card p {
+                color: var(--text-secondary);
+                font-size: .92rem;
+                line-height: 1.8;
+                margin: 0 0 1rem
+            }
+
+            #section6 .stack span {
+                display: inline-block;
+                font-family: var(--font-mono);
+                font-size: .72rem;
+                color: var(--accent-cyan);
+                border: 1px solid var(--border-color);
+                padding: .12rem .55rem;
+                border-radius: 20px;
+                margin: .15rem .1rem 0 0
+            }
+
+            @media (max-width:575.98px) {
+                #section6 {
+                    padding: 4rem 0
+                }
+
+                #section6 .card-body {
+                    padding: 1.3rem
+                }
+            }
+        </style>
+
+        <div class="container">
+            <div class="sec-head wow fadeInDown">
+                <span class="tag">// 06 · EXPERIENCE I · 2018 - 2026</span>
+                <h2 class="g-title">在職開發經歷 <span class="g-grad-text">大流量實戰</span></h2>
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6 wow fadeInUp">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="ico"><i class="bi bi-eye"></i></div>
+                            <span class="year">2026</span>
+                            <h3>分銷商跨層級數據觀測平台(上帝視角)&amp; 系統壓測</h3>
+                            <p>主導高階管理端全局數據看板設計, 優化跨組織層級的複雜關聯權限與資料流。執行核心 API 壓力測試, 定位慢查詢與效能瓶頸, 大幅提升系統在高併發下的穩定性。</p>
+                            <div class="stack"><span>MySQL</span><span>k6</span><span>Redis</span><span>RBAC</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay=".15s">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="ico"><i class="bi bi-bar-chart-line"></i></div>
+                            <span class="year">2026</span>
+                            <h3>基於 BigQuery 的營運數據 ETL 與大數據報表系統</h3>
+                            <p>運用 BigQuery 處理海量歷史交易數據, 設計高效能 ETL Pipeline, 提供高可用的業務決策報表。</p>
+                            <div class="stack">
+                                <span>BigQuery</span><span>Dataform</span><span>ETL</span><span>GCP</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-12 wow fadeInUp" data-wow-delay=".3s">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="ico"><i class="bi bi-shield-shaded"></i></div>
+                            <span class="year">2025</span>
+                            <h3>使用者註冊防禦與自動化風控系統</h3>
+                            <p>針對機器人惡意刷註冊行為, 串接行為驗證、IP 頻率限制與風險評分機制, 有效阻擋惡意攻擊。</p>
+                            <div class="stack"><span>Rate Limit</span><span>Risk
+                                    Score</span><span>Redis</span><span>Node.js</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            $(function () {
+                // 卡片滑鼠追蹤光暈
+                $('#section6 .card').on('mousemove', function (e) {
+                    var r = this.getBoundingClientRect();
+                    $(this).css('background', 'radial-gradient(circle at ' + (e.clientX - r.left) + 'px ' + (e.clientY - r.top) + 'px, rgba(0,242,254,.10), rgba(17,22,34,.88) 55%)');
+                }).on('mouseleave', function () { $(this).css('background', ''); });
+            });
+        </script>
+    </section>
+    <!-- ========== Section 6: End ========== -->
+
+
+    <!-- ========== Section 7: Work Experience Part 2 Start ========== -->
+    <section id="section7">
+        <style>
+            #section7 {
+                padding: 6rem 0
+            }
+
+            #section7 .sec-head {
+                text-align: center;
+                margin-bottom: 3rem
+            }
+
+            #section7 .sec-head h2 {
+                font-size: clamp(1.7rem, 4vw, 2.5rem)
+            }
+
+            #section7 .sec-head .tag {
+                font-family: var(--font-mono);
+                color: var(--accent-cyan);
+                font-size: .85rem;
+                display: block;
+                margin-bottom: .4rem
+            }
+
+            #section7 .card {
+                height: 100%;
+                background: var(--bg-card);
+                border: 1px solid var(--border-color);
+                border-radius: 16px;
+                color: var(--text-primary);
+                transition: all .35s;
+                position: relative
+            }
+
+            #section7 .card::after {
+                content: "";
+                position: absolute;
+                right: -40px;
+                bottom: -40px;
+                width: 140px;
+                height: 140px;
+                border-radius: 50%;
+                background: radial-gradient(circle, rgba(0, 255, 135, .12), transparent 70%);
+                transition: transform .5s
+            }
+
+            #section7 .card:hover {
+                transform: translateY(-6px);
+                border-color: rgba(0, 255, 135, .5);
+                box-shadow: 0 0 22px rgba(0, 255, 135, .25)
+            }
+
+            #section7 .card:hover::after {
+                transform: scale(1.8)
+            }
+
+            #section7 .card-body {
+                padding: 1.8rem;
+                position: relative;
+                z-index: 1
+            }
+
+            #section7 .ico {
+                width: 56px;
+                height: 56px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.6rem;
+                color: var(--accent-green);
+                background: rgba(0, 255, 135, .07);
+                border: 1px solid rgba(0, 255, 135, .3);
+                margin-bottom: 1.1rem
+            }
+
+            #section7 .year {
+                font-family: var(--font-mono);
+                font-size: .8rem;
+                color: var(--accent-cyan)
+            }
+
+            #section7 .card h3 {
+                font-size: 1.08rem;
+                font-weight: 700;
+                line-height: 1.5;
+                margin: .3rem 0 .8rem
+            }
+
+            #section7 .card p {
+                color: var(--text-secondary);
+                font-size: .92rem;
+                line-height: 1.8;
+                margin: 0 0 1rem
+            }
+
+            #section7 .stack span {
+                display: inline-block;
+                font-family: var(--font-mono);
+                font-size: .72rem;
+                color: var(--accent-green);
+                border: 1px solid rgba(0, 255, 135, .25);
+                padding: .12rem .55rem;
+                border-radius: 20px;
+                margin: .15rem .1rem 0 0
+            }
+
+            @media (max-width:575.98px) {
+                #section7 {
+                    padding: 4rem 0
+                }
+
+                #section7 .card-body {
+                    padding: 1.3rem
+                }
+            }
+        </style>
+
+        <div class="container">
+            <div class="sec-head wow fadeInDown">
+                <span class="tag">// 07 · EXPERIENCE II</span>
+                <h2 class="g-title">在職開發經歷 <span class="g-grad-text">維運與核心架構</span></h2>
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6 wow fadeInLeft">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="ico"><i class="bi bi-activity"></i></div>
+                            <span class="year">2025</span>
+                            <h3>Datadog 系統觀測性(Observability)與即時告警架構</h3>
+                            <p>導入 Datadog 異常偵測機制, 建立全方位維運監控與自動化告警指標, 縮短平均障礙排除時間(MTTR)。</p>
+                            <div class="stack">
+                                <span>Datadog</span><span>APM</span><span>Alerting</span><span>MTTR</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay=".15s">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="ico"><i class="bi bi-cash-coin"></i></div>
+                            <span class="year">2024</span>
+                            <h3>用戶提現流量重構與資金出帳系統</h3>
+                            <p>重構核心資金提現流程, 引入分散式鎖(Distributed Lock)與資料庫事務(Transaction), 確保不超扣與資料最終一致性。</p>
+                            <div class="stack"><span>Distributed
+                                    Lock</span><span>Transaction</span><span>Redis</span><span>FinTech</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-12 wow fadeInRight" data-wow-delay=".3s">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="ico"><i class="bi bi-wallet2"></i></div>
+                            <span class="year">2024</span>
+                            <h3>帳戶錢包與多級分銷佣金自動化結算系統</h3>
+                            <p>負責會員錢包儲值、資金派發流水的介接, 並實作多級分銷(Affiliate)系統的自動化分紅與佣金結算模組。</p>
+                            <div class="stack">
+                                <span>Wallet</span><span>Affiliate</span><span>Settlement</span><span>MySQL</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            $(function () {
+                // 標籤依序亮起的小互動
+                $('#section7 .card').on('mouseenter', function () {
+                    $(this).find('.stack span').each(function (i) {
+                        $(this).delay(i * 80).queue(function (n) { $(this).css('box-shadow', '0 0 8px rgba(0,255,135,.5)'); n(); });
+                    });
+                }).on('mouseleave', function () {
+                    $(this).find('.stack span').clearQueue().css('box-shadow', '');
+                });
+            });
+        </script>
+    </section>
+    <!-- ========== Section 7: End ========== -->
+
+
+    <!-- ========== Section 8: Work Experience Part 3 Start ========== -->
+    <section id="section8">
+        <style>
+            #section8 {
+                padding: 6rem 0;
+                background: linear-gradient(180deg, transparent, rgba(17, 22, 34, .45), transparent)
+            }
+
+            #section8 .sec-head {
+                text-align: center;
+                margin-bottom: 3rem
+            }
+
+            #section8 .sec-head h2 {
+                font-size: clamp(1.7rem, 4vw, 2.5rem)
+            }
+
+            #section8 .sec-head .tag {
+                font-family: var(--font-mono);
+                color: var(--accent-cyan);
+                font-size: .85rem;
+                display: block;
+                margin-bottom: .4rem
+            }
+
+            #section8 .card {
+                height: 100%;
+                background: rgba(17, 22, 34, .85);
+                border: 1px solid var(--border-color);
+                border-left: 3px solid var(--accent-cyan);
+                border-radius: 12px;
+                color: var(--text-primary);
+                transition: all .3s
+            }
+
+            #section8 .card:hover {
+                transform: translateX(6px);
+                border-color: rgba(0, 242, 254, .5);
+                border-left-color: var(--accent-green);
+                box-shadow: var(--glow-cyan)
+            }
+
+            #section8 .card-body {
+                padding: 1.5rem
+            }
+
+            #section8 .head {
+                display: flex;
+                align-items: center;
+                gap: .8rem;
+                margin-bottom: .7rem
+            }
+
+            #section8 .ico {
+                flex: 0 0 46px;
+                height: 46px;
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.35rem;
+                color: var(--accent-cyan);
+                background: rgba(0, 242, 254, .08);
+                border: 1px solid var(--border-color)
+            }
+
+            #section8 .year {
+                font-family: var(--font-mono);
+                font-size: .78rem;
+                color: var(--accent-green);
+                display: block
+            }
+
+            #section8 h3 {
+                font-size: 1rem;
+                font-weight: 700;
+                line-height: 1.5;
+                margin: 0
+            }
+
+            #section8 p {
+                color: var(--text-secondary);
+                font-size: .9rem;
+                line-height: 1.8;
+                margin: 0
+            }
+
+            @media (max-width:575.98px) {
+                #section8 {
+                    padding: 4rem 0
+                }
+
+                #section8 .card-body {
+                    padding: 1.2rem
+                }
+            }
+        </style>
+
+        <div class="container">
+            <div class="sec-head wow fadeInDown">
+                <span class="tag">// 08 · EXPERIENCE III</span>
+                <h2 class="g-title">在職開發經歷 <span class="g-grad-text">底層優化與串流</span></h2>
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-6 wow fadeInUp">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="head">
+                                <div class="ico"><i class="bi bi-bug"></i></div>
+                                <div><span class="year">2024</span>
+                                    <h3>Laravel 核心業務單元測試與品質管控</h3>
+                                </div>
+                            </div>
+                            <p>負責核心商業邏輯的單元測試(Unit Test)撰寫, 大幅提升程式碼覆蓋率, 並整合 CI/CD 自動化測試流程。</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 wow fadeInUp" data-wow-delay=".1s">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="head">
+                                <div class="ico"><i class="bi bi-diagram-3"></i></div>
+                                <div><span class="year">2023</span>
+                                    <h3>多級分銷樹狀架構維護與非同步批次排程系統(移桶)</h3>
+                                </div>
+                            </div>
+                            <p>處理無限層級的樹狀組織報表, 並針對分銷商結構變更, 設計高效能非同步批次變更與預約排程機制, 解決大數據量下的鎖表(Lock)問題。</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 wow fadeInUp" data-wow-delay=".2s">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="head">
+                                <div class="ico"><i class="bi bi-person-vcard"></i></div>
+                                <div><span class="year">2023</span>
+                                    <h3>KYC 身分認證與敏感資安數據權限控管系統</h3>
+                                </div>
+                            </div>
+                            <p>配合合規與防詐欺需求, 針對使用者真實姓名等個資(PII), 實作嚴格的欄位級(Column-level)存取權限控管與加密傳輸。</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 wow fadeInUp" data-wow-delay=".3s">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="head">
+                                <div class="ico"><i class="bi bi-phone-vibrate"></i></div>
+                                <div><span class="year">2022</span>
+                                    <h3>帳戶資安雙因子認證(2FA)安全模組</h3>
+                                </div>
+                            </div>
+                            <p>整合第三方簡訊與郵件 Gateway, 實作手機/郵箱二階段驗證, 大幅提升帳戶安全性。</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 wow fadeInUp" data-wow-delay=".4s">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="head">
+                                <div class="ico"><i class="bi bi-lightning-charge"></i></div>
+                                <div><span class="year">2021</span>
+                                    <h3>基於 KSQL 的即時串流數據交易報表系統</h3>
+                                </div>
+                            </div>
+                            <p>運用 KSQL 建立即時(Real-time)串流資料 Pipeline, 將分銷商即時業績統計延遲降低至秒級。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            $(function () {
+                // 手機不套用位移 hover, 避免觸控殘留
+                if (window.matchMedia('(hover: none)').matches) {
+                    $('#section8 .card').css('transition', 'none');
+                }
+            });
+        </script>
+    </section>
+    <!-- ========== Section 8: End ========== -->
+
+
+    <!-- ========== Section 9: System Metrics Table Start ========== -->
+    <section id="section9">
+        <style>
+            #section9 {
+                padding: 6rem 0
+            }
+
+            #section9 .sec-head {
+                text-align: center;
+                margin-bottom: 3rem
+            }
+
+            #section9 .sec-head h2 {
+                font-size: clamp(1.7rem, 4vw, 2.5rem)
+            }
+
+            #section9 .sec-head .tag {
+                font-family: var(--font-mono);
+                color: var(--accent-cyan);
+                font-size: .85rem;
+                display: block;
+                margin-bottom: .4rem
+            }
+
+            #section9 .kpi {
+                text-align: center;
+                background: rgba(17, 22, 34, .85);
+                border: 1px solid var(--border-color);
+                border-radius: 16px;
+                padding: 1.6rem 1rem;
+                height: 100%;
+                transition: all .3s
+            }
+
+            #section9 .kpi:hover {
+                box-shadow: var(--glow-cyan);
+                border-color: rgba(0, 242, 254, .5);
+                transform: translateY(-4px)
+            }
+
+            #section9 .kpi .num {
+                font-family: var(--font-mono);
+                font-weight: 700;
+                font-size: clamp(2rem, 5vw, 3rem);
+                line-height: 1.1
+            }
+
+            #section9 .kpi .num span.unit {
+                font-size: .55em;
+                margin-left: 2px
+            }
+
+            #section9 .kpi .lbl {
+                color: var(--text-secondary);
+                font-size: .85rem;
+                margin-top: .5rem
+            }
+
+            #section9 .table-wrap {
+                margin-top: 2.5rem;
+                background: rgba(17, 22, 34, .85);
+                border: 1px solid var(--border-color);
+                border-radius: 16px;
+                padding: .5rem;
+                box-shadow: 0 0 30px rgba(0, 242, 254, .06)
+            }
+
+            #section9 .table {
+                --bs-table-bg: transparent;
+                --bs-table-color: var(--text-primary);
+                --bs-table-hover-bg: rgba(0, 242, 254, .07);
+                --bs-table-hover-color: var(--text-primary);
+                --bs-table-border-color: var(--border-color);
+                margin: 0;
+                font-size: .92rem
+            }
+
+            #section9 .table thead th {
+                font-family: var(--font-mono);
+                font-size: .78rem;
+                letter-spacing: 1px;
+                color: var(--accent-cyan);
+                background: rgba(0, 242, 254, .06);
+                border-bottom: 1px solid var(--accent-cyan);
+                white-space: nowrap
+            }
+
+            #section9 .table td,
+            #section9 .table th {
+                padding: .9rem 1rem;
+                vertical-align: middle
+            }
+
+            #section9 .before {
+                color: var(--text-secondary);
+                text-decoration: line-through;
+                text-decoration-color: rgba(148, 163, 184, .4)
+            }
+
+            #section9 .after {
+                color: var(--accent-green);
+                font-weight: 700
+            }
+
+            #section9 .gain {
+                display: inline-block;
+                font-family: var(--font-mono);
+                font-size: .78rem;
+                color: var(--bg-main);
+                background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green));
+                padding: .1rem .6rem;
+                border-radius: 20px;
+                font-weight: 700;
+                white-space: nowrap
+            }
+
+            #section9 .note {
+                font-size: .75rem;
+                color: var(--text-secondary);
+                text-align: center;
+                margin-top: 1rem;
+                font-family: var(--font-mono)
+            }
+
+            @media (max-width:575.98px) {
+                #section9 {
+                    padding: 4rem 0
+                }
+
+                #section9 .table {
+                    font-size: .82rem
+                }
+            }
+        </style>
+
+        <div class="container">
+            <div class="sec-head wow fadeInDown">
+                <span class="tag">// 09 · METRICS</span>
+                <h2 class="g-title">系統核心效能指標面板 <span class="g-grad-text">System Metrics</span></h2>
+            </div>
+
+            <div class="row g-3 g-md-4">
+                <div class="col-6 col-lg-3 wow zoomIn">
+                    <div class="kpi">
+                        <div class="num g-grad-text"><span class="counter">99.9</span><span class="unit">%</span></div>
+                        <div class="lbl">惡意註冊阻擋率</div>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-3 wow zoomIn" data-wow-delay=".1s">
+                    <div class="kpi">
+                        <div class="num g-grad-text"><span class="counter">15</span><span class="unit">+</span></div>
+                        <div class="lbl">大型專案實戰</div>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-3 wow zoomIn" data-wow-delay=".2s">
+                    <div class="kpi">
+                        <div class="num g-grad-text"><span class="counter">8</span><span class="unit">+</span></div>
+                        <div class="lbl">年後端經驗(2018 - 2026)</div>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-3 wow zoomIn" data-wow-delay=".3s">
+                    <div class="kpi">
+                        <div class="num g-grad-text"><span class="counter">1</span><span class="unit">s</span></div>
+                        <div class="lbl">串流報表延遲(秒級)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-wrap wow fadeInUp">
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>PROJECT</th>
+                                <th>METRIC</th>
+                                <th>BEFORE</th>
+                                <th>AFTER</th>
+                                <th>GAIN</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2021 KSQL 即時串流報表</td>
+                                <td>業績統計延遲</td>
+                                <td class="before">分鐘級</td>
+                                <td class="after">秒級</td>
+                                <td><span class="gain">▼ 延遲大幅下降</span></td>
+                            </tr>
+                            <tr>
+                                <td>2026 跨層級數據觀測 &amp; 壓測</td>
+                                <td>高併發穩定性 / 慢查詢</td>
+                                <td class="before">瓶頸未定位</td>
+                                <td class="after">瓶頸已排除</td>
+                                <td><span class="gain">▲ 穩定性提升</span></td>
+                            </tr>
+                            <tr>
+                                <td>2025 註冊防禦與風控</td>
+                                <td>惡意註冊阻擋率</td>
+                                <td class="before">無防護</td>
+                                <td class="after">99.9%</td>
+                                <td><span class="gain">▲ 99.9%</span></td>
+                            </tr>
+                            <tr>
+                                <td>2025 Datadog 觀測與告警</td>
+                                <td>MTTR 平均障礙排除時間</td>
+                                <td class="before">被動發現</td>
+                                <td class="after">即時告警</td>
+                                <td><span class="gain">▼ MTTR 縮短</span></td>
+                            </tr>
+                            <tr>
+                                <td>2024 提現重構</td>
+                                <td>資金一致性</td>
+                                <td class="before">有超扣風險</td>
+                                <td class="after">零超扣</td>
+                                <td><span class="gain">✔ 最終一致</span></td>
+                            </tr>
+                            <tr>
+                                <td>2023 分銷樹移桶批次</td>
+                                <td>大量資料變更</td>
+                                <td class="before">鎖表阻塞</td>
+                                <td class="after">非同步無鎖表</td>
+                                <td><span class="gain">✔ 免鎖表</span></td>
+                            </tr>
+                            <tr>
+                                <td>2024 Laravel 單元測試</td>
+                                <td>程式碼覆蓋率</td>
+                                <td class="before">低</td>
+                                <td class="after">大幅提升</td>
+                                <td><span class="gain">▲ 含 CI/CD</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="note">* 部分指標為定性描述, 正式上線前請依實際數據替換。</p>
+            </div>
+        </div>
+
+        <!-- Counter-Up2(本 Section 自行載入, 方便日後拆檔) -->
+        <script src="https://unpkg.com/counterup2@2.0.2/dist/index.js"></script>
+        <script>
+            $(function () {
+                var cu = window.counterUp && (window.counterUp.default || window.counterUp);
+                if (!cu) return;
+                var io = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (en) {
+                        if (en.isIntersecting && !en.target.dataset.done) {
+                            en.target.dataset.done = 1;
+                            cu(en.target, { duration: 1800, delay: 16 });
+                        }
+                    });
+                }, { threshold: .6 });
+                document.querySelectorAll('#section9 .counter').forEach(function (el) { io.observe(el); });
+            });
+        </script>
+    </section>
+    <!-- ========== Section 9: End ========== -->
+
+
+    <!-- ========== Section 10: Portfolio System Start ========== -->
+    <section id="section10">
+        <style>
+            #section10 {
+                padding: 6rem 0;
+                background: linear-gradient(180deg, transparent, rgba(17, 22, 34, .45), transparent)
+            }
+
+            #section10 .sec-head {
+                text-align: center;
+                margin-bottom: 3rem
+            }
+
+            #section10 .sec-head h2 {
+                font-size: clamp(1.7rem, 4vw, 2.5rem)
+            }
+
+            #section10 .sec-head .tag {
+                font-family: var(--font-mono);
+                color: var(--accent-cyan);
+                font-size: .85rem;
+                display: block;
+                margin-bottom: .4rem
+            }
+
+            #section10 .card {
+                height: 100%;
+                background: var(--bg-card);
+                border: 1px solid var(--border-color);
+                border-radius: 16px;
+                color: var(--text-primary);
+                transition: transform .4s, border-color .4s, box-shadow .4s;
+                overflow: hidden
+            }
+
+            #section10 .card:hover {
+                transform: scale(1.04);
+                border-color: var(--accent-cyan);
+                box-shadow: 0 0 28px rgba(0, 242, 254, .4), 0 0 60px rgba(0, 255, 135, .15)
+            }
+
+            #section10 .card.card-feature {
+                border-color: rgba(0, 255, 135, .35)
+            }
+
+            #section10 .cover {
+                position: relative;
+                height: 130px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 3rem;
+                color: var(--accent-cyan);
+                background: linear-gradient(135deg, rgba(0, 242, 254, .15), rgba(0, 255, 135, .06)), repeating-linear-gradient(90deg, rgba(0, 242, 254, .06) 0 1px, transparent 1px 22px)
+            }
+
+            #section10 .badge-course {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                font-family: var(--font-mono);
+                font-size: .68rem;
+                font-weight: 700;
+                color: var(--bg-main);
+                background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green));
+                padding: .1rem .6rem;
+                border-radius: 20px
+            }
+
+            #section10 .card-body {
+                padding: 1.4rem;
+                display: flex;
+                flex-direction: column
+            }
+
+            #section10 h3 {
+                font-family: var(--font-mono);
+                font-size: 1rem;
+                font-weight: 700;
+                color: var(--accent-green);
+                margin: 0 0 .6rem
+            }
+
+            #section10 p {
+                color: var(--text-secondary);
+                font-size: .88rem;
+                line-height: 1.75;
+                flex: 1
+            }
+
+            #section10 .tags span {
+                display: inline-block;
+                font-family: var(--font-mono);
+                font-size: .7rem;
+                color: var(--accent-cyan);
+                border: 1px solid var(--border-color);
+                padding: .1rem .5rem;
+                border-radius: 20px;
+                margin: .1rem .1rem 0 0
+            }
+
+            #section10 .btn-link-x {
+                margin-top: 1rem;
+                align-self: flex-start;
+                font-family: var(--font-mono);
+                font-size: .82rem;
+                color: var(--accent-cyan);
+                border: 1px solid var(--accent-cyan);
+                border-radius: 6px;
+                padding: .3rem .9rem;
+                text-decoration: none;
+                transition: all .3s;
+                background: transparent
+            }
+
+            #section10 .btn-link-x:hover {
+                background: var(--accent-cyan);
+                color: var(--bg-main);
+                box-shadow: var(--glow-cyan)
+            }
+
+            /* 展開 / 收合 */
+            #section10 .s10-extra-inner {
+                padding-top: 1.5rem
+            }
+
+            #section10 .s10-more-wrap {
+                text-align: center;
+                margin-top: 2.5rem
+            }
+
+            #section10 .btn-more {
+                font-family: var(--font-mono);
+                font-size: .88rem;
+                color: var(--accent-cyan);
+                background: transparent;
+                border: 1px solid var(--accent-cyan);
+                border-radius: 8px;
+                padding: .5rem 1.6rem;
+                transition: all .3s
+            }
+
+            #section10 .btn-more:hover,
+            #section10 .btn-more:focus {
+                background: var(--accent-cyan);
+                color: var(--bg-main);
+                box-shadow: var(--glow-cyan)
+            }
+
+            @media (max-width:575.98px) {
+                #section10 {
+                    padding: 4rem 0
+                }
+            }
+        </style>
+
+        <div class="container">
+            <div class="sec-head wow fadeInDown">
+                <span class="tag">// 10 · PORTFOLIO</span>
+                <h2 class="g-title">精選開源與技術組件 <span class="g-grad-text">Portfolio System</span></h2>
+            </div>
+
+            <!-- 所有作品卡片依序放在這個 row 內;超過 VISIBLE_COUNT 的卡片會由 JS 自動收進「顯示更多」 -->
+            <div class="row g-4" id="s10Grid">
+
+                <!-- Card 1(精選):AI 輔助全端設計課程練習 -->
+                <div class="col-xl-3 col-md-6 s10-card-col wow fadeInUp">
+                    <div class="card card-feature">
+                        <div class="cover"><i class="bi bi-mortarboard"></i><span class="badge-course">COURSE</span>
+                        </div>
+                        <div class="card-body">
+                            <h3>ai-fullstack-course</h3>
+                            <p>收錄 AI 輔助全端設計課程的練習作品, 涵蓋 HTML/CSS、Bootstrap、JavaScript 與表單互動, 持續更新。</p>
+                            <div class="tags">
+                                <span>HTML/CSS</span><span>Bootstrap</span><span>JavaScript</span><span>jQuery</span>
+                            </div>
+                            <a href="tcnrstus_ai_training_portfolio.html" target="_blank" rel="noopener noreferrer"
+                                class="btn-link-x"><i class="bi bi-box-arrow-up-right me-1"></i>Open Portfolio</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="col-xl-3 col-md-6 s10-card-col wow fadeInUp" data-wow-delay=".1s">
+                    <div class="card">
+                        <div class="cover"><i class="bi bi-lock"></i></div>
+                        <div class="card-body">
+                            <h3>distributed-lock-kit</h3>
+                            <p>封裝 Redis 分散式鎖黑盒子, 支援自動續期、可重入與逾時釋放, 適用於提現與扣款等關鍵流程。</p>
+                            <div class="tags"><span>Node.js</span><span>Redis</span><span>Lock</span></div>
+                            <a href="#" target="_blank" rel="noopener noreferrer" class="btn-link-x"><i
+                                    class="bi bi-github me-1"></i>View Repo</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="col-xl-3 col-md-6 s10-card-col wow fadeInUp" data-wow-delay=".2s">
+                    <div class="card">
+                        <div class="cover"><i class="bi bi-diagram-3"></i></div>
+                        <div class="card-body">
+                            <h3>affiliate-tree-engine</h3>
+                            <p>無限層級分銷樹狀結構引擎, 內建非同步批次移桶與預約排程, 避免大數據量鎖表。</p>
+                            <div class="tags"><span>PHP</span><span>MySQL</span><span>Queue</span></div>
+                            <a href="#" target="_blank" rel="noopener noreferrer" class="btn-link-x"><i
+                                    class="bi bi-github me-1"></i>View Repo</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="col-xl-3 col-md-6 s10-card-col wow fadeInUp" data-wow-delay=".3s">
+                    <div class="card">
+                        <div class="cover"><i class="bi bi-shield-check"></i></div>
+                        <div class="card-body">
+                            <h3>risk-guard-sdk</h3>
+                            <p>註冊風控組件:IP 頻率限制、行為驗證串接與風險評分, 以可插拔中介層方式提供。</p>
+                            <div class="tags"><span>Express</span><span>Rate Limit</span><span>Scoring</span></div>
+                            <a href="#" target="_blank" rel="noopener noreferrer" class="btn-link-x"><i
+                                    class="bi bi-github me-1"></i>View Repo</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 5(預設會被收進「顯示更多」) -->
+                <div class="col-xl-3 col-md-6 s10-card-col wow fadeInUp">
+                    <div class="card">
+                        <div class="cover"><i class="bi bi-graph-up-arrow"></i></div>
+                        <div class="card-body">
+                            <h3>dataform-model-pack</h3>
+                            <p>BigQuery 與 Dataform 的數據建模範本, 含增量更新、資料品質斷言與報表層設計規範。</p>
+                            <div class="tags"><span>BigQuery</span><span>Dataform</span><span>SQL</span></div>
+                            <a href="#" target="_blank" rel="noopener noreferrer" class="btn-link-x"><i
+                                    class="bi bi-github me-1"></i>View Repo</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ▼ 新作品卡片請複製上面任一 Card 區塊, 貼在這一行註解的上方 ▼ -->
+            </div>
+
+            <!-- 展開區:由 JS 自動建立內容, 不需手動維護 -->
+            <div class="collapse" id="s10Extra">
+                <div class="s10-extra-inner">
+                    <div class="row g-4"></div>
+                </div>
+            </div>
+
+            <div class="s10-more-wrap" id="s10MoreWrap">
+                <button type="button" class="btn-more" id="s10MoreBtn" data-bs-toggle="collapse"
+                    data-bs-target="#s10Extra" aria-expanded="false" aria-controls="s10Extra"></button>
+            </div>
+        </div>
+
+        <script>
+            $(function () {
+                // ★ 預設顯示張數:一列 4 張。作品累積到 8 張左右時, 改成 8 即為預設兩列
+                var VISIBLE_COUNT = 4;
+
+                var $cards = $('#s10Grid').children('.s10-card-col');
+                var $extra = $cards.slice(VISIBLE_COUNT);
+                var $btn = $('#s10MoreBtn');
+
+                function setLabel(open) {
+                    $btn.html(open
+                        ? '<i class="bi bi-chevron-up me-1"></i>收合'
+                        : '<i class="bi bi-chevron-down me-1"></i>顯示更多 (' + $extra.length + ')');
+                }
+
+                if ($extra.length === 0) {
+                    $('#s10MoreWrap, #s10Extra').remove();
+                } else {
+                    // 移進展開區, 並避免 WOW.js 讓隱藏卡片維持不可見
+                    $extra.removeClass('wow')
+                        .css({ visibility: 'visible', 'animation-name': 'none' })
+                        .appendTo('#s10Extra .row');
+                    setLabel(false);
+
+                    var el = document.getElementById('s10Extra');
+                    el.addEventListener('shown.bs.collapse', function () { setLabel(true); });
+                    el.addEventListener('hidden.bs.collapse', function () { setLabel(false); });
+                }
+
+                // href="#" 的佔位連結:阻止跳回頁首與開空白新分頁
+                $('#section10 a[href="#"]').on('click', function (e) { e.preventDefault(); });
+            });
+        </script>
+    </section>
+    <!-- ========== Section 10: End ========== -->
+
+
+    <!-- ========== Section 11: AI Co-Pilot Workflow Start ========== -->
+    <section id="section11">
+        <style>
+            #section11 {
+                padding: 6rem 0
+            }
+
+            #section11 .sec-head {
+                text-align: center;
+                margin-bottom: 3rem
+            }
+
+            #section11 .sec-head h2 {
+                font-size: clamp(1.7rem, 4vw, 2.5rem)
+            }
+
+            #section11 .sec-head .tag {
+                font-family: var(--font-mono);
+                color: var(--accent-cyan);
+                font-size: .85rem;
+                display: block;
+                margin-bottom: .4rem
+            }
+
+            #section11 .flow {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 1.2rem;
+                justify-content: center;
+                align-items: stretch
+            }
+
+            #section11 .step {
+                flex: 1 1 220px;
+                max-width: 300px;
+                position: relative;
+                background: rgba(17, 22, 34, .85);
+                backdrop-filter: blur(10px);
+                border: 1px solid var(--border-color);
+                border-radius: 16px;
+                padding: 1.6rem 1.3rem;
+                transition: all .35s;
+                cursor: default
+            }
+
+            #section11 .step:hover,
+            #section11 .step.on {
+                border-color: var(--accent-cyan);
+                box-shadow: var(--glow-cyan);
+                transform: translateY(-6px)
+            }
+
+            #section11 .step .no {
+                font-family: var(--font-mono);
+                font-size: .75rem;
+                color: var(--accent-green)
+            }
+
+            #section11 .step i {
+                display: block;
+                font-size: 2rem;
+                color: var(--accent-cyan);
+                margin: .6rem 0
+            }
+
+            #section11 .step h3 {
+                font-size: 1.05rem;
+                font-weight: 700;
+                margin: 0 0 .5rem
+            }
+
+            #section11 .step p {
+                font-size: .88rem;
+                color: var(--text-secondary);
+                line-height: 1.75;
+                margin: 0
+            }
+
+            #section11 .step:not(:last-child)::after {
+                content: "\F138";
+                font-family: "bootstrap-icons";
+                position: absolute;
+                right: -1.15rem;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--accent-cyan);
+                font-size: 1.1rem;
+                z-index: 2
+            }
+
+            @media (max-width:991.98px) {
+                #section11 .step:not(:last-child)::after {
+                    display: none
+                }
+
+                #section11 .step {
+                    max-width: none
+                }
+            }
+
+            @media (max-width:575.98px) {
+                #section11 {
+                    padding: 4rem 0
+                }
+            }
+        </style>
+
+        <div class="container">
+            <div class="sec-head wow fadeInDown">
+                <span class="tag">// 11 · AI CO-PILOT</span>
+                <h2 class="g-title">AI 協同開發理念 <span class="g-grad-text">Co-Pilot Workflow</span></h2>
+            </div>
+            <div class="flow">
+                <div class="step wow fadeInUp"><span class="no">STEP 01</span><i class="bi bi-chat-square-text"></i>
+                    <h3>需求拆解</h3>
+                    <p>先精準定義業務需求與邊界條件, 再讓 AI 協助列出情境、風險與驗收條件。</p>
+                </div>
+                <div class="step wow fadeInUp" data-wow-delay=".1s"><span class="no">STEP 02</span><i
+                        class="bi bi-diagram-2"></i>
+                    <h3>架構設計</h3>
+                    <p>與 AI 討論資料表設計、鎖策略與流程圖, 比較多種方案後由工程師拍板。</p>
+                </div>
+                <div class="step wow fadeInUp" data-wow-delay=".2s"><span class="no">STEP 03</span><i
+                        class="bi bi-code-slash"></i>
+                    <h3>協同開發</h3>
+                    <p>以 AI 產出樣板與單元測試草稿, 工程師專注在核心商業邏輯與品質把關。</p>
+                </div>
+                <div class="step wow fadeInUp" data-wow-delay=".3s"><span class="no">STEP 04</span><i
+                        class="bi bi-eye"></i>
+                    <h3>Code Review</h3>
+                    <p>AI 先行掃描潛在 Bug、N+1 查詢與資安疑慮, 再由人工做最終審查。</p>
+                </div>
+                <div class="step wow fadeInUp" data-wow-delay=".4s"><span class="no">STEP 05</span><i
+                        class="bi bi-arrow-repeat"></i>
+                    <h3>SOP 沉澱</h3>
+                    <p>把有效的提示詞與流程固化為團隊 SOP, 持續迭代整體產出品質。</p>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            $(function () {
+                // 手機/觸控:點擊切換高亮
+                $('#section11 .step').on('click', function () {
+                    $('#section11 .step').removeClass('on'); $(this).addClass('on');
+                });
+            });
+        </script>
+    </section>
+    <!-- ========== Section 11: End ========== -->
+
+
+    <!-- ========== Section 12: Engineering Philosophy Start ========== -->
+    <section id="section12">
+        <style>
+            #section12 {
+                padding: 6rem 0;
+                background: linear-gradient(180deg, transparent, rgba(17, 22, 34, .5), transparent)
+            }
+
+            #section12 .sec-head {
+                text-align: center;
+                margin-bottom: 3rem
+            }
+
+            #section12 .sec-head h2 {
+                font-size: clamp(1.7rem, 4vw, 2.5rem)
+            }
+
+            #section12 .sec-head .tag {
+                font-family: var(--font-mono);
+                color: var(--accent-cyan);
+                font-size: .85rem;
+                display: block;
+                margin-bottom: .4rem
+            }
+
+            #section12 .manifesto {
+                max-width: 820px;
+                margin: 0 auto 3rem;
+                text-align: center;
+                font-size: clamp(1.05rem, 2.4vw, 1.4rem);
+                line-height: 1.9;
+                color: var(--text-primary);
+                border-left: 3px solid var(--accent-cyan);
+                border-right: 3px solid var(--accent-green);
+                padding: 1rem 1.5rem;
+                background: rgba(17, 22, 34, .6);
+                border-radius: 8px
+            }
+
+            #section12 .manifesto b {
+                color: var(--accent-cyan);
+                font-weight: 700
+            }
+
+            #section12 .pillar {
+                height: 100%;
+                text-align: center;
+                background: var(--bg-card);
+                border: 1px solid var(--border-color);
+                border-radius: 16px;
+                padding: 2rem 1.3rem;
+                transition: all .35s;
+                position: relative;
+                overflow: hidden
+            }
+
+            #section12 .pillar::before {
+                content: attr(data-n);
+                position: absolute;
+                top: -10px;
+                right: 10px;
+                font-family: var(--font-mono);
+                font-size: 4.5rem;
+                font-weight: 700;
+                color: rgba(0, 242, 254, .06)
+            }
+
+            #section12 .pillar:hover {
+                transform: translateY(-6px);
+                border-color: rgba(0, 242, 254, .5);
+                box-shadow: var(--glow-cyan)
+            }
+
+            #section12 .pillar i {
+                font-size: 2.2rem;
+                color: var(--accent-green);
+                margin-bottom: .8rem;
+                display: inline-block
+            }
+
+            #section12 .pillar h3 {
+                font-size: 1.08rem;
+                font-weight: 700;
+                margin-bottom: .6rem
+            }
+
+            #section12 .pillar p {
+                color: var(--text-secondary);
+                font-size: .9rem;
+                line-height: 1.8;
+                margin: 0
+            }
+
+            @media (max-width:575.98px) {
+                #section12 {
+                    padding: 4rem 0
+                }
+
+                #section12 .manifesto {
+                    padding: .8rem 1rem
+                }
+            }
+        </style>
+
+        <div class="container">
+            <div class="sec-head wow fadeInDown">
+                <span class="tag">// 12 · PHILOSOPHY</span>
+                <h2 class="g-title">工程師的日常維運宣言 <span class="g-grad-text">Engineering Philosophy</span></h2>
+            </div>
+            <p class="manifesto wow fadeIn">熱衷<b>流程優化</b>, 把重複性工作<b>SOP 化</b>;主動推動團隊內部<b>統一開發規範</b>, 讓跨團隊溝通成本降到最低。</p>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3 wow fadeInUp">
+                    <div class="pillar" data-n="01"><i class="bi bi-gear-wide-connected"></i>
+                        <h3>流程優化</h3>
+                        <p>持續檢視開發與維運流程, 找出瓶頸並以自動化取代人工重複操作。</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3 wow fadeInUp" data-wow-delay=".1s">
+                    <div class="pillar" data-n="02"><i class="bi bi-journal-check"></i>
+                        <h3>SOP 化</h3>
+                        <p>將排查、部署、壓測等重複性工作寫成可執行的標準流程, 新人也能快速上手。</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3 wow fadeInUp" data-wow-delay=".2s">
+                    <div class="pillar" data-n="03"><i class="bi bi-rulers"></i>
+                        <h3>統一規範</h3>
+                        <p>推動命名、分支、Code Review 與 API 設計規範, 讓程式碼風格一致、可維護。</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3 wow fadeInUp" data-wow-delay=".3s">
+                    <div class="pillar" data-n="04"><i class="bi bi-people"></i>
+                        <h3>降低溝通成本</h3>
+                        <p>以文件、規範與可觀測數據取代來回確認, 縮短跨團隊協作的往返時間。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            $(function () {
+                $('#section12 .pillar').on('mouseenter', function () {
+                    $(this).find('i').css({ transform: 'scale(1.2) rotate(-6deg)', transition: 'transform .3s' });
+                }).on('mouseleave', function () { $(this).find('i').css('transform', ''); });
+            });
+        </script>
+    </section>
+    <!-- ========== Section 12: End ========== -->
+
+
+    <!-- ========== Section 13: Tech Blog Preview Start ========== -->
+    <section id="section13">
+        <style>
+            #section13 {
+                padding: 6rem 0
+            }
+
+            #section13 .sec-head {
+                text-align: center;
+                margin-bottom: 3rem
+            }
+
+            #section13 .sec-head h2 {
+                font-size: clamp(1.7rem, 4vw, 2.5rem)
+            }
+
+            #section13 .sec-head .tag {
+                font-family: var(--font-mono);
+                color: var(--accent-cyan);
+                font-size: .85rem;
+                display: block;
+                margin-bottom: .4rem
+            }
+
+            #section13 .post {
+                height: 100%;
+                background: var(--bg-card);
+                border: 1px solid var(--border-color);
+                border-radius: 16px;
+                overflow: hidden;
+                transition: all .35s;
+                display: flex;
+                flex-direction: column
+            }
+
+            #section13 .post:hover {
+                transform: translateY(-6px);
+                border-color: rgba(0, 242, 254, .5);
+                box-shadow: var(--glow-cyan)
+            }
+
+            #section13 .thumb {
+                height: 170px;
+                overflow: hidden;
+                position: relative
+            }
+
+            #section13 .thumb img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                filter: brightness(.55) saturate(1.2);
+                transition: transform .6s
+            }
+
+            #section13 .post:hover .thumb img {
+                transform: scale(1.1)
+            }
+
+            #section13 .thumb .cat {
+                position: absolute;
+                left: 12px;
+                top: 12px;
+                font-family: var(--font-mono);
+                font-size: .7rem;
+                color: var(--bg-main);
+                background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green));
+                padding: .1rem .6rem;
+                border-radius: 20px;
+                font-weight: 700
+            }
+
+            #section13 .body {
+                padding: 1.3rem;
+                display: flex;
+                flex-direction: column;
+                flex: 1
+            }
+
+            #section13 .meta {
+                font-family: var(--font-mono);
+                font-size: .72rem;
+                color: var(--text-secondary);
+                margin-bottom: .5rem
+            }
+
+            #section13 h3 {
+                font-size: 1.05rem;
+                font-weight: 700;
+                line-height: 1.6;
+                margin: 0 0 .6rem
+            }
+
+            #section13 p {
+                color: var(--text-secondary);
+                font-size: .88rem;
+                line-height: 1.75;
+                flex: 1
+            }
+
+            #section13 .more {
+                font-family: var(--font-mono);
+                font-size: .82rem;
+                color: var(--accent-cyan);
+                text-decoration: none
+            }
+
+            #section13 .more:hover {
+                color: var(--accent-green)
+            }
+
+            @media (max-width:575.98px) {
+                #section13 {
+                    padding: 4rem 0
+                }
+            }
+        </style>
+
+        <div class="container">
+            <div class="sec-head wow fadeInDown">
+                <span class="tag">// 13 · TECH BLOG</span>
+                <h2 class="g-title">技術部落格精選預覽 <span class="g-grad-text">Tech Blog</span></h2>
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6 wow fadeInUp">
+                    <article class="post">
+                        <div class="thumb"><img
+                                src="https://images.unsplash.com/photo-1544383835-bda2bc66a55d?auto=format&fit=crop&w=800&q=80"
+                                alt="樹狀組織"><span class="cat">MySQL</span></div>
+                        <div class="body">
+                            <div class="meta">2026-03 · 8 min read</div>
+                            <h3>解密無限層級樹狀組織的鎖表危機</h3>
+                            <p>從 Nested Set、Closure Table 到非同步批次移桶, 拆解大數據量變更為什麼會鎖表, 以及如何避開。</p><a href="#"
+                                class="more">Read More →</a>
+                        </div>
+                    </article>
+                </div>
+                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay=".1s">
+                    <article class="post">
+                        <div class="thumb"><img
+                                src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80"
+                                alt="數據建模"><span class="cat">BigQuery</span></div>
+                        <div class="body">
+                            <div class="meta">2026-02 · 10 min read</div>
+                            <h3>BigQuery 與 Dataform 的高併發數據建模實踐</h3>
+                            <p>如何以增量更新、分區與資料品質斷言, 打造可維護、低成本的營運報表資料層。</p><a href="#" class="more">Read More →</a>
+                        </div>
+                    </article>
+                </div>
+                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay=".2s">
+                    <article class="post">
+                        <div class="thumb"><img
+                                src="https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=800&q=80"
+                                alt="分散式鎖"><span class="cat">Redis</span></div>
+                        <div class="body">
+                            <div class="meta">2025-11 · 9 min read</div>
+                            <h3>提現不超扣:分散式鎖與 Transaction 的實戰取捨</h3>
+                            <p>談資金出帳流程中鎖粒度、冪等性與最終一致性的設計原則與常見陷阱。</p><a href="#" class="more">Read More →</a>
+                        </div>
+                    </article>
+                </div>
+                <div class="col-lg-4 col-md-6 wow fadeInUp">
+                    <article class="post">
+                        <div class="thumb"><img
+                                src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80"
+                                alt="串流"><span class="cat">Kafka</span></div>
+                        <div class="body">
+                            <div class="meta">2025-08 · 7 min read</div>
+                            <h3>用 KSQL 把報表延遲從分鐘壓到秒級</h3>
+                            <p>從批次報表到即時串流 Pipeline 的改造歷程與踩坑紀錄。</p><a href="#" class="more">Read More →</a>
+                        </div>
+                    </article>
+                </div>
+                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay=".1s">
+                    <article class="post">
+                        <div class="thumb"><img
+                                src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80"
+                                alt="可觀測性"><span class="cat">Datadog</span></div>
+                        <div class="body">
+                            <div class="meta">2025-06 · 6 min read</div>
+                            <h3>從被動救火到主動告警:Observability 落地筆記</h3>
+                            <p>如何設計有意義的告警指標, 有效縮短 MTTR 並減少告警疲勞。</p><a href="#" class="more">Read More →</a>
+                        </div>
+                    </article>
+                </div>
+                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay=".2s">
+                    <article class="post">
+                        <div class="thumb"><img
+                                src="https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=800&q=80"
+                                alt="AI 協作"><span class="cat">AI</span></div>
+                        <div class="body">
+                            <div class="meta">2026-01 · 8 min read</div>
+                            <h3>AI 協同開發:我的 Code Review 與架構設計工作流</h3>
+                            <p>分享如何把生成式 AI 融入日常開發, 並用 SOP 讓成果可複製。</p><a href="#" class="more">Read More →</a>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            $(function () { $('#section13 .more').on('click', function (e) { e.preventDefault(); }); });
+        </script>
+    </section>
+    <!-- ========== Section 13: End ========== -->
+
+
+    <!-- ========== Section 14: FAQ Accordion Start ========== -->
+    <section id="section14">
+        <style>
+            #section14 {
+                padding: 6rem 0;
+                background: linear-gradient(180deg, transparent, rgba(17, 22, 34, .45), transparent)
+            }
+
+            #section14 .sec-head {
+                text-align: center;
+                margin-bottom: 3rem
+            }
+
+            #section14 .sec-head h2 {
+                font-size: clamp(1.7rem, 4vw, 2.5rem)
+            }
+
+            #section14 .sec-head .tag {
+                font-family: var(--font-mono);
+                color: var(--accent-cyan);
+                font-size: .85rem;
+                display: block;
+                margin-bottom: .4rem
+            }
+
+            #section14 .accordion {
+                max-width: 860px;
+                margin: 0 auto;
+                --bs-accordion-bg: transparent;
+                --bs-accordion-border-color: var(--border-color);
+                --bs-accordion-color: var(--text-primary)
+            }
+
+            #section14 .accordion-item {
+                background: var(--bg-card);
+                border: 1px solid var(--border-color);
+                border-radius: 12px !important;
+                margin-bottom: .9rem;
+                overflow: hidden
+            }
+
+            #section14 .accordion-button {
+                background: var(--bg-card);
+                color: var(--text-primary);
+                font-weight: 500;
+                box-shadow: none;
+                padding: 1.1rem 1.3rem
+            }
+
+            #section14 .accordion-button::before {
+                content: "$ ";
+                font-family: var(--font-mono);
+                color: var(--accent-green);
+                margin-right: .5rem
+            }
+
+            #section14 .accordion-button:not(.collapsed) {
+                color: var(--accent-cyan);
+                background: rgba(0, 242, 254, .07)
+            }
+
+            #section14 .accordion-button:focus {
+                box-shadow: var(--glow-cyan);
+                border-color: var(--accent-cyan)
+            }
+
+            #section14 .accordion-button::after {
+                filter: invert(80%) sepia(60%) saturate(800%) hue-rotate(140deg)
+            }
+
+            #section14 .accordion-body {
+                color: var(--text-secondary);
+                line-height: 1.9;
+                font-size: .93rem;
+                border-top: 1px solid var(--border-color)
+            }
+
+            #section14 .accordion-body ol,
+            #section14 .accordion-body ul {
+                padding-left: 1.2rem;
+                margin: 0
+            }
+
+            @media (max-width:575.98px) {
+                #section14 {
+                    padding: 4rem 0
+                }
+
+                #section14 .accordion-button {
+                    padding: .9rem 1rem;
+                    font-size: .92rem
+                }
+            }
+        </style>
+
+        <div class="container">
+            <div class="sec-head wow fadeInDown">
+                <span class="tag">// 14 · FAQ</span>
+                <h2 class="g-title">常見問答與合作模式 <span class="g-grad-text">FAQ</span></h2>
+            </div>
+            <div class="accordion wow fadeInUp" id="s14Acc">
+                <div class="accordion-item">
+                    <h2 class="accordion-header"><button class="accordion-button" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#s14c1"
+                            aria-expanded="true">如何進行跨團隊統一規範的推動?</button></h2>
+                    <div id="s14c1" class="accordion-collapse collapse show" data-bs-parent="#s14Acc">
+                        <div class="accordion-body">
+                            <ol>
+                                <li>先盤點痛點, 用實際案例(如重複 Bug、溝通往返)說明價值。</li>
+                                <li>與各團隊共同擬定最小可行規範, 避免一次推太多。</li>
+                                <li>以 Lint、CI 檢查與範本專案自動化落實, 減少人工糾正。</li>
+                                <li>定期回顧與修訂, 讓規範隨團隊成長。</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header"><button class="accordion-button collapsed" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#s14c2"
+                            aria-expanded="false">高併發系統壓測的標準流程?</button></h2>
+                    <div id="s14c2" class="accordion-collapse collapse" data-bs-parent="#s14Acc">
+                        <div class="accordion-body">
+                            <ol>
+                                <li>釐清目標:預期 QPS、P95/P99 延遲與錯誤率門檻。</li>
+                                <li>以 k6 撰寫貼近真實流量的情境腳本。</li>
+                                <li>逐步加壓, 搭配 Datadog 觀察 CPU、連線池、慢查詢與鎖等待。</li>
+                                <li>定位瓶頸、優化後重測, 並把結果寫成報告與 SOP。</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header"><button class="accordion-button collapsed" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#s14c3"
+                            aria-expanded="false">如何確保資金類流程不超扣?</button></h2>
+                    <div id="s14c3" class="accordion-collapse collapse" data-bs-parent="#s14Acc">
+                        <div class="accordion-body">
+                            結合分散式鎖控制並發、資料庫 Transaction 確保原子性, 並加入冪等鍵與對帳機制, 達成最終一致性。
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header"><button class="accordion-button collapsed" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#s14c4" aria-expanded="false">你如何運用 AI
+                            提升開發品質?</button></h2>
+                    <div id="s14c4" class="accordion-collapse collapse" data-bs-parent="#s14Acc">
+                        <div class="accordion-body">
+                            用 AI 協助需求拆解、方案比較、測試草稿與 Code Review 初篩, 但關鍵決策與最終審查仍由工程師負責, 並把有效流程沉澱為 SOP。
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header"><button class="accordion-button collapsed" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#s14c5" aria-expanded="false">合作模式有哪些?</button>
+                    </h2>
+                    <div id="s14c5" class="accordion-collapse collapse" data-bs-parent="#s14Acc">
+                        <div class="accordion-body">
+                            <ul>
+                                <li>後端 API / 資料表設計顧問</li>
+                                <li>效能壓測與瓶頸診斷</li>
+                                <li>BigQuery 報表與 ETL 架構規劃</li>
+                                <li>團隊開發規範與 CI/CD 導入</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            $(function () {
+                document.getElementById('s14Acc').addEventListener('shown.bs.collapse', function (e) {
+                    var top = $(e.target).closest('.accordion-item').offset().top - 90;
+                    if ($(window).scrollTop() > top) $('html,body').animate({ scrollTop: top }, 250);
+                });
+            });
+        </script>
+    </section>
+    <!-- ========== Section 14: End ========== -->
+
+
+    <!-- ========== Section 15: Terminal Contact & Footer Start ========== -->
+    <section id="section15">
+        <style>
+            #section15 {
+                padding: 6rem 0 0;
+
+                /* 最後一個 Section 至少填滿導覽列下方的畫面 */
+                min-height: calc(100vh - var(--nav-h));
+                min-height: calc(100dvh - var(--nav-h));
+
+                display: flex;
+                flex-direction: column;
+            }
+
+            /* 將補出的空間放在表單與 Footer 之間，不往下推標題 */
+            #section15>.container {
+                flex: 1 0 auto;
+            }
+
+            #section15>footer {
+                flex-shrink: 0;
+            }
+
+            #section15 .sec-head {
+                text-align: center;
+                margin-bottom: 3rem
+            }
+
+            #section15 .sec-head h2 {
+                font-size: clamp(1.7rem, 4vw, 2.5rem)
+            }
+
+            #section15 .sec-head .tag {
+                font-family: var(--font-mono);
+                color: var(--accent-cyan);
+                font-size: .85rem;
+                display: block;
+                margin-bottom: .4rem
+            }
+
+            #section15 .term {
+                max-width: 820px;
+                margin: 0 auto;
+                background: #05080d;
+                border: 1px solid var(--border-color);
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 0 40px rgba(0, 242, 254, .12)
+            }
+
+            #section15 .term-bar {
+                display: flex;
+                align-items: center;
+                gap: .5rem;
+                padding: .6rem 1rem;
+                background: var(--bg-card);
+                border-bottom: 1px solid var(--border-color)
+            }
+
+            #section15 .dot {
+                width: 12px;
+                height: 12px;
+                border-radius: 50%
+            }
+
+            #section15 .dot.d1 {
+                background: #ff5f56
+            }
+
+            #section15 .dot.d2 {
+                background: #ffbd2e
+            }
+
+            #section15 .dot.d3 {
+                background: #27c93f
+            }
+
+            #section15 .term-title {
+                margin-left: .6rem;
+                font-family: var(--font-mono);
+                font-size: .78rem;
+                color: var(--text-secondary)
+            }
+
+            #section15 .term-body {
+                padding: 1.5rem;
+                font-family: var(--font-mono);
+                font-size: .9rem
+            }
+
+            #section15 .line {
+                color: var(--accent-green);
+                margin-bottom: .9rem;
+                word-break: break-all
+            }
+
+            #section15 .line .u {
+                color: var(--accent-cyan)
+            }
+
+            #section15 .field {
+                display: flex;
+                align-items: flex-start;
+                gap: .6rem;
+                margin-bottom: .9rem
+            }
+
+            #section15 .field label {
+                flex: 0 0 auto;
+                color: var(--accent-green);
+                padding-top: .4rem;
+                white-space: nowrap
+            }
+
+            #section15 .field input,
+            #section15 .field textarea {
+                flex: 1;
+                min-width: 0;
+                background: transparent;
+                border: 0;
+                border-bottom: 1px dashed var(--border-color);
+                color: var(--text-primary);
+                font-family: var(--font-mono);
+                font-size: .9rem;
+                padding: .35rem .2rem;
+                outline: none;
+                resize: none;
+                caret-color: var(--accent-cyan)
+            }
+
+            #section15 .field input:focus,
+            #section15 .field textarea:focus {
+                border-bottom-color: var(--accent-cyan);
+                box-shadow: 0 6px 10px -8px var(--accent-cyan)
+            }
+
+            #section15 .field ::placeholder {
+                color: #3b4658
+            }
+
+            #section15 .btn-send {
+                font-family: var(--font-mono);
+                background: transparent;
+                color: var(--accent-cyan);
+                border: 1px solid var(--accent-cyan);
+                border-radius: 6px;
+                padding: .5rem 1.4rem;
+                transition: all .3s
+            }
+
+            #section15 .btn-send:hover {
+                background: var(--accent-cyan);
+                color: var(--bg-main);
+                box-shadow: var(--glow-cyan)
+            }
+
+            #section15 .btn-send:disabled {
+                opacity: .5
+            }
+
+            #section15 .log {
+                color: var(--text-secondary);
+                font-size: .8rem;
+                margin-top: 1rem;
+                min-height: 1.2em
+            }
+
+            #section15 footer {
+                margin-top: 5rem;
+                border-top: 1px solid var(--border-color);
+                background: rgba(17, 22, 34, .7);
+                padding: 2rem 0;
+                text-align: center
+            }
+
+            #section15 .social a {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 42px;
+                height: 42px;
+                margin: 0 .35rem;
+                border-radius: 50%;
+                border: 1px solid var(--border-color);
+                color: var(--text-secondary);
+                font-size: 1.15rem;
+                text-decoration: none;
+                transition: all .3s
+            }
+
+            #section15 .social a:hover {
+                color: var(--accent-cyan);
+                border-color: var(--accent-cyan);
+                box-shadow: var(--glow-cyan);
+                transform: translateY(-3px)
+            }
+
+            #section15 .copy {
+                margin: 1.2rem 0 0;
+                font-size: .82rem;
+                color: var(--text-secondary);
+                font-family: var(--font-mono)
+            }
+
+            @media (max-width:575.98px) {
+                #section15 {
+                    padding-top: 4rem
+                }
+
+                #section15 .term-body {
+                    padding: 1rem;
+                    font-size: .82rem
+                }
+
+                #section15 .field {
+                    flex-direction: column;
+                    gap: 0
+                }
+
+                #section15 .field input,
+                #section15 .field textarea {
+                    width: 100%
+                }
+            }
+        </style>
+
+        <div class="container">
+            <div class="sec-head wow fadeInDown">
+                <span class="tag">// 15 · CONTACT</span>
+                <h2 class="g-title">終端機通訊埠 <span class="g-grad-text">Terminal Contact</span></h2>
+            </div>
+            <div class="term wow fadeInUp">
+                <div class="term-bar"><span class="dot d1"></span><span class="dot d2"></span><span
+                        class="dot d3"></span><span class="term-title">@ai-core: ~/contact — bash</span></div>
+                <div class="term-body">
+                    <div class="line"><span class="u">@ai-core</span>:~$ ./connect --secure</div>
+                    <form id="s15Form" novalidate>
+                        <div class="field"><label for="s15Name">&gt; name:</label><input id="s15Name" type="text"
+                                placeholder="your_name" autocomplete="off"></div>
+                        <div class="field"><label for="s15Mail">&gt; email:</label><input id="s15Mail" type="email"
+                                placeholder="you@example.com" autocomplete="off"></div>
+                        <div class="field"><label for="s15Msg">&gt; message:</label><textarea id="s15Msg" rows="4"
+                                placeholder="Hello Zac.D ..."></textarea></div>
+                        <button type="submit" class="btn-send" id="s15Btn"><i
+                                class="bi bi-send me-1"></i>./send_message.sh</button>
+                        <div class="log" id="s15Log"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <div class="container">
+                <div class="social">
+                    <a href="#" aria-label="GitHub"><i class="bi bi-github"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                </div>
+                <p class="copy">© 2026 Zac.D All Rights Reserved. Built with AI Co-Pilot Architecture.</p>
+            </div>
+        </footer>
+
+        <script>
+            $(function () {
+                $('#section15 .social a').on('click', function (e) { e.preventDefault(); });
+                $('#s15Form').on('submit', function (e) {
+                    e.preventDefault();
+                    var name = $.trim($('#s15Name').val()), mail = $.trim($('#s15Mail').val()), msg = $.trim($('#s15Msg').val());
+                    if (!name || !mail || !msg) {
+                        Swal.fire({ icon: 'warning', title: '[Error] 欄位不可為空', text: '請完整輸入 name / email / message', customClass: { popup: 'swal-dark' } });
+                        return;
+                    }
+                    var $btn = $('#s15Btn').prop('disabled', true), $log = $('#s15Log');
+                    var steps = ['> encrypting payload (AES-256)...', '> pushing to queue: contact.high_concurrency...', '> ack received.'], i = 0;
+                    $log.text('');
+                    (function next() {
+                        if (i < steps.length) { $log.append(steps[i++] + '<br>'); $log.html($log.html()); setTimeout(next, 500); return; }
+                        Swal.fire({
+                            icon: 'success', title: '[System]',
+                            html: '訊息已成功加密並寫入高併發佇列...<br><small style="color:#94A3B8">from: ' + $('<div>').text(name).html() + '</small>',
+                            customClass: { popup: 'swal-dark' }
+                        });
+                        $('#s15Form')[0].reset(); $log.text(''); $btn.prop('disabled', false);
+                    })();
+                });
+            });
+        </script>
+    </section>
+    <!-- ========== Section 15: End ========== -->
+
 </body>
 
 </html>
