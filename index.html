@@ -793,18 +793,17 @@
 
                         <div class="sys" id="s1Guide">
                             <div class="guide guide-login">
-                                [01] 輸入帳號與密碼<br>
+                                [01] 輸入帳號、密碼<br>
                                 [02] 點擊 EXECUTE LOGIN<br>
-                                [03] 顯示登入驗證結果<br>
-                                <span class="hint">[OK] 展示用，帳密符合格式即可登入_</span>
+                                [03] 顯示登入結果<br>
+                                <span class="hint">[DEMO] 展示用，帳密符合格式即可登入 !!</span>
                             </div>
 
                             <div class="guide guide-register" style="display:none">
-                                [01] 設定使用者名稱<br>
-                                [02] 填寫 Email 與密碼<br>
-                                [03] 點擊 CREATE ACCOUNT<br>
-                                [04] 顯示註冊完成結果<br>
-                                <span class="hint">[OK] 展示用，不會儲存任何資料_</span>
+                                [01] 輸入帳號、密碼、信箱<br>
+                                [02] 點擊 CREATE ACCOUNT<br>
+                                [03] 顯示註冊結果<br>
+                                <span class="hint">[DEMO] 展示用，不會儲存任何資料 !!</span>
                             </div>
                         </div>
                     </div>
@@ -829,18 +828,18 @@
                                 <div class="invalid-feedback" id="s1UserError" aria-live="polite"></div>
                             </div>
 
-                            <div class="mb-3 reg-only">
-                                <label for="s1Email">EMAIL</label>
-                                <input type="email" class="form-control" id="s1Email" placeholder="you@example.com"
-                                    autocomplete="email" aria-describedby="s1EmailError">
-                                <div class="invalid-feedback" id="s1EmailError" aria-live="polite"></div>
-                            </div>
-
                             <div class="mb-3">
                                 <label for="s1Pass">PASSWORD</label>
                                 <input type="password" class="form-control" id="s1Pass" placeholder="••••••••"
                                     autocomplete="current-password" maxlength="64" aria-describedby="s1PassError">
                                 <div class="invalid-feedback" id="s1PassError" aria-live="polite"></div>
+                            </div>
+
+                            <div class="mb-3 reg-only">
+                                <label for="s1Email">EMAIL</label>
+                                <input type="email" class="form-control" id="s1Email" placeholder="you@example.com"
+                                    autocomplete="email" aria-describedby="s1EmailError">
+                                <div class="invalid-feedback" id="s1EmailError" aria-live="polite"></div>
                             </div>
 
                             <button type="submit" class="btn-submit" id="s1SubmitBtn">
@@ -4720,7 +4719,7 @@
                                 <div class="log" id="s15Log" role="status" aria-live="polite"></div>
 
                                 <p class="demo-note">
-                                    [DEMO] 此為前端互動展示，不會實際傳送、加密或儲存訊息。
+                                    [DEMO] 此為前端互動展示，不會實際傳送、加密或儲存訊息 !!
                                 </p>
                             </form>
                         </div>
@@ -4821,9 +4820,7 @@
                                 Swal.fire({
                                     icon: 'success',
                                     title: '[System]',
-                                    text:
-                                        '訊息已成功加密並寫入高併發佇列...（展示模擬）' +
-                                        '\nfrom: ' + name,
+                                    text: '訊息已成功加密並加入佇列...',
                                     customClass: { popup: 'swal-dark' }
                                 });
 
