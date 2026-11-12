@@ -217,6 +217,7 @@
                 display: block;
             }
         </style>
+        <canvas id="matrixCanvas"></canvas>
         <canvas id="particlesCanvas"></canvas>
 
         <script>
@@ -244,11 +245,30 @@
                     repel: {
                         radius: 140,
                         strength: 260
+                    },
+                    matrix: {
+                        alpha: .2,
+                        mouseBoost: 3,
+                        mouseRadius: 160,
+                        minSpeed: 50,
+                        maxSpeed: 160,
+                        minTrail: 8,
+                        maxTrail: 18,
+                        fps: 30,
+                        chars: 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿ01{}<>/$#=;'
                     }
                 };
 
                 var pCanvas = document.getElementById('particlesCanvas');
                 var pCtx = pCanvas.getContext('2d');
+
+                var mCanvas = document.getElementById('matrixCanvas');
+                var mCtx = mCanvas.getContext('2d');
+                var mCols = [];
+                var mFont = 14;
+                var mColW = 18;
+                var mRows = 0;
+                var mAcc = 0;
 
                 var W = 0;
                 var H = 0;
@@ -355,6 +375,100 @@
                     }
                 }
 
+                /* ---------- 矩陣雨 ---------- */
+                function randChar() {
+                    var s = CFG.matrix.chars;
+                    return s.charAt(Math.floor(Math.random() * s.length));
+                }
+
+                function resetColumn(col, initial) {
+                    var m = CFG.matrix;
+
+                    col.speed = rand(m.minSpeed, m.maxSpeed);
+                    col.trail = Math.floor(rand(m.minTrail, m.maxTrail));
+                    col.head = initial
+                        ? rand(-H, H)
+                        : -rand(0, H * .5);
+                }
+
+                function buildMatrix() {
+                    var mobile = W <= CFG.particles.mobileMaxWidth;
+
+                    mFont = mobile ? 12 : 14;
+                    mColW = Math.ceil(mFont * (mobile ? 2 : 1.25));
+                    mRows = Math.ceil(H / mFont) + 2;
+                    mCols = [];
+
+                    var n = Math.ceil(W / mColW);
+
+                    for (var i = 0; i < n; i++) {
+                        var col = { x: i * mColW, chars: [] };
+
+                        for (var r = 0; r < mRows; r++) col.chars.push(randChar());
+                        resetColumn(col, true);
+                        mCols.push(col);
+                    }
+                }
+
+                function drawMatrix(dt, animate) {
+                    var m = CFG.matrix;
+                    var R = m.mouseRadius;
+                    var lastColor = '';
+
+                    mCtx.clearRect(0, 0, W, H);
+                    mCtx.font = mFont + 'px Consolas, "Courier New", monospace';
+                    mCtx.textBaseline = 'top';
+
+                    for (var i = 0; i < mCols.length; i++) {
+                        var col = mCols[i];
+
+                        if (animate) col.head += col.speed * dt;
+
+                        var headRow = Math.floor(col.head / mFont);
+
+                        if (headRow - col.trail > mRows) {
+                            resetColumn(col, false);
+                            continue;
+                        }
+
+                        for (var k = 0; k < col.trail; k++) {
+                            var row = headRow - k;
+                            if (row < 0 || row >= mRows) continue;
+
+                            if (animate && Math.random() < .02) col.chars[row] = randChar();
+
+                            var fade = 1 - k / col.trail;
+                            var alpha = m.alpha * fade * fade;
+                            var color = k === 0 ? '#D5FFF0' : '#00FF87';
+
+                            if (k === 0) alpha = m.alpha * 1.8;
+
+                            // 游標附近的字元變亮，並偏向青藍色。
+                            if (mouse.active) {
+                                var dx = col.x + mColW / 2 - mouse.x;
+                                var dy = row * mFont - mouse.y;
+                                var d = Math.sqrt(dx * dx + dy * dy);
+
+                                if (d < R) {
+                                    var near = 1 - d / R;
+                                    alpha = Math.min(.9, alpha * (1 + m.mouseBoost * near));
+                                    if (k !== 0) color = '#00F2FE';
+                                }
+                            }
+
+                            if (color !== lastColor) {
+                                mCtx.fillStyle = color;
+                                lastColor = color;
+                            }
+
+                            mCtx.globalAlpha = alpha;
+                            mCtx.fillText(col.chars[row], col.x, row * mFont);
+                        }
+                    }
+
+                    mCtx.globalAlpha = 1;
+                }
+
                 /* ---------- 尺寸與主迴圈 ---------- */
                 function resize() {
                     var dpr = Math.min(window.devicePixelRatio || 1, CFG.maxDpr);
@@ -366,6 +480,11 @@
                     pCanvas.height = Math.round(H * dpr);
                     pCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
+                    mCanvas.width = Math.round(W * dpr);
+                    mCanvas.height = Math.round(H * dpr);
+                    mCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                    buildMatrix();
+
                     syncParticles();
 
                     if (reduced) renderStatic();
@@ -373,12 +492,21 @@
 
                 function renderStatic() {
                     drawParticles();
+                    drawMatrix(0, false);
                 }
 
                 function step(dt) {
                     time += dt;
                     updateParticles(dt);
                     drawParticles();
+
+                    // 矩陣雨限制更新頻率，降低文字繪製成本。
+                    mAcc += dt;
+
+                    if (mAcc >= 1 / CFG.matrix.fps) {
+                        drawMatrix(mAcc, true);
+                        mAcc = 0;
+                    }
                 }
 
                 function frame(now) {
