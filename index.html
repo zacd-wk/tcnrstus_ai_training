@@ -5392,6 +5392,315 @@
     </div>
     <!-- ========== Global FX: Scroll Progress & Navigation End ========== -->
 
+
+    <!-- ========== Global FX: Back To Top Rocket Start ========== -->
+    <button id="rocketTop" type="button" aria-label="回到頁面頂端" title="回到頂端">
+        <style>
+            /*
+              此元件位於 pageContent 外，避免跟著內容捲走。
+              z-index 低於導覽列(1040)、進度條(1045)與 Modal，不會蓋住它們。
+              --flame：尾焰強度 0~1，由腳本依「離頁面底部的距離」更新。
+            */
+            #rocketTop {
+                --flame: .15;
+                position: fixed;
+                right: max(18px, env(safe-area-inset-right));
+                bottom: max(30px, env(safe-area-inset-bottom));
+                z-index: 1030;
+                width: 54px;
+                height: 54px;
+                display: grid;
+                place-items: center;
+                padding: 0;
+                color: var(--accent-cyan);
+                background: var(--bg-card);
+                border: 1px solid var(--border-color);
+                border-radius: 50%;
+                box-shadow:
+                    0 0 calc(12px + 22px * var(--flame)) rgba(0, 242, 254, calc(.15 + .35 * var(--flame)));
+                cursor: pointer;
+                opacity: 0;
+                visibility: hidden;
+                transform: translateY(16px) scale(.9);
+                transition: opacity .25s, transform .25s, visibility .25s;
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            #rocketTop.is-visible {
+                opacity: 1;
+                visibility: visible;
+                transform: translateY(0) scale(1);
+            }
+
+            #rocketTop.is-visible:hover {
+                transform: translateY(-3px) scale(1);
+            }
+
+            #rocketTop:focus-visible {
+                outline: 2px solid var(--accent-green);
+                outline-offset: 4px;
+            }
+
+            /* 起飛期間由腳本逐幀控制位置與透明度 */
+            #rocketTop.is-launching {
+                visibility: visible;
+                pointer-events: none;
+                transition: none;
+            }
+
+            #rocketTop svg {
+                position: relative;
+                z-index: 1;
+                width: 26px;
+                height: 26px;
+            }
+
+            /* 尾焰：長度、寬度與亮度都由 --flame 決定 */
+            #rocketTop .rocket-flame {
+                position: absolute;
+                top: calc(50% + 3px);
+                left: 50%;
+                z-index: 0;
+                width: calc(8px + 8px * var(--flame));
+                height: calc(8px + 30px * var(--flame));
+                margin-left: calc(-4px - 4px * var(--flame));
+                border-radius: 45% 45% 50% 50% / 12% 12% 88% 88%;
+                background: linear-gradient(to bottom,
+                        rgba(0, 255, 135, .95) 0%,
+                        rgba(0, 242, 254, .6) 55%,
+                        rgba(0, 242, 254, 0) 100%);
+                filter: blur(1.2px);
+                opacity: calc(.3 + .7 * var(--flame));
+                transform-origin: center top;
+                pointer-events: none;
+                transition: width .2s, height .2s, margin-left .2s, opacity .2s;
+                animation: rocketTopFlicker .16s ease-in-out infinite alternate;
+            }
+
+            #rocketTop .rocket-flame::after {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 25%;
+                width: 50%;
+                height: 60%;
+                border-radius: inherit;
+                background: linear-gradient(to bottom,
+                        rgba(255, 255, 255, .95),
+                        rgba(255, 255, 255, 0));
+            }
+
+            #rocketTop.is-launching .rocket-flame {
+                transition: none;
+            }
+
+            @keyframes rocketTopFlicker {
+                from {
+                    transform: scaleY(.88) scaleX(.95);
+                }
+
+                to {
+                    transform: scaleY(1.12) scaleX(1.05);
+                }
+            }
+
+            @media (max-width: 575.98px) {
+                #rocketTop {
+                    width: 48px;
+                    height: 48px;
+                }
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                #rocketTop {
+                    transition: none;
+                }
+
+                #rocketTop .rocket-flame {
+                    animation: none;
+                    transition: none;
+                }
+            }
+        </style>
+
+        <span class="rocket-flame" aria-hidden="true"></span>
+
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M12 2c3 2.4 4.6 5.6 4.6 9.2V15H7.4v-3.8C7.4 7.6 9 4.4 12 2z" fill="currentColor"></path>
+            <circle cx="12" cy="9" r="1.7" fill="#080B11"></circle>
+            <path d="M7.4 11.5L4.5 15v3l2.9-1.8zM16.6 11.5l2.9 3.5v3l-2.9-1.8z" fill="currentColor"></path>
+        </svg>
+
+        <script>
+            (function () {
+                'use strict';
+
+                var btn = document.getElementById('rocketTop');
+                if (!btn) return;
+
+                var SHOW_AFTER = 400;
+                var FLAME_MIN = .15;
+                var ticking = false;
+                var launching = false;
+                var scroller = null;
+
+                function clamp(v, min, max) {
+                    return Math.min(max, Math.max(min, v));
+                }
+
+                function easeInOutCubic(t) {
+                    return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+                }
+
+                function resolveScroller() {
+                    var s = window.ZacPage && window.ZacPage.scroller;
+                    if (s && s.jquery) s = s[0];
+                    return s || document.getElementById('pageContent');
+                }
+
+                function reduceMotion() {
+                    return Boolean(
+                        window.matchMedia &&
+                        window.matchMedia('(prefers-reduced-motion: reduce)').matches
+                    );
+                }
+
+                function setFlame(value) {
+                    btn.style.setProperty('--flame', value.toFixed(3));
+                }
+
+                // 越接近頁面底部，尾焰越強。
+                function flameByPosition() {
+                    var max = Math.max(1, scroller.scrollHeight - scroller.clientHeight);
+                    var progress = clamp(scroller.scrollTop / max, 0, 1);
+                    return FLAME_MIN + (1 - FLAME_MIN) * progress;
+                }
+
+                function updateVisibility() {
+                    ticking = false;
+                    if (launching || !scroller) return;
+
+                    setFlame(flameByPosition());
+                    btn.classList.toggle('is-visible', scroller.scrollTop > SHOW_AFTER);
+                }
+
+                function onScroll() {
+                    if (ticking) return;
+                    ticking = true;
+                    window.requestAnimationFrame(updateVisibility);
+                }
+
+                function clearHash() {
+                    if (!location.hash) return;
+                    try {
+                        history.replaceState(
+                            null, '', location.pathname + location.search
+                        );
+                    } catch (error) {
+                        // 網址更新失敗不影響回到頂端。
+                    }
+                }
+
+                function scrollInstant(top) {
+                    // pageContent 設有 scroll-behavior: smooth，這裡要明確指定立即捲動。
+                    scroller.scrollTo({ top: top, behavior: 'instant' });
+                }
+
+                function cleanupLaunch() {
+                    launching = false;
+                    btn.classList.remove('is-launching', 'is-visible');
+                    btn.style.opacity = '';
+                    btn.style.transform = '';
+                    updateVisibility();
+
+                    if (window.ZacPage && window.ZacPage.refresh) {
+                        window.ZacPage.refresh();
+                    }
+                }
+
+                /*
+                  起飛：頁面捲動、火箭位移與尾焰強度共用同一個進度 e。
+                  e 由 0 到 1；尾焰從起飛當下的強度逐漸減弱到 0，
+                  最後 25% 時間火箭整體淡出。
+                */
+                function launch() {
+                    var startTop = scroller.scrollTop;
+                    var startFlame = flameByPosition();
+                    var duration = clamp(500 + startTop * .12, 900, 1800);
+                    var travel = window.innerHeight * .75;
+                    var startTime = null;
+
+                    launching = true;
+                    btn.classList.add('is-launching');
+
+                    function frame(now) {
+                        if (!launching) return;
+
+                        if (startTime === null) startTime = now;
+
+                        var t = clamp((now - startTime) / duration, 0, 1);
+                        var e = easeInOutCubic(t);
+                        var fade = t < .75 ? 1 : 1 - (t - .75) / .25;
+
+                        scrollInstant(startTop * (1 - e));
+                        setFlame(startFlame * (1 - e));
+
+                        btn.style.opacity = fade.toFixed(3);
+                        btn.style.transform =
+                            'translateY(' + (-travel * e).toFixed(1) + 'px) ' +
+                            'scale(' + (1 - .25 * e).toFixed(3) + ')';
+
+                        if (t < 1) {
+                            window.requestAnimationFrame(frame);
+                        } else {
+                            cleanupLaunch();
+                        }
+                    }
+
+                    window.requestAnimationFrame(frame);
+                }
+
+                btn.addEventListener('click', function () {
+                    if (launching || !scroller) return;
+
+                    clearHash();
+
+                    if (reduceMotion()) {
+                        scrollInstant(0);
+                        btn.classList.remove('is-visible');
+                        if (window.ZacPage && window.ZacPage.refresh) {
+                            window.ZacPage.refresh();
+                        }
+                        return;
+                    }
+
+                    launch();
+                });
+
+                function init() {
+                    scroller = resolveScroller();
+                    if (!scroller) return;
+
+                    scroller.addEventListener('scroll', onScroll, { passive: true });
+                    window.addEventListener('resize', onScroll);
+
+                    // 起飛途中使用者自行操作捲動時，立即中止起飛。
+                    ['wheel', 'touchstart', 'keydown'].forEach(function (type) {
+                        scroller.addEventListener(type, function () {
+                            if (launching) cleanupLaunch();
+                        }, { passive: true });
+                    });
+
+                    updateVisibility();
+                }
+
+                if (document.readyState === 'complete') init();
+                else window.addEventListener('load', init, { once: true });
+            })();
+        </script>
+    </button>
+    <!-- ========== Global FX: Back To Top Rocket End ========== -->
+
 </body>
 
 </html>
