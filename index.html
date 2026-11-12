@@ -193,6 +193,268 @@
 
 <body>
 
+    <!-- ========== Global FX: Background Particles Start ========== -->
+    <div id="particlesFx" aria-hidden="true">
+        <style>
+            /*
+              固定在視窗後方，位於 pageContent 之前，因此內容會蓋在它上面。
+              pointer-events: none，不會擋住任何按鈕、連結或表單。
+            */
+            #particlesFx {
+                position: fixed;
+                inset: 0;
+                z-index: 0;
+                overflow: hidden;
+                pointer-events: none;
+            }
+
+            #particlesFx canvas {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                display: block;
+            }
+        </style>
+        <canvas id="particlesCanvas"></canvas>
+
+        <script>
+            (function () {
+                'use strict';
+
+                var root = document.getElementById('particlesFx');
+                if (!root) return;
+
+                /* ---------- 可調參數 ---------- */
+                var CFG = {
+                    maxDpr: 2,
+                    particles: {
+                        desktop: 60,
+                        mobile: 25,
+                        mobileMaxWidth: 768,
+                        minRadius: 1,
+                        maxRadius: 2.4,
+                        minSpeed: 8,
+                        maxSpeed: 22,
+                        minAlpha: .3,
+                        maxAlpha: .7,
+                        colors: ['0,242,254', '0,255,135', '79,172,254']
+                    },
+                    repel: {
+                        radius: 140,
+                        strength: 260
+                    }
+                };
+
+                var pCanvas = document.getElementById('particlesCanvas');
+                var pCtx = pCanvas.getContext('2d');
+
+                var W = 0;
+                var H = 0;
+                var time = 0;
+                var raf = 0;
+                var last = 0;
+                var particles = [];
+                var mouse = { x: -9999, y: -9999, active: false };
+
+                var reduceQuery = window.matchMedia
+                    ? window.matchMedia('(prefers-reduced-motion: reduce)')
+                    : null;
+                var reduced = Boolean(reduceQuery && reduceQuery.matches);
+
+                function rand(min, max) {
+                    return min + Math.random() * (max - min);
+                }
+
+                /* ---------- 粒子 ---------- */
+                function createParticle() {
+                    var c = CFG.particles;
+                    var angle = Math.random() * Math.PI * 2;
+                    var speed = rand(c.minSpeed, c.maxSpeed);
+
+                    return {
+                        x: Math.random() * W,
+                        y: Math.random() * H,
+                        vx: Math.cos(angle) * speed,
+                        vy: Math.sin(angle) * speed,
+                        r: rand(c.minRadius, c.maxRadius),
+                        alpha: rand(c.minAlpha, c.maxAlpha),
+                        phase: Math.random() * Math.PI * 2,
+                        color: c.colors[Math.floor(Math.random() * c.colors.length)]
+                    };
+                }
+
+                function targetCount() {
+                    var c = CFG.particles;
+                    return W <= c.mobileMaxWidth ? c.mobile : c.desktop;
+                }
+
+                function syncParticles() {
+                    var n = targetCount();
+
+                    while (particles.length < n) particles.push(createParticle());
+                    if (particles.length > n) particles.length = n;
+                }
+
+                function updateParticles(dt) {
+                    var R = CFG.repel.radius;
+                    var S = CFG.repel.strength;
+                    var margin = 10;
+
+                    for (var i = 0; i < particles.length; i++) {
+                        var p = particles[i];
+
+                        p.x += p.vx * dt;
+                        p.y += p.vy * dt;
+
+                        // 游標靠近時輕微推開，越近推得越明顯。
+                        if (mouse.active) {
+                            var dx = p.x - mouse.x;
+                            var dy = p.y - mouse.y;
+                            var d = Math.sqrt(dx * dx + dy * dy);
+
+                            if (d < R && d > 0.01) {
+                                var k = 1 - d / R;
+                                var push = k * k * S * dt;
+
+                                p.x += dx / d * push;
+                                p.y += dy / d * push;
+                            }
+                        }
+
+                        if (p.x < -margin) p.x = W + margin;
+                        else if (p.x > W + margin) p.x = -margin;
+
+                        if (p.y < -margin) p.y = H + margin;
+                        else if (p.y > H + margin) p.y = -margin;
+                    }
+                }
+
+                function drawParticles() {
+                    pCtx.clearRect(0, 0, W, H);
+
+                    for (var i = 0; i < particles.length; i++) {
+                        var p = particles[i];
+                        var twinkle = reduced
+                            ? 1
+                            : .75 + .25 * Math.sin(time * 1.5 + p.phase);
+                        var a = p.alpha * twinkle;
+
+                        // 外圈淡光
+                        pCtx.fillStyle = 'rgba(' + p.color + ',' + (a * .15).toFixed(3) + ')';
+                        pCtx.beginPath();
+                        pCtx.arc(p.x, p.y, p.r * 3, 0, Math.PI * 2);
+                        pCtx.fill();
+
+                        // 核心亮點
+                        pCtx.fillStyle = 'rgba(' + p.color + ',' + a.toFixed(3) + ')';
+                        pCtx.beginPath();
+                        pCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                        pCtx.fill();
+                    }
+                }
+
+                /* ---------- 尺寸與主迴圈 ---------- */
+                function resize() {
+                    var dpr = Math.min(window.devicePixelRatio || 1, CFG.maxDpr);
+
+                    W = window.innerWidth;
+                    H = window.innerHeight;
+
+                    pCanvas.width = Math.round(W * dpr);
+                    pCanvas.height = Math.round(H * dpr);
+                    pCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+                    syncParticles();
+
+                    if (reduced) renderStatic();
+                }
+
+                function renderStatic() {
+                    drawParticles();
+                }
+
+                function step(dt) {
+                    time += dt;
+                    updateParticles(dt);
+                    drawParticles();
+                }
+
+                function frame(now) {
+                    raf = window.requestAnimationFrame(frame);
+
+                    var dt = Math.min((now - last) / 1000 || 0, .05);
+                    last = now;
+
+                    step(dt);
+                }
+
+                function start() {
+                    if (raf || reduced) return;
+                    last = window.performance.now();
+                    raf = window.requestAnimationFrame(frame);
+                }
+
+                function stop() {
+                    if (!raf) return;
+                    window.cancelAnimationFrame(raf);
+                    raf = 0;
+                }
+
+                /* ---------- 游標：只處理滑鼠，觸控裝置不互動 ---------- */
+                document.addEventListener('pointermove', function (e) {
+                    if (e.pointerType !== 'mouse' || reduced) return;
+                    mouse.x = e.clientX;
+                    mouse.y = e.clientY;
+                    mouse.active = true;
+                }, { passive: true });
+
+                document.addEventListener('mouseout', function (e) {
+                    if (!e.relatedTarget) mouse.active = false;
+                });
+
+                window.addEventListener('blur', function () {
+                    mouse.active = false;
+                });
+
+                document.addEventListener('visibilitychange', function () {
+                    if (document.hidden) stop();
+                    else start();
+                });
+
+                window.addEventListener('resize', resize);
+
+                if (reduceQuery && reduceQuery.addEventListener) {
+                    reduceQuery.addEventListener('change', function (e) {
+                        reduced = e.matches;
+
+                        if (reduced) {
+                            stop();
+                            mouse.active = false;
+                            renderStatic();
+                        } else {
+                            start();
+                        }
+                    });
+                }
+
+                resize();
+                start();
+
+                // 方便在 Console 觀察與測試
+                window.ZacParticles = {
+                    config: CFG,
+                    particles: particles,
+                    mouse: mouse,
+                    step: step
+                };
+            })();
+        </script>
+    </div>
+    <!-- ========== Global FX: Background Particles End ========== -->
+
+
     <!-- ========== Section 1: Navbar & System Start ========== -->
     <nav id="section1" class="navbar navbar-expand-xl fixed-top">
         <style>
