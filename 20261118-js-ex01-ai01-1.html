@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>練習資料處理 (旅館民宿 - 觀光資訊資料庫)</title>
+    <!-- 引入 Bootstrap 5 CSS 方便快速排版卡片與按鈕 -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <style>
+        /* 限制簡介最多顯示 3 行，超過顯示省略號，讓卡片高度更整齊 */
+        .desc-truncate {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+    <div class="container py-4">
+        <!-- 標題與統計資訊區 -->
+        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+            <h2 class="h4 fw-bold mb-0">臺中市房價低於 3,800 元旅館清單</h2>
+            <span id="summary-info" class="badge bg-primary fs-6">載入中...</span>
+        </div>
+
+        <!-- 卡片列表容器 (jQuery 會把卡片塞進這裡) -->
+        <div id="hotel-list" class="row g-3">
+            <!-- 動態生成內容 -->
+        </div>
+
+        <!-- 分頁控制區 -->
+        <nav class="mt-4 d-flex justify-content-center align-items-center gap-3">
+            <button id="prev-btn" class="btn btn-outline-secondary" disabled>上一頁</button>
+            <span id="page-indicator" class="fw-bold">第 1 / 1 頁</span>
+            <button id="next-btn" class="btn btn-outline-secondary" disabled>下一頁</button>
+        </nav>
+    </div>
+
+    <!-- 載入本地 jQuery 與 Bootstrap JS -->
+    <script src="js/jquery-4.0.0.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+
+    <!--
+        需求
+
+        1. 資料轉換map()，取出所需要的欄位
+        2. 資料清洗 null，undefined，多於空白
+        3. 過濾，臺中市房價低於3800元的旅館
+        4. 分頁，每頁20筆，可以指定頁碼
+    -->
+    <script>
+        // 全域變數：儲存過濾後的完整資料，換頁時就不用重新發送 AJAX 請求
+        let cachedFilteredHotels = [];
+        let currentPage = 1;
+        const pageSize = 20;
+
+        /**
+         * 1. 資料清洗工具函式
+         * 處理 null、undefined，並去除字串前後空白以及中間多餘的連續空白
+         */
+        function cleanText(value, defaultText = '無資料') {
+            if (value === null || value === undefined) {
+                return defaultText;
+            }
+            const trimmed = String(value).trim().replace(/\s+/g, ' ');
+            return trimmed === '' ? defaultText : trimmed;
+        }
+
+        /**
+         * 2. 分頁工具函式
+         */
+        function paginateData(data, page = 1, size = 20) {
+            const totalItems = data.length;
+            const totalPages = Math.ceil(totalItems / size);
+            const validPage = Math.max(1, Math.min(page, totalPages || 1));
+
+            const startIndex = (validPage - 1) * size;
+            const endIndex = startIndex + size;
+            const pageData = data.slice(startIndex, endIndex);
+
+            return {
+                currentPage: validPage,
+                pageSize: size,
+                totalItems: totalItems,
+                totalPages: totalPages,
+                data: pageData
+            };
+        }
+
+        /**
+         * 3. 畫面渲染函式：將指定頁碼的資料畫成 Bootstrap 卡片
+         */
+        function renderPage(page) {
+            const paginatedResult = paginateData(cachedFilteredHotels, page, pageSize);
+            currentPage = paginatedResult.currentPage;
+
+            // 更新右上角統計與下方頁碼指示
+            $('#summary-info').text(`共 ${paginatedResult.totalItems} 筆符合`);
+            $('#page-indicator').text(`第 ${paginatedResult.currentPage} / ${paginatedResult.totalPages || 1} 頁`);
+
+            // 控制上下頁按鈕是否可點擊
+            $('#prev-btn').prop('disabled', currentPage <= 1);
+            $('#next-btn').prop('disabled', currentPage >= paginatedResult.totalPages);
+
+            // 清空舊卡片
+            const $list = $('#hotel-list');
+            $list.empty();
+
+            // 若無資料的防呆畫面
+            if (paginatedResult.data.length === 0) {
+                $list.html('<div class="col-12 text-center text-muted py-5">找不到符合條件的旅館資料</div>');
+                return;
+            }
+
+            // 迴圈產生卡片 HTML
+            paginatedResult.data.forEach((hotel) => {
+                const cardHTML = `
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body d-flex flex-column">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="card-title fw-bold text-dark mb-0">${hotel.name}</h5>
+                                    <span class="badge bg-success ms-2 text-nowrap">$${hotel.lowestPrice} 起</span>
+                                </div>
+                                <p class="card-text text-muted small mb-1">
+                                    <strong>地址：</strong>${hotel.fullAddress}
+                                </p>
+                                <p class="card-text text-muted small mb-2">
+                                    <strong>電話：</strong>${hotel.tel}
+                                </p>
+                                <p class="card-text small text-secondary desc-truncate mt-auto pt-2 border-top">
+                                    ${hotel.description}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                $list.append(cardHTML);
+            });
+
+            // 換頁後自動捲動回頁面頂部，提升體驗
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        /**
+         * 4. 主程式：透過 AJAX 載入並處理資料
+         */
+        function loadHotelsData() {
+            $.ajax({
+                type: 'GET',
+                url: 'js/json/HotelList.json',
+                dataType: 'json',
+                success: function (rawJson) {
+                    const rawHotels = rawJson.Hotels || [];
+
+                    // 【步驟 A：資料轉換 map() 與 資料清洗】
+                    const cleanedHotels = rawHotels.map((hotel) => {
+                        const city = cleanText(hotel.PostalAddress?.City, '');
+                        const town = cleanText(hotel.PostalAddress?.Town, '');
+                        const street = cleanText(hotel.PostalAddress?.StreetAddress, '');
+                        // 修正為正確取得陣列第一筆電話
+                        const rawTel = hotel.Telephones?.[0]?.Tel;
+
+                        return {
+                            id: cleanText(hotel.HotelID),
+                            name: cleanText(hotel.HotelName),
+                            city: city.replace('台', '臺'),
+                            fullAddress: cleanText(`${city}${town}${street}`),
+                            tel: cleanText(rawTel),
+                            description: cleanText(hotel.Description, '暫無簡介'),
+                            lowestPrice: typeof hotel.LowestPrice === 'number' ? hotel.LowestPrice : null,
+                            ceilingPrice: typeof hotel.CeilingPrice === 'number' ? hotel.CeilingPrice : null
+                        };
+                    });
+
+                    // 【步驟 B：條件過濾 filter()】
+                    cachedFilteredHotels = cleanedHotels.filter((hotel) => {
+                        const isTaichung = hotel.city === '臺中市';
+                        const isUnder3800 = hotel.lowestPrice !== null && hotel.lowestPrice < 3800;
+                        return isTaichung && isUnder3800;
+                    });
+
+                    // 【步驟 C：預設渲染第 1 頁】
+                    renderPage(1);
+                },
+                error: function (xhr, status, error) {
+                    console.error('AJAX 讀取旅館資料失敗：', status, error);
+                    $('#summary-info').removeClass('bg-primary').addClass('bg-danger').text('載入失敗');
+                    $('#hotel-list').html('<div class="col-12 text-center text-danger py-5">資料載入失敗，請確認是否已啟動本地伺服器 (如 Live Server)！</div>');
+                }
+            });
+        }
+
+        // 網頁載入完成後初始化
+        $(function () {
+            // 載入資料
+            loadHotelsData();
+
+            // 綁定「上一頁」按鈕事件
+            $('#prev-btn').on('click', function () {
+                if (currentPage > 1) {
+                    renderPage(currentPage - 1);
+                }
+            });
+
+            // 綁定「下一頁」按鈕事件
+            $('#next-btn').on('click', function () {
+                renderPage(currentPage + 1);
+            });
+        });
+    </script>
+</body>
+
+</html>

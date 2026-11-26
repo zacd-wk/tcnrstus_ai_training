@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript 重點整理 - 練習</title>
+
+</head>
+
+<body>
+    <p>F12 打開 console 查看</p>
+
+    <script src="js/jquery-4.0.0.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // 1. 資料轉換map()，取出所需要的欄位
+        // 2. 資料清洗 null，undefined，多於空白
+        // 3. 過濾， 臺中市房價低於3800元的旅館
+        // 4. 分頁，每頁20筆，可以指定頁碼
+
+        $(function () {
+            $.ajax({
+                type: "GET",
+                url: "js/json/HotelList.json",
+                dataType: "json",
+                success: showdata,
+                error: function () {
+                    Swal.fire({
+                        title: "連線錯誤",
+                        text: "旅館資料API讀取錯誤，請聯絡管理者。",
+                        icon: "error"
+                    });
+                }
+            });
+        });
+        function showdata(data) {
+            console.log(data.Hotels);
+
+            const cleanHotelData = normalize(data.Hotels);
+            console.log("清洗後的資料: ", cleanHotelData);
+
+
+            const fliterHotelData = normalize(data.Hotels).filter(function (item) {
+                return item.city === "臺中市" && item.lowestPrice < 3800
+            });
+            console.log("臺中市房價低於3800元的旅館的資料: ", fliterHotelData);
+
+
+            const pageSize = 20;
+            const page = 2;
+            const pageData = pagination(fliterHotelData, pageSize, page);
+            console.log("第" + page + "頁的結果: ", pageData);
+        }
+
+
+        //資料清洗的自訂函式(副程式)
+        function normalize(data) {
+            return data.map(function (item, index) {
+                return {
+                    id: index + 1,
+                    name: (item.HotelName ?? "未提供").trim(),
+                    city: (item.PostalAddress.City ?? "未提供").trim(),
+                    tel: (item.Telephones[0].Tel ?? "未提供").trim(),
+                    lowestPrice: (item.LowestPrice ?? "未提供"),
+                    description: (item.Description ?? "未提供").trim(),
+                }
+            });
+        }
+
+        function pagination(data, pageSize, page) {
+            const start = (page - 1) * pageSize;
+            const end = start + pageSize;
+
+            return data.slice(start, end);
+        }
+    </script>
+</body>
+
+</html>

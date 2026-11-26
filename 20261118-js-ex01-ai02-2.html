@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>臺中極簡旅宿指南 | 觀光資訊資料庫</title>
+    <!-- 引入本地 Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <style>
+        /* 極簡雜誌風全域設定 */
+        body {
+            background-color: #ffffff;
+            color: #111111;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans TC", sans-serif;
+            letter-spacing: 0.03em;
+        }
+
+        /* 頂部標頭區：俐落底線與大標題 */
+        .minimal-header {
+            border-bottom: 1px solid #e5e5e5;
+            padding: 3.5rem 0 2rem 0;
+            margin-bottom: 3rem;
+        }
+
+        .sub-label {
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            color: #888888;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .main-title {
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: #111111;
+        }
+
+        /* 極簡風旅館小卡：無圓角、細邊框、微幅上浮動效 */
+        .hotel-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 0;
+            background-color: #ffffff;
+            transition: all 0.25s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hotel-card:hover {
+            border-color: #111111;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 卡片頂部圖片與編號容器 */
+        .card-media-wrapper {
+            position: relative;
+            background-color: #f4f4f5;
+            border-bottom: 1px solid #e0e0e0;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .card-media-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .hotel-card:hover .card-media-wrapper img {
+            transform: scale(1.03);
+        }
+
+        /* 圖片上的極簡編號標籤 */
+        .card-index-badge {
+            position: absolute;
+            top: 0.75rem;
+            left: 0.75rem;
+            background-color: rgba(255, 255, 255, 0.92);
+            color: #111111;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            padding: 0.3rem 0.6rem;
+            border: 1px solid #e0e0e0;
+        }
+
+        /* 圖片右下角價格標籤 */
+        .card-price-badge {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background-color: #111111;
+            color: #ffffff;
+            font-size: 0.95rem;
+            font-weight: 700;
+            padding: 0.4rem 0.85rem;
+            letter-spacing: 0.02em;
+        }
+
+        .card-price-badge small {
+            font-size: 0.7rem;
+            font-weight: 400;
+            color: #d4d4d8;
+        }
+
+        /* 卡片內容區 */
+        .card-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hotel-name {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: #111111;
+        }
+
+        .hotel-meta {
+            font-size: 0.85rem;
+            color: #52525b;
+            margin-bottom: 0.35rem;
+            line-height: 1.5;
+        }
+
+        /* 簡介限制最多 3 行 */
+        .hotel-desc {
+            font-size: 0.85rem;
+            color: #71717a;
+            line-height: 1.6;
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 1px dashed #e4e4e7;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* 極簡分頁按鈕 */
+        .btn-minimal {
+            border: 1px solid #111111;
+            background-color: #ffffff;
+            color: #111111;
+            border-radius: 0;
+            padding: 0.5rem 1.5rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            transition: all 0.2s ease;
+        }
+
+        .btn-minimal:hover:not(:disabled) {
+            background-color: #111111;
+            color: #ffffff;
+        }
+
+        .btn-minimal:disabled {
+            border-color: #d4d4d8;
+            color: #a1a1aa;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- 頂部極簡標頭 -->
+        <header class="minimal-header">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3">
+                <div>
+                    <div class="sub-label mb-2">TAICHUNG STAY / UNDER TWD 3,800</div>
+                    <h1 class="display-5 main-title mb-0">SELECTED HOTELS.</h1>
+                </div>
+                <div class="text-md-end">
+                    <span id="summary-info" class="sub-label">LOADING DATA...</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- 卡片列表容器 -->
+        <main>
+            <div id="hotel-list" class="row g-4">
+                <!-- jQuery 動態生成卡片 -->
+            </div>
+        </main>
+
+        <!-- 極簡分頁控制區 -->
+        <footer class="py-5 my-3 border-top d-flex justify-content-between align-items-center">
+            <button id="prev-btn" class="btn btn-minimal" disabled>PREV / 上一頁</button>
+            <span id="page-indicator" class="sub-label text-dark">01 — 01</span>
+            <button id="next-btn" class="btn btn-minimal" disabled>NEXT / 下一頁</button>
+        </footer>
+    </div>
+
+    <!-- 載入本地 jQuery 與 Bootstrap JS -->
+    <script src="js/jquery-4.0.0.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+
+    <!--
+        需求
+
+        1. 資料轉換map()，取出所需要的欄位
+        2. 資料清洗 null，undefined，多於空白
+        3. 過濾，臺中市房價低於3800元的旅館
+        4. 分頁，每頁20筆，可以指定頁碼
+    -->
+    <script>
+        let cachedFilteredHotels = [];
+        let currentPage = 1;
+        const pageSize = 21;
+
+        // 內建極簡質感 SVG 佔位圖（無需外部網路或額外圖檔，完全不破圖）
+        const FALLBACK_IMAGE = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400' viewBox='0 0 600 400'%3E%3Crect fill='%23f4f4f5' width='600' height='400'/%3E%3Ctext fill='%23a1a1aa' font-family='sans-serif' font-size='16' font-weight='bold' letter-spacing='3' x='50%25' y='50%25' text-anchor='middle' dominant-baseline='middle'%3ENO IMAGE AVAILABLE%3C/text%3E%3C/svg%3E";
+
+        /**
+         * 1. 資料清洗工具函式
+         */
+        function cleanText(value, defaultText = '無資料') {
+            if (value === null || value === undefined) {
+                return defaultText;
+            }
+            const trimmed = String(value).trim().replace(/\s+/g, ' ');
+            return trimmed === '' ? defaultText : trimmed;
+        }
+
+        /**
+         * 2. 分頁工具函式
+         */
+        function paginateData(data, page = 1, size = 20) {
+            const totalItems = data.length;
+            const totalPages = Math.ceil(totalItems / size);
+            const validPage = Math.max(1, Math.min(page, totalPages || 1));
+
+            const startIndex = (validPage - 1) * size;
+            const endIndex = startIndex + size;
+            const pageData = data.slice(startIndex, endIndex);
+
+            return {
+                currentPage: validPage,
+                pageSize: size,
+                totalItems: totalItems,
+                totalPages: totalPages,
+                startIndex: startIndex,
+                data: pageData
+            };
+        }
+
+        /**
+         * 3. 畫面渲染函式：產生含圖片的極簡雜誌風小卡
+         */
+        function renderPage(page) {
+            const paginatedResult = paginateData(cachedFilteredHotels, page, pageSize);
+            currentPage = paginatedResult.currentPage;
+
+            const formatNum = (num) => String(num).padStart(2, '0');
+
+            $('#summary-info').text(`TOTAL ${paginatedResult.totalItems} HOTELS FOUND`);
+            $('#page-indicator').text(`${formatNum(paginatedResult.currentPage)} — ${formatNum(paginatedResult.totalPages || 1)}`);
+
+            $('#prev-btn').prop('disabled', currentPage <= 1);
+            $('#next-btn').prop('disabled', currentPage >= paginatedResult.totalPages);
+
+            const $list = $('#hotel-list');
+            $list.empty();
+
+            if (paginatedResult.data.length === 0) {
+                $list.html('<div class="col-12 text-center py-5 text-muted">找不到符合條件的旅館資料</div>');
+                return;
+            }
+
+            paginatedResult.data.forEach((hotel, index) => {
+                const itemNumber = String(paginatedResult.startIndex + index + 1).padStart(3, '0');
+
+                const cardHTML = `
+                    <div class="col-md-6 col-lg-4">
+                        <article class="hotel-card">
+                            <div class="card-media-wrapper">
+                                <img src="${hotel.imageUrl}"
+                                     alt="${hotel.name}"
+                                     loading="lazy"
+                                     onerror="this.onerror=null; this.src='${FALLBACK_IMAGE}';">
+                                <span class="card-index-badge">${itemNumber} / TAICHUNG</span>
+                                <div class="card-price-badge">
+                                    $${hotel.lowestPrice.toLocaleString()} <small>/ 起</small>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <h2 class="hotel-name">${hotel.name}</h2>
+                                <div class="hotel-meta">地址：${hotel.fullAddress}</div>
+                                <div class="hotel-meta mb-3">電話：${hotel.tel}</div>
+                                <p class="hotel-desc mb-0">${hotel.description}</p>
+                            </div>
+                        </article>
+                    </div>
+                `;
+                $list.append(cardHTML);
+            });
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        /**
+         * 4. 主程式：透過 AJAX 載入並處理資料
+         */
+        function loadHotelsData() {
+            $.ajax({
+                type: 'GET',
+                url: 'js/json/HotelList.json',
+                dataType: 'json',
+                success: function (rawJson) {
+                    const rawHotels = rawJson.Hotels || [];
+
+                    // 【步驟 A：資料轉換 map() 與 資料清洗】
+                    const cleanedHotels = rawHotels.map((hotel) => {
+                        const city = cleanText(hotel.PostalAddress?.City, '');
+                        const town = cleanText(hotel.PostalAddress?.Town, '');
+                        const street = cleanText(hotel.PostalAddress?.StreetAddress, '');
+
+                        // 安全取得第一組電話與第一張圖片網址
+                        const rawTel = hotel.Telephones?.[0]?.Tel;
+                        const rawImage = hotel.Images?.[0]?.URL;
+
+                        return {
+                            id: cleanText(hotel.HotelID),
+                            name: cleanText(hotel.HotelName),
+                            city: city.replace('台', '臺'),
+                            fullAddress: cleanText(`${city}${town}${street}`),
+                            tel: cleanText(rawTel),
+                            imageUrl: cleanText(rawImage, FALLBACK_IMAGE),
+                            description: cleanText(hotel.Description, '暫無簡介'),
+                            lowestPrice: typeof hotel.LowestPrice === 'number' ? hotel.LowestPrice : null
+                        };
+                    });
+
+                    // 【步驟 B：條件過濾 filter()】
+                    cachedFilteredHotels = cleanedHotels.filter((hotel) => {
+                        const isTaichung = hotel.city === '臺中市';
+                        const isUnder3800 = hotel.lowestPrice !== null && hotel.lowestPrice < 3800;
+                        return isTaichung && isUnder3800;
+                    });
+
+                    // 【步驟 C：預設渲染第 1 頁】
+                    renderPage(1);
+                },
+                error: function (xhr, status, error) {
+                    console.error('AJAX 讀取旅館資料失敗：', status, error);
+                    $('#summary-info').text('ERROR LOADING DATA');
+                    $('#hotel-list').html('<div class="col-12 text-center text-danger py-5">資料載入失敗，請確認 JSON 路徑與本地伺服器狀態！</div>');
+                }
+            });
+        }
+
+        $(function () {
+            loadHotelsData();
+
+            $('#prev-btn').on('click', function () {
+                if (currentPage > 1) {
+                    renderPage(currentPage - 1);
+                }
+            });
+
+            $('#next-btn').on('click', function () {
+                renderPage(currentPage + 1);
+            });
+        });
+    </script>
+</body>
+
+</html>

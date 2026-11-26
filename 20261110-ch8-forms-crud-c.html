@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CH8-表單-CRUD練習</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/myall.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary bg-dark navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">CRUD練習</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="#">首頁</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="20261110-ch8-forms-crud-c.html">產品建檔</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="20261110-ch8-forms-crud-r.html">產品列表</a>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+    <div class="container my-4">
+        <!-- <div class="display-2 fw-900 text-center mt-4 text-bg-success p-3">CH8-表單-CRUD練習</div> -->
+        <div class="row justify-content-center">
+            <div class="col-md-8 mt-3">
+                <div class="card">
+                    <div class="card-header bg-warning">
+                        <div class="h2 fw-900 text-center">CH8-表單-CRUD練習-產品建檔</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3 form-floating">
+                            <input type="text" class="form-control form-control-lg" placeholder="" id="pname">
+                            <label for="pname" class="form-label">產品名稱(字數2-6字數)</label>
+                            <div class="valid-feedback">符合規定</div>
+                            <div class="invalid-feedback">不符合規定</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="price" class="form-label">價格(1-100)</label>
+                            <input type="number" class="form-control form-control-lg" id="price" min="1" max="100"
+                                value="50">
+                            <div class="valid-feedback">價格符合規定</div>
+                            <div class="invalid-feedback">價格不符合規定</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="num" class="form-label">數量: <span class="h2 text-danger fw-bold"
+                                    id="num-text">50</span> 個</label>
+                            <input type="range" class="form-range" min="1" max="100" step="1" value="50" id="num">
+                            <div class="d-flex justify-content-between">
+                                <span class="fw-bold">1</span>
+                                <span class="fw-bold">100</span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <select name="" id="category" class="form-select form-select-lg">
+                                <option value="" class="text-center" disabled selected>---產品分類---</option>
+                                <option value="零食">零食</option>
+                                <option value="乳製品">乳製品</option>
+                                <option value="飲料">飲料</option>
+                            </select>
+                            <div class="valid-feedback">已選擇分類</div>
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label for="remark" class="form-label">備註</label>
+                            <textarea id="remark" class="form-control" placeholder="產品需注意的事項，字數2-10字數。"></textarea>
+                            <div class="valid-feedback">符合規定</div>
+                            <div class="invalid-feedback">不符合規定</div>
+                        </div>
+
+                    </div>
+                    <div class="card-footer text-end">
+                        <button class="btn btn-outline-secondary">取消</button>
+                        <button class="btn btn-primary" id="ok-btn">確認</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 產品建檔資確認 -->
+
+            <div class="col-md-8 mt-3 d-none" id="showmsg">
+                <div class="h1 fw-900 text-center mt-4 text-bg-info p-3">產品建檔資確認</div>
+                <div>
+                    <div class="h2">產品名稱: XXXX</div>
+                    <div class="h2">產品價格: XXXX</div>
+                    <div class="h2">產品數量: XXXX</div>
+                    <div class="h2">產品分類: XXXX</div>
+                    <div class="h2">產品備註: XXXX</div>
+                    <button class="btn btn-secondary w-100">取消</button>
+                    <button class="btn btn-success w-100 mt-3">確認送出</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/jquery-4.0.0.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        let flag_pname = false;
+        let flag_price = true;
+        let flag_category = false;
+        let flag_remark = false;
+        $(function () {
+            //產品名稱
+            $("#pname").on("change", function () {
+                if ($(this).val().length > 1 && $(this).val().length < 7) {
+                    $(this).removeClass("is-invalid");
+                    $(this).addClass("is-valid");
+                    flag_pname = true;
+                } else {
+                    $(this).removeClass("is-valid");
+                    $(this).addClass("is-invalid");
+                    flag_pname = false;
+                }
+            });
+
+            //價格
+            $("#price").on("change", function () {
+                if ($(this).val() > 0 && $(this).val() < 101) {
+                    $(this).removeClass("is-invalid");
+                    $(this).addClass("is-valid");
+                    flag_price = true;
+                } else {
+                    $(this).removeClass("is-valid");
+                    $(this).addClass("is-invalid");
+                    flag_price = false;
+                }
+            });
+
+            //數量
+            $("#num").on("change", function () {
+                console.log($(this).val());
+                $("#num-text").text($(this).val());
+            });
+
+            //產品分類
+            $("#category").on("change", function () {
+                console.log($(this).val());
+                $(this).addClass("is-valid");
+                flag_category = true;
+            });
+
+            //產品備註
+            $("#remark").on("change", function () {
+                if ($(this).val().length > 1 && $(this).val().length < 11) {
+                    $(this).removeClass("is-invalid");
+                    $(this).addClass("is-valid");
+                    flag_remark = true;
+                } else {
+                    $(this).removeClass("is-valid");
+                    $(this).addClass("is-invalid");
+                    flag_remark = false;
+                }
+            });
+
+            //按鈕監聽 #ok-btn
+            $("#ok-btn").on("click", function () {
+                if (flag_pname && flag_price && flag_category && flag_remark) {
+                    $("#showmsg").removeClass("d-none");
+
+                    const pname = $("#pname").val();
+                    const price = $("#price").val();
+                    const num = $("#num").val();
+                    const category = $("#category").val();
+                    const remark = $("#remark").val();
+
+                    let strHTML = `<div class="h1 fw-900 text-center mt-4 text-bg-info p-3">產品建檔資確認</div>
+                                <div>
+                                    <div class="h2">產品名稱: ${pname}</div>
+                                    <div class="h2">產品價格: ${price}</div>
+                                    <div class="h2">產品數量: ${num}</div>
+                                    <div class="h2">產品分類: ${category}</div>
+                                    <div class="h2">產品備註: ${remark}</div>
+                                    <button class="btn btn-secondary w-100">取消</button>
+                                    <button class="btn btn-success w-100 mt-3" id="send-btn">確認送出</button>
+                                </div>`;
+                    $("#showmsg").html(strHTML);
+                } else {
+                    Swal.fire({
+                        title: "欄位錯誤!",
+                        text: "欄位錯誤，請修正。",
+                        icon: "error"
+                    });
+                }
+            });
+
+            //確認送出 #send-btn
+            $("#showmsg").on("click", "#send-btn", function () {
+                //蒐集欄位資料
+                const pname = $("#pname").val();
+                const price = $("#price").val();
+                const num = $("#num").val();
+                const category = $("#category").val();
+                const remark = $("#remark").val();
+
+                //轉成JSON物件
+                const dataJSON = {
+                    "name": pname,
+                    "category": category,
+                    "price": price,
+                    "num": num,
+                    "remark": remark
+                };
+
+                console.log(dataJSON);
+                console.log(JSON.stringify(dataJSON));
+
+                //傳送資料至後端API，執行新增動作
+                $.ajax({
+                    type: "POST",
+                    url: "http://localhost:3000/product",
+                    dataType: "json",
+                    data: JSON.stringify(dataJSON),
+                    contentType: "application/json",
+                    success: function (data) {
+                        console.log(data)
+                        //新增成功後，考慮介面的流暢度
+                        //sweetalert
+                        Swal.fire({
+                            title: "新增成功",
+                            text: "產品資料已經建立。",
+                            icon: "success"
+                        });
+
+                        //showmsg 關閉
+                        $("#showmsg").addClass("d-none");
+
+                        //清除欄位
+                        $("#pname").val("");
+                        $("#price").val(50);
+                        $("#num").val(50);
+                        $("#num-text").text(50)
+                        $("#category").val("");
+                        $("#remark").val("");
+
+                        //重設驗證樣式
+                        $("#pname, #price, #category, #remark").removeClass("is-valid is-invalid");
+
+                        //重設旗標
+                        flag_pname = false;
+                        flag_price = true;
+                        flag_category = false;
+                        flag_remark = false;
+                    },
+                    error: function () {
+                        Swal.fire({
+                            title: "新增失敗",
+                            text: "無法連接後端API。",
+                            icon: "error"
+                        });
+                    }
+
+                });
+
+
+            });
+
+        });
+    </script>
+</body>
+
+</html>
