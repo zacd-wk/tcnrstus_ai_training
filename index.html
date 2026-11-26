@@ -571,7 +571,7 @@
                 start();
 
                 // 方便在 Console 觀察與測試
-                window.ZacParticles = {
+                window.aiParticles = {
                     config: CFG,
                     particles: particles,
                     mouse: mouse,
@@ -1213,7 +1213,7 @@
                         <form id="section1Form" novalidate>
                             <div class="mb-3">
                                 <label for="s1User">USERNAME</label>
-                                <input type="text" class="form-control" id="s1User" placeholder="root_zac"
+                                <input type="text" class="form-control" id="s1User" placeholder="root"
                                     autocomplete="username" maxlength="20" aria-describedby="s1UserError">
                                 <div class="invalid-feedback" id="s1UserError" aria-live="polite"></div>
                             </div>
@@ -3842,7 +3842,7 @@
                         */
                         function notifyLayoutChange() {
                             document.dispatchEvent(
-                                new CustomEvent('zac:layoutchange', {
+                                new CustomEvent('ai:layoutchange', {
                                     detail: { section: 'section10' }
                                 })
                             );
@@ -4792,7 +4792,7 @@
                         accordion.addEventListener(
                             'shown.bs.collapse',
                             function (event) {
-                                var page = window.ZacPage;
+                                var page = window.aiPage;
                                 var item = event.target.closest('.accordion-item');
 
                                 if (!page || !item) return;
@@ -5075,12 +5075,12 @@
                             <span class="dot d1" aria-hidden="true"></span>
                             <span class="dot d2" aria-hidden="true"></span>
                             <span class="dot d3" aria-hidden="true"></span>
-                            <span class="term-title">@ai-core: ~/contact — bash</span>
+                            <span class="term-title">root@ai-core: ~/contact — bash</span>
                         </div>
 
                         <div class="term-body">
                             <div class="line">
-                                <span class="u">@ai-core</span>:~$ ./connect --secure
+                                <span class="u">root@ai-core</span>:~$ ./connect --secure
                             </div>
 
                             <form id="s15Form" novalidate>
@@ -5200,7 +5200,7 @@
                                     index++;
 
                                     document.dispatchEvent(
-                                        new CustomEvent('zac:layoutchange')
+                                        new CustomEvent('ai:layoutchange')
                                     );
 
                                     window.setTimeout(nextStep, 500);
@@ -5221,7 +5221,7 @@
                                 $button.prop('disabled', false);
 
                                 document.dispatchEvent(
-                                    new CustomEvent('zac:layoutchange')
+                                    new CustomEvent('ai:layoutchange')
                                 );
                             }
 
@@ -5342,7 +5342,7 @@
                 }
 
                 // Section 14 與後續功能共用的捲動介面。
-                window.ZacPage = {
+                window.aiPage = {
                     scroller: scroller,
                     scrollToElement: scrollToElement,
                     refresh: scheduleUpdate
@@ -5484,7 +5484,7 @@
                 }
 
                 document.addEventListener(
-                    'zac:layoutchange',
+                    'ai:layoutchange',
                     scheduleUpdate
                 );
 
@@ -5943,7 +5943,7 @@
                 }
 
                 function resolveScroller() {
-                    var s = window.ZacPage && window.ZacPage.scroller;
+                    var s = window.aiPage && window.aiPage.scroller;
                     if (s && s.jquery) s = s[0];
                     return s || document.getElementById('pageContent');
                 }
@@ -6003,8 +6003,8 @@
                     btn.style.transform = '';
                     updateVisibility();
 
-                    if (window.ZacPage && window.ZacPage.refresh) {
-                        window.ZacPage.refresh();
+                    if (window.aiPage && window.aiPage.refresh) {
+                        window.aiPage.refresh();
                     }
                 }
 
@@ -6058,8 +6058,8 @@
                     if (reduceMotion()) {
                         scrollInstant(0);
                         btn.classList.remove('is-visible');
-                        if (window.ZacPage && window.ZacPage.refresh) {
-                            window.ZacPage.refresh();
+                        if (window.aiPage && window.aiPage.refresh) {
+                            window.aiPage.refresh();
                         }
                         return;
                     }
