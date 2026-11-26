@@ -76,7 +76,14 @@
         .tl-date{font-family:var(--font-mono);font-size:.74rem;font-weight:700;color:var(--accent-green);margin-bottom:.35rem}
         .tl-card{position:relative;padding:.9rem 1rem 2.4rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:12px;transition:all .3s}
         .tl-item:hover .tl-card,.tl-item:focus-visible .tl-card{border-color:rgba(0,242,254,.5);transform:translateX(4px)}
-        .tl-item.active .tl-card{border-color:var(--accent-cyan);background:rgba(0,242,254,.08);box-shadow:var(--glow-cyan)}
+        .tl-item.active .tl-card{border-color:rgba(0,242,254,.15);background:rgba(0,242,254,.08)}
+.tl-item.active.lit .tl-card{border-color:var(--accent-cyan);box-shadow:var(--glow-cyan);transition:border-color .5s,box-shadow .5s}
+.tl-trace{position:absolute;inset:-1px;width:calc(100% + 2px);height:calc(100% + 2px);pointer-events:none;overflow:visible;display:none}
+.tl-item.active .tl-trace{display:block}
+.tl-trace rect{fill:none;stroke:var(--accent-cyan);stroke-width:2;stroke-linecap:round;
+    filter:drop-shadow(0 0 4px var(--accent-cyan)) drop-shadow(0 0 8px var(--accent-cyan))}
+.tl-trace .head{stroke:#fff;stroke-width:3}
+.tl-item.active.lit .tl-trace{opacity:0;transition:opacity .5s .1s}
         .tl-item.active .tl-dot{background:var(--accent-cyan);box-shadow:0 0 14px var(--accent-cyan)}
         .tl-title{font-size:.95rem;font-weight:700;line-height:1.5;margin:0 0 .45rem}
         .tl-file{font-family:var(--font-mono);font-size:.7rem;color:var(--text-secondary);word-break:break-all}
@@ -128,7 +135,7 @@
         <a class="brand" href="index.html">
             <span class="slash">&lt;/&gt;</span> Zac.D <span class="slash">//</span> <span class="core">AI</span><span class="brand-sub"> Training Portfolio</span>
         </a>
-        <span class="count"><span id="shownCount">31</span> / 31 WORKS</span>
+        <span class="count"><span id="shownCount">37</span> / 37 WORKS</span>
         <span class="spacer"></span>
         <a class="btn-x" href="index.html"><i class="bi bi-arrow-left"></i> 回到履歷</a>
     </header>
@@ -146,10 +153,143 @@
             <div class="list">
                 <div class="tl">
 
+                    <div class="tl-item" role="button" tabindex="0" data-url="20261127-ch8-forms-crud-r-use-flask-api-ai03-1.html" data-file="20261127-ch8-forms-crud-r-use-flask-api-ai03-1.html" data-search="產品列表 | 企業 erp 系統 20261127-ch8-forms-crud-r-use-flask-api-ai03-1.html">
+                        <span class="tl-dot"></span>
+                        <div class="tl-date">2026/11/27</div>
+                        <div class="tl-card">
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
+                            <h2 class="tl-title">產品列表 | 企業 ERP 系統</h2>
+                            <div class="tl-file">20261127-ch8-forms-crud-r-use-flask-api-ai03-1.html</div>
+                            <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
+                        </div>
+                    </div>
+
+                    <div class="tl-item" role="button" tabindex="0" data-url="20261127-ch8-forms-crud-c-use-flask-api-ai03-1.html" data-file="20261127-ch8-forms-crud-c-use-flask-api-ai03-1.html" data-search="產品建檔 | 企業 erp 系統 20261127-ch8-forms-crud-c-use-flask-api-ai03-1.html">
+                        <span class="tl-dot"></span>
+                        <div class="tl-date">2026/11/27</div>
+                        <div class="tl-card">
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
+                            <h2 class="tl-title">產品建檔 | 企業 ERP 系統</h2>
+                            <div class="tl-file">20261127-ch8-forms-crud-c-use-flask-api-ai03-1.html</div>
+                            <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
+                        </div>
+                    </div>
+
+                    <div class="tl-item" role="button" tabindex="0" data-url="20261126-ch8-forms-crud-r-ai02-1.html" data-file="20261126-ch8-forms-crud-r-ai02-1.html" data-search="產品管理 | 企業 erp 系統 20261126-ch8-forms-crud-r-ai02-1.html">
+                        <span class="tl-dot"></span>
+                        <div class="tl-date">2026/11/26</div>
+                        <div class="tl-card">
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
+                            <h2 class="tl-title">產品管理 | 企業 ERP 系統</h2>
+                            <div class="tl-file">20261126-ch8-forms-crud-r-ai02-1.html</div>
+                            <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
+                        </div>
+                    </div>
+
+                    <div class="tl-item" role="button" tabindex="0" data-url="20261126-ch8-forms-crud-c-ai02-1.html" data-file="20261126-ch8-forms-crud-c-ai02-1.html" data-search="產品建檔 | 企業 erp 系統 20261126-ch8-forms-crud-c-ai02-1.html">
+                        <span class="tl-dot"></span>
+                        <div class="tl-date">2026/11/26</div>
+                        <div class="tl-card">
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
+                            <h2 class="tl-title">產品建檔 | 企業 ERP 系統</h2>
+                            <div class="tl-file">20261126-ch8-forms-crud-c-ai02-1.html</div>
+                            <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
+                        </div>
+                    </div>
+
+                    <div class="tl-item" role="button" tabindex="0" data-url="20261118-js.html" data-file="20261118-js.html" data-search="javascript 重點整理 - 練習 20261118-js.html">
+                        <span class="tl-dot"></span>
+                        <div class="tl-date">2026/11/18</div>
+                        <div class="tl-card">
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
+                            <h2 class="tl-title">JavaScript 重點整理 - 練習</h2>
+                            <div class="tl-file">20261118-js.html</div>
+                            <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
+                        </div>
+                    </div>
+
+                    <div class="tl-item" role="button" tabindex="0" data-url="20261118-js-ex01-ai02-2.html" data-file="20261118-js-ex01-ai02-2.html" data-search="臺中極簡旅宿指南 | 觀光資訊資料庫 20261118-js-ex01-ai02-2.html">
+                        <span class="tl-dot"></span>
+                        <div class="tl-date">2026/11/18</div>
+                        <div class="tl-card">
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
+                            <h2 class="tl-title">臺中極簡旅宿指南 | 觀光資訊資料庫</h2>
+                            <div class="tl-file">20261118-js-ex01-ai02-2.html</div>
+                            <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
+                        </div>
+                    </div>
+
+                    <div class="tl-item" role="button" tabindex="0" data-url="20261118-js-ex01-ai01-1.html" data-file="20261118-js-ex01-ai01-1.html" data-search="練習資料處理 (旅館民宿 - 觀光資訊資料庫) 20261118-js-ex01-ai01-1.html">
+                        <span class="tl-dot"></span>
+                        <div class="tl-date">2026/11/18</div>
+                        <div class="tl-card">
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
+                            <h2 class="tl-title">練習資料處理 (旅館民宿 - 觀光資訊資料庫)</h2>
+                            <div class="tl-file">20261118-js-ex01-ai01-1.html</div>
+                            <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
+                        </div>
+                    </div>
+
+                    <div class="tl-item" role="button" tabindex="0" data-url="20261112-js.html" data-file="20261112-js.html" data-search="javascript 重點整理 20261112-js.html">
+                        <span class="tl-dot"></span>
+                        <div class="tl-date">2026/11/12</div>
+                        <div class="tl-card">
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
+                            <h2 class="tl-title">JavaScript 重點整理</h2>
+                            <div class="tl-file">20261112-js.html</div>
+                            <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
+                        </div>
+                    </div>
+
+                    <div class="tl-item" role="button" tabindex="0" data-url="20261111-ch8-forms-crud-c-ai01-1.html" data-file="20261111-ch8-forms-crud-c-ai01-1.html" data-search="erp 產品管理系統 - 產品建檔 20261111-ch8-forms-crud-c-ai01-1.html">
+                        <span class="tl-dot"></span>
+                        <div class="tl-date">2026/11/11</div>
+                        <div class="tl-card">
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
+                            <h2 class="tl-title">ERP 產品管理系統 - 產品建檔</h2>
+                            <div class="tl-file">20261111-ch8-forms-crud-c-ai01-1.html</div>
+                            <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
+                        </div>
+                    </div>
+
+                    <div class="tl-item" role="button" tabindex="0" data-url="20261110-ch8-forms-crud.html" data-file="20261110-ch8-forms-crud.html" data-search="ch8-表單-crud練習 20261110-ch8-forms-crud.html">
+                        <span class="tl-dot"></span>
+                        <div class="tl-date">2026/11/10</div>
+                        <div class="tl-card">
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
+                            <h2 class="tl-title">CH8-表單-CRUD練習</h2>
+                            <div class="tl-file">20261110-ch8-forms-crud.html</div>
+                            <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
+                        </div>
+                    </div>
+
+                    <div class="tl-item" role="button" tabindex="0" data-url="20261110-ch8-forms-crud-r.html" data-file="20261110-ch8-forms-crud-r.html" data-search="ch8-表單-crud練習 20261110-ch8-forms-crud-r.html">
+                        <span class="tl-dot"></span>
+                        <div class="tl-date">2026/11/10</div>
+                        <div class="tl-card">
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
+                            <h2 class="tl-title">CH8-表單-CRUD練習</h2>
+                            <div class="tl-file">20261110-ch8-forms-crud-r.html</div>
+                            <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
+                        </div>
+                    </div>
+
+                    <div class="tl-item" role="button" tabindex="0" data-url="20261110-ch8-forms-crud-c.html" data-file="20261110-ch8-forms-crud-c.html" data-search="ch8-表單-crud練習 20261110-ch8-forms-crud-c.html">
+                        <span class="tl-dot"></span>
+                        <div class="tl-date">2026/11/10</div>
+                        <div class="tl-card">
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
+                            <h2 class="tl-title">CH8-表單-CRUD練習</h2>
+                            <div class="tl-file">20261110-ch8-forms-crud-c.html</div>
+                            <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
+                        </div>
+                    </div>
+
                     <div class="tl-item" role="button" tabindex="0" data-url="20261103-wowjs.html" data-file="20261103-wowjs.html" data-search="動畫練習 20261103-wowjs.html">
                         <span class="tl-dot"></span>
                         <div class="tl-date">2026/11/03</div>
                         <div class="tl-card">
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
                             <h2 class="tl-title">動畫練習</h2>
                             <div class="tl-file">20261103-wowjs.html</div>
                             <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
@@ -160,6 +300,7 @@
                         <span class="tl-dot"></span>
                         <div class="tl-date">2026/10/27</div>
                         <div class="tl-card">
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
                             <h2 class="tl-title">SPA - 個人履歷排版練習</h2>
                             <div class="tl-file">20261027-spa.html</div>
                             <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
@@ -170,6 +311,7 @@
                         <span class="tl-dot"></span>
                         <div class="tl-date">2026/10/27</div>
                         <div class="tl-card">
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
                             <h2 class="tl-title">SPA - 個人履歷排版練習</h2>
                             <div class="tl-file">20261027-spa-ai08-1.html</div>
                             <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
@@ -180,18 +322,20 @@
                         <span class="tl-dot"></span>
                         <div class="tl-date">2026/10/27</div>
                         <div class="tl-card">
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
                             <h2 class="tl-title">AI 輔助全端程式設計｜線上報名（教學模擬）</h2>
                             <div class="tl-file">20261027-ch8-forms-ex01-ai01-2.html</div>
                             <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
                         </div>
                     </div>
 
-                    <div class="tl-item" role="button" tabindex="0" data-url="20261027-ch8-forms-ex01-ai01-1.html" data-file="20261027-ch8-forms-ex01-ai01-1.html" data-search="ai 輔助全端程式設計｜線上報名（教學模擬） 20261027-ch8-forms-ex01-ai01-1.html">
+                    <div class="tl-item" role="button" tabindex="0" data-url="20261027-ch7-flex-ex01-ai01-1.html" data-file="20261027-ch7-flex-ex01-ai01-1.html" data-search="個人履歷 - demo 20261027-ch7-flex-ex01-ai01-1.html">
                         <span class="tl-dot"></span>
                         <div class="tl-date">2026/10/27</div>
                         <div class="tl-card">
-                            <h2 class="tl-title">AI 輔助全端程式設計｜線上報名（教學模擬）</h2>
-                            <div class="tl-file">20261027-ch8-forms-ex01-ai01-1.html</div>
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
+                            <h2 class="tl-title">個人履歷 - Demo</h2>
+                            <div class="tl-file">20261027-ch7-flex-ex01-ai01-1.html</div>
                             <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
                         </div>
                     </div>
@@ -200,6 +344,7 @@
                         <span class="tl-dot"></span>
                         <div class="tl-date">2026/10/15</div>
                         <div class="tl-card">
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
                             <h2 class="tl-title">ch8. Forms(表單)</h2>
                             <div class="tl-file">20261015-ch8-forms.html</div>
                             <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
@@ -210,6 +355,7 @@
                         <span class="tl-dot"></span>
                         <div class="tl-date">2026/10/15</div>
                         <div class="tl-card">
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
                             <h2 class="tl-title">ch8 表單排版(JS)</h2>
                             <div class="tl-file">20261015-ch8-forms-ex01-2.html</div>
                             <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
@@ -220,6 +366,7 @@
                         <span class="tl-dot"></span>
                         <div class="tl-date">2026/10/15</div>
                         <div class="tl-card">
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
                             <h2 class="tl-title">ch8 表單排版(JS)</h2>
                             <div class="tl-file">20261015-ch8-forms-ex01-1.html</div>
                             <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
@@ -230,18 +377,9 @@
                         <span class="tl-dot"></span>
                         <div class="tl-date">2026/10/13</div>
                         <div class="tl-card">
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
                             <h2 class="tl-title">卷軸roller</h2>
                             <div class="tl-file">20261013-ch7-flex-roller.html</div>
-                            <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
-                        </div>
-                    </div>
-
-                    <div class="tl-item" role="button" tabindex="0" data-url="20261013-ch7-flex-ex01-1.html" data-file="20261013-ch7-flex-ex01-1.html" data-search="個人履歷 - 陳小明 20261013-ch7-flex-ex01-1.html">
-                        <span class="tl-dot"></span>
-                        <div class="tl-date">2026/10/13</div>
-                        <div class="tl-card">
-                            <h2 class="tl-title">個人履歷 - 陳小明</h2>
-                            <div class="tl-file">20261013-ch7-flex-ex01-1.html</div>
                             <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
                         </div>
                     </div>
@@ -250,6 +388,7 @@
                         <span class="tl-dot"></span>
                         <div class="tl-date">2026/10/08</div>
                         <div class="tl-card">
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
                             <h2 class="tl-title">ch7. Flex</h2>
                             <div class="tl-file">20261008-ch7-flex.html</div>
                             <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
@@ -260,18 +399,9 @@
                         <span class="tl-dot"></span>
                         <div class="tl-date">2026/10/08</div>
                         <div class="tl-card">
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
                             <h2 class="tl-title">切版練習02</h2>
                             <div class="tl-file">20261008-ch6-ex02-ai01.html</div>
-                            <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
-                        </div>
-                    </div>
-
-                    <div class="tl-item" role="button" tabindex="0" data-url="20261008-ch6-ex02-3.html" data-file="20261008-ch6-ex02-3.html" data-search="切版練習02 20261008-ch6-ex02-3.html">
-                        <span class="tl-dot"></span>
-                        <div class="tl-date">2026/10/08</div>
-                        <div class="tl-card">
-                            <h2 class="tl-title">切版練習02</h2>
-                            <div class="tl-file">20261008-ch6-ex02-3.html</div>
                             <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
                         </div>
                     </div>
@@ -280,6 +410,7 @@
                         <span class="tl-dot"></span>
                         <div class="tl-date">2026/10/08</div>
                         <div class="tl-card">
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
                             <h2 class="tl-title">切版練習02</h2>
                             <div class="tl-file">20261008-ch6-ex02-2.html</div>
                             <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
@@ -290,6 +421,7 @@
                         <span class="tl-dot"></span>
                         <div class="tl-date">2026/10/08</div>
                         <div class="tl-card">
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
                             <h2 class="tl-title">切版練習02</h2>
                             <div class="tl-file">20261008-ch6-ex02-1.html</div>
                             <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
@@ -300,6 +432,7 @@
                         <span class="tl-dot"></span>
                         <div class="tl-date">2026/10/06</div>
                         <div class="tl-card">
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
                             <h2 class="tl-title">ch6. Bootstrap 切版</h2>
                             <div class="tl-file">20261006-ch6.html</div>
                             <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
@@ -310,6 +443,7 @@
                         <span class="tl-dot"></span>
                         <div class="tl-date">2026/10/06</div>
                         <div class="tl-card">
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
                             <h2 class="tl-title">切版練習01</h2>
                             <div class="tl-file">20261006-ch6-ex01.html</div>
                             <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
@@ -320,6 +454,7 @@
                         <span class="tl-dot"></span>
                         <div class="tl-date">2026/10/01</div>
                         <div class="tl-card">
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
                             <h2 class="tl-title">opendata - 地方美食餐廳列表</h2>
                             <div class="tl-file">20261001-ch5-bs-table-2.html</div>
                             <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
@@ -330,6 +465,7 @@
                         <span class="tl-dot"></span>
                         <div class="tl-date">2026/10/01</div>
                         <div class="tl-card">
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
                             <h2 class="tl-title">Bootstrap - Table(表格)</h2>
                             <div class="tl-file">20261001-ch5-bs-table-1.html</div>
                             <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
@@ -340,6 +476,7 @@
                         <span class="tl-dot"></span>
                         <div class="tl-date">2026/10/01</div>
                         <div class="tl-card">
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
                             <h2 class="tl-title">Bootstrap</h2>
                             <div class="tl-file">20261001-ch1-bs.html</div>
                             <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
@@ -350,6 +487,7 @@
                         <span class="tl-dot"></span>
                         <div class="tl-date">2026/09/29</div>
                         <div class="tl-card">
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
                             <h2 class="tl-title">OpenData - 地方美食資料練習</h2>
                             <div class="tl-file">20260929-javascript-travelfood.html</div>
                             <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
@@ -360,6 +498,7 @@
                         <span class="tl-dot"></span>
                         <div class="tl-date">2026/09/29</div>
                         <div class="tl-card">
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
                             <h2 class="tl-title">OpenData - 地方美食資料練習</h2>
                             <div class="tl-file">20260929-javascript-travelfood-ai01.html</div>
                             <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
@@ -370,6 +509,7 @@
                         <span class="tl-dot"></span>
                         <div class="tl-date">2026/09/24</div>
                         <div class="tl-card">
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
                             <h2 class="tl-title">JavaScript 語法簡介</h2>
                             <div class="tl-file">20260924-javascript.html</div>
                             <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
@@ -380,18 +520,9 @@
                         <span class="tl-dot"></span>
                         <div class="tl-date">2026/09/23</div>
                         <div class="tl-card">
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
                             <h2 class="tl-title">練習01. 使用CSS語法配置版面</h2>
                             <div class="tl-file">20260923-ex01.html</div>
-                            <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
-                        </div>
-                    </div>
-
-                    <div class="tl-item" role="button" tabindex="0" data-url="20260923-ex01-ai02.html" data-file="20260923-ex01-ai02.html" data-search="練習01. 使用css語法配置版面 20260923-ex01-ai02.html">
-                        <span class="tl-dot"></span>
-                        <div class="tl-date">2026/09/23</div>
-                        <div class="tl-card">
-                            <h2 class="tl-title">練習01. 使用CSS語法配置版面</h2>
-                            <div class="tl-file">20260923-ex01-ai02.html</div>
                             <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
                         </div>
                     </div>
@@ -400,38 +531,9 @@
                         <span class="tl-dot"></span>
                         <div class="tl-date">2026/09/23</div>
                         <div class="tl-card">
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
                             <h2 class="tl-title">練習01. 使用CSS語法配置版面</h2>
                             <div class="tl-file">20260923-ex01-ai01-5.html</div>
-                            <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
-                        </div>
-                    </div>
-
-                    <div class="tl-item" role="button" tabindex="0" data-url="20260923-ex01-ai01-4.html" data-file="20260923-ex01-ai01-4.html" data-search="練習01. 使用css語法配置版面 (rwd) 20260923-ex01-ai01-4.html">
-                        <span class="tl-dot"></span>
-                        <div class="tl-date">2026/09/23</div>
-                        <div class="tl-card">
-                            <h2 class="tl-title">練習01. 使用CSS語法配置版面 (RWD)</h2>
-                            <div class="tl-file">20260923-ex01-ai01-4.html</div>
-                            <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
-                        </div>
-                    </div>
-
-                    <div class="tl-item" role="button" tabindex="0" data-url="20260923-ex01-ai01-3.html" data-file="20260923-ex01-ai01-3.html" data-search="練習01. 使用css語法配置版面 20260923-ex01-ai01-3.html">
-                        <span class="tl-dot"></span>
-                        <div class="tl-date">2026/09/23</div>
-                        <div class="tl-card">
-                            <h2 class="tl-title">練習01. 使用CSS語法配置版面</h2>
-                            <div class="tl-file">20260923-ex01-ai01-3.html</div>
-                            <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
-                        </div>
-                    </div>
-
-                    <div class="tl-item" role="button" tabindex="0" data-url="20260923-ex01-ai01-2.html" data-file="20260923-ex01-ai01-2.html" data-search="練習01. 使用css語法配置版面 20260923-ex01-ai01-2.html">
-                        <span class="tl-dot"></span>
-                        <div class="tl-date">2026/09/23</div>
-                        <div class="tl-card">
-                            <h2 class="tl-title">練習01. 使用CSS語法配置版面</h2>
-                            <div class="tl-file">20260923-ex01-ai01-2.html</div>
                             <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
                         </div>
                     </div>
@@ -440,6 +542,7 @@
                         <span class="tl-dot"></span>
                         <div class="tl-date">2026/09/23</div>
                         <div class="tl-card">
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
                             <h2 class="tl-title">練習01. 使用CSS語法配置版面</h2>
                             <div class="tl-file">20260923-ex01-ai01-1.html</div>
                             <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
@@ -450,6 +553,7 @@
                         <span class="tl-dot"></span>
                         <div class="tl-date">2026/09/22</div>
                         <div class="tl-card">
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
                             <h2 class="tl-title">HTML與CSS基礎語法</h2>
                             <div class="tl-file">20260922-1.html</div>
                             <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
@@ -485,9 +589,41 @@
         var countEl = document.getElementById('shownCount');
         var empty = document.getElementById('noResult');
 
+        var animTimer = null;
+        function playTrace(item) {
+            var card = item.querySelector('.tl-card');
+            var svg = item.querySelector('.tl-trace');
+            var rects = svg.querySelectorAll('rect');
+            var w = card.offsetWidth - 2, h = card.offsetHeight - 2;
+            var r = 12;
+            var perim = 2 * (w + h) - 8 * r + 2 * Math.PI * r;
+            var dur = 900;
+            item.classList.remove('lit');
+            clearTimeout(animTimer);
+            rects.forEach(function (rc, i) {
+                rc.setAttribute('width', w);
+                rc.setAttribute('height', h);
+                rc.style.transition = 'none';
+                if (i === 0) {
+                    rc.style.strokeDasharray = perim;
+                    rc.style.strokeDashoffset = perim;
+                } else {
+                    rc.style.strokeDasharray = '14 ' + perim;
+                    rc.style.strokeDashoffset = 14;
+                }
+            });
+            void svg.getBoundingClientRect();
+            rects.forEach(function (rc, i) {
+                rc.style.transition = 'stroke-dashoffset ' + dur + 'ms linear';
+                rc.style.strokeDashoffset = (i === 0) ? 0 : -(perim - 14);
+            });
+            animTimer = setTimeout(function () { item.classList.add('lit'); }, dur);
+        }
+
         function select(item) {
-            items.forEach(function (el) { el.classList.remove('active'); });
+            items.forEach(function (el) { el.classList.remove('active', 'lit'); });
             item.classList.add('active');
+            playTrace(item);
             var url = item.getAttribute('data-url');
             var file = item.getAttribute('data-file');
             frame.src = url;
