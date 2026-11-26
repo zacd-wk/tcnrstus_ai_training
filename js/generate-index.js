@@ -1,3 +1,6 @@
+// node ./js/generate-index.js
+// node .\js\generate-index.js
+
 const fs = require('fs');
 const path = require('path');
 
@@ -92,6 +95,7 @@ try {
                         <span class="tl-dot"></span>
                         <div class="tl-date">${displayDate}</div>
                         <div class="tl-card">
+                            <svg class="tl-trace" aria-hidden="true"><rect class="trail" x="1" y="1" rx="12" ry="12"/><rect class="head" x="1" y="1" rx="12" ry="12"/></svg>
                             <h2 class="tl-title">${escapeHtml(rawTitle)}</h2>
                             <div class="tl-file">${folderBadge}${escapeHtml(fileNameOnly)}</div>
                             <span class="tl-go"><i class="bi bi-play-fill"></i> PREVIEW</span>
@@ -179,7 +183,14 @@ try {
         .tl-date{font-family:var(--font-mono);font-size:.74rem;font-weight:700;color:var(--accent-green);margin-bottom:.35rem}
         .tl-card{position:relative;padding:.9rem 1rem 2.4rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:12px;transition:all .3s}
         .tl-item:hover .tl-card,.tl-item:focus-visible .tl-card{border-color:rgba(0,242,254,.5);transform:translateX(4px)}
-        .tl-item.active .tl-card{border-color:var(--accent-cyan);background:rgba(0,242,254,.08);box-shadow:var(--glow-cyan)}
+        .tl-item.active .tl-card{border-color:rgba(0,242,254,.15);background:rgba(0,242,254,.08)}
+.tl-item.active.lit .tl-card{border-color:var(--accent-cyan);box-shadow:var(--glow-cyan);transition:border-color .5s,box-shadow .5s}
+.tl-trace{position:absolute;inset:-1px;width:calc(100% + 2px);height:calc(100% + 2px);pointer-events:none;overflow:visible;display:none}
+.tl-item.active .tl-trace{display:block}
+.tl-trace rect{fill:none;stroke:var(--accent-cyan);stroke-width:2;stroke-linecap:round;
+    filter:drop-shadow(0 0 4px var(--accent-cyan)) drop-shadow(0 0 8px var(--accent-cyan))}
+.tl-trace .head{stroke:#fff;stroke-width:3}
+.tl-item.active.lit .tl-trace{opacity:0;transition:opacity .5s .1s}
         .tl-item.active .tl-dot{background:var(--accent-cyan);box-shadow:0 0 14px var(--accent-cyan)}
         .tl-title{font-size:.95rem;font-weight:700;line-height:1.5;margin:0 0 .45rem}
         .tl-file{font-family:var(--font-mono);font-size:.7rem;color:var(--text-secondary);word-break:break-all}
@@ -278,9 +289,41 @@ ${listItems}                </div>
         var countEl = document.getElementById('shownCount');
         var empty = document.getElementById('noResult');
 
+        var animTimer = null;
+        function playTrace(item) {
+            var card = item.querySelector('.tl-card');
+            var svg = item.querySelector('.tl-trace');
+            var rects = svg.querySelectorAll('rect');
+            var w = card.offsetWidth - 2, h = card.offsetHeight - 2;
+            var r = 12;
+            var perim = 2 * (w + h) - 8 * r + 2 * Math.PI * r;
+            var dur = 900;
+            item.classList.remove('lit');
+            clearTimeout(animTimer);
+            rects.forEach(function (rc, i) {
+                rc.setAttribute('width', w);
+                rc.setAttribute('height', h);
+                rc.style.transition = 'none';
+                if (i === 0) {
+                    rc.style.strokeDasharray = perim;
+                    rc.style.strokeDashoffset = perim;
+                } else {
+                    rc.style.strokeDasharray = '14 ' + perim;
+                    rc.style.strokeDashoffset = 14;
+                }
+            });
+            void svg.getBoundingClientRect();
+            rects.forEach(function (rc, i) {
+                rc.style.transition = 'stroke-dashoffset ' + dur + 'ms linear';
+                rc.style.strokeDashoffset = (i === 0) ? 0 : -(perim - 14);
+            });
+            animTimer = setTimeout(function () { item.classList.add('lit'); }, dur);
+        }
+
         function select(item) {
-            items.forEach(function (el) { el.classList.remove('active'); });
+            items.forEach(function (el) { el.classList.remove('active', 'lit'); });
             item.classList.add('active');
+            playTrace(item);
             var url = item.getAttribute('data-url');
             var file = item.getAttribute('data-file');
             frame.src = url;
