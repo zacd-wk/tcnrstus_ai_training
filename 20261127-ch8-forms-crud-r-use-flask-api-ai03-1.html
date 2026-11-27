@@ -1,0 +1,1740 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>產品列表 | 企業 ERP 系統</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <!-- Font Awesome：若有本機套件，請改成 css/all.min.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/myall.css">
+    <style>
+        /* ========== 一、設計變數（兩頁共用，統一管理配色） ========== */
+        :root {
+            --erp-navy: #14284b;
+            --erp-navy-dark: #0d1b33;
+            --erp-navy-light: #264a85;
+            --erp-accent: #3b82f6;
+            --erp-bg: #f1f4f9;
+            --erp-surface: #ffffff;
+            --erp-border: #dde3ec;
+            --erp-text: #1f2937;
+            --erp-muted: #6b7280;
+            --erp-success: #15803d;
+            --erp-success-bg: #dcfce7;
+            --erp-warning: #b45309;
+            --erp-warning-bg: #fef3c7;
+            --erp-danger: #b91c1c;
+            --erp-danger-bg: #fee2e2;
+            --erp-radius: 10px;
+            --erp-shadow: 0 1px 3px rgba(16, 24, 40, .08), 0 1px 2px rgba(16, 24, 40, .04);
+            --erp-sidebar-width: 250px;
+        }
+
+        body {
+            background-color: var(--erp-bg);
+            color: var(--erp-text);
+            font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+        }
+
+        @keyframes erpFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ========== 二、側邊欄（桌面固定、手機為 Offcanvas） ========== */
+        .erp-sidebar {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: var(--erp-sidebar-width);
+            background: var(--erp-navy-dark);
+            flex-direction: column;
+            z-index: 1030;
+        }
+
+        .erp-offcanvas {
+            background: var(--erp-navy-dark);
+            width: var(--erp-sidebar-width) !important;
+        }
+
+        .erp-offcanvas .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
+
+        .erp-brand {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.05rem;
+            padding: 1.1rem 1.25rem;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(255, 255, 255, .08);
+        }
+
+        .erp-brand:hover {
+            color: #fff;
+        }
+
+        .erp-brand i {
+            color: var(--erp-accent);
+            font-size: 1.3rem;
+        }
+
+        .erp-nav-title {
+            color: #7d8db0;
+            font-size: .75rem;
+            letter-spacing: 1px;
+            padding: 1.25rem 1.25rem .5rem;
+        }
+
+        .erp-nav-link {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            color: #c7d2e5;
+            text-decoration: none;
+            padding: .7rem 1.25rem;
+            margin: 2px .75rem;
+            border-radius: 8px;
+            transition: background-color .15s ease;
+        }
+
+        .erp-nav-link i {
+            width: 18px;
+            text-align: center;
+        }
+
+        .erp-nav-link:hover {
+            background: rgba(255, 255, 255, .08);
+            color: #fff;
+        }
+
+        .erp-nav-link.active {
+            background: var(--erp-navy-light);
+            color: #fff;
+            box-shadow: inset 3px 0 0 var(--erp-accent);
+        }
+
+        .erp-sidebar-footer {
+            margin-top: auto;
+            padding: 1rem 1.25rem;
+            color: #7d8db0;
+            font-size: .78rem;
+            border-top: 1px solid rgba(255, 255, 255, .08);
+        }
+
+        /* ========== 三、主要區域與頂部資訊列 ========== */
+        .erp-main {
+            min-height: 100vh;
+        }
+
+        @media (min-width: 992px) {
+            .erp-main {
+                margin-left: var(--erp-sidebar-width);
+            }
+        }
+
+        .erp-topbar {
+            position: sticky;
+            top: 0;
+            z-index: 1020;
+            background: #fff;
+            border-bottom: 1px solid var(--erp-border);
+            border-top: 3px solid var(--erp-accent);
+            padding: .75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .erp-topbar .topbar-title {
+            font-weight: 700;
+            color: var(--erp-navy);
+        }
+
+        .erp-topbar .topbar-sub {
+            font-size: .78rem;
+            color: var(--erp-muted);
+        }
+
+        .erp-clock {
+            margin-left: auto;
+            color: var(--erp-navy);
+            font-variant-numeric: tabular-nums;
+            font-size: .9rem;
+            background: var(--erp-bg);
+            border: 1px solid var(--erp-border);
+            border-radius: 999px;
+            padding: .3rem .9rem;
+            white-space: nowrap;
+        }
+
+        .btn-menu {
+            border: 1px solid var(--erp-border);
+            background: #fff;
+            color: var(--erp-navy);
+            border-radius: 6px;
+        }
+
+        .erp-content {
+            padding: 1.5rem;
+            max-width: 1280px;
+        }
+
+        .page-header {
+            margin-bottom: 1.25rem;
+        }
+
+        .page-header h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--erp-navy);
+            margin-bottom: .25rem;
+        }
+
+        .page-header p {
+            color: var(--erp-muted);
+            margin-bottom: 0;
+        }
+
+        .erp-breadcrumb {
+            font-size: .875rem;
+        }
+
+        .erp-breadcrumb .breadcrumb-item a {
+            color: var(--erp-accent);
+            text-decoration: none;
+        }
+
+        /* 展示模式提示列 */
+        .demo-banner {
+            background: var(--erp-warning-bg);
+            border: 1px solid #f5d98b;
+            color: #7c4a03;
+            border-radius: var(--erp-radius);
+            padding: .75rem 1rem;
+            margin-bottom: 1rem;
+            align-items: center;
+            gap: .75rem;
+            font-size: .9rem;
+        }
+
+        .demo-banner:not(.d-none) {
+            display: flex;
+        }
+
+        .demo-banner a {
+            color: var(--erp-navy);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .demo-banner .btn-close {
+            margin-left: auto;
+            font-size: .7rem;
+        }
+
+        /* ========== 四、卡片與按鈕 ========== */
+        .erp-card {
+            background: var(--erp-surface);
+            border: 1px solid var(--erp-border);
+            border-radius: var(--erp-radius);
+            box-shadow: var(--erp-shadow);
+            overflow: hidden;
+            animation: erpFadeIn .3s ease;
+        }
+
+        .erp-card-header {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--erp-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            font-weight: 700;
+            color: var(--erp-navy);
+            background: #fff;
+        }
+
+        .erp-card-header small {
+            font-weight: 400;
+            color: var(--erp-muted);
+        }
+
+        .erp-card-body {
+            padding: 1.5rem;
+        }
+
+        .erp-card-footer {
+            padding: 1rem 1.25rem;
+            background: #f8fafc;
+            border-top: 1px solid var(--erp-border);
+            text-align: right;
+        }
+
+        .btn-erp-primary {
+            background: var(--erp-navy);
+            color: #fff;
+            border: 1px solid var(--erp-navy);
+            border-radius: 6px;
+            padding: .5rem 1.25rem;
+            font-weight: 600;
+            transition: background-color .15s ease;
+        }
+
+        .btn-erp-primary:hover {
+            background: var(--erp-navy-light);
+            border-color: var(--erp-navy-light);
+            color: #fff;
+        }
+
+        .btn-erp-secondary {
+            background: #fff;
+            color: var(--erp-muted);
+            border: 1px solid var(--erp-border);
+            border-radius: 6px;
+            padding: .5rem 1.25rem;
+            font-weight: 600;
+        }
+
+        .btn-erp-secondary:hover {
+            background: var(--erp-bg);
+            color: var(--erp-text);
+        }
+
+        .btn-erp-success {
+            background: var(--erp-success);
+            color: #fff;
+            border: 1px solid var(--erp-success);
+            border-radius: 6px;
+            padding: .5rem 1.25rem;
+            font-weight: 600;
+        }
+
+        .btn-erp-success:hover {
+            background: #166534;
+            color: #fff;
+        }
+
+        /* ========== 五、表單 ========== */
+        .form-section-title {
+            font-size: .8rem;
+            font-weight: 700;
+            color: var(--erp-muted);
+            letter-spacing: 1px;
+            margin: .5rem 0 .75rem;
+            padding-bottom: .4rem;
+            border-bottom: 1px solid var(--erp-border);
+        }
+
+        .form-label {
+            font-weight: 600;
+            font-size: .9rem;
+        }
+
+        .form-control,
+        .form-select {
+            border-color: #9db4dd;
+            background-color: #fff;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--erp-accent);
+            box-shadow: 0 0 0 .2rem rgba(59, 130, 246, .2);
+        }
+
+        .form-control:disabled,
+        .form-select:disabled {
+            background-color: #f3f4f6;
+            color: #6b7280;
+            border-style: dashed;
+            border-color: var(--erp-border);
+            cursor: not-allowed;
+        }
+
+        .hint-text {
+            font-size: .8rem;
+            color: var(--erp-muted);
+            margin-top: .25rem;
+        }
+
+        .tag-readonly,
+        .tag-editable {
+            font-size: .7rem;
+            padding: .15em .55em;
+            border-radius: 4px;
+            margin-left: .4rem;
+            font-weight: 600;
+        }
+
+        .tag-readonly {
+            background: #e5e7eb;
+            color: #4b5563;
+        }
+
+        .tag-editable {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        #num-text {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--erp-navy);
+        }
+
+        .range-scale {
+            color: var(--erp-muted);
+            font-size: .8rem;
+        }
+
+        .form-range::-webkit-slider-runnable-track {
+            background: #cbd5e1;
+            height: 6px;
+            border-radius: 3px;
+        }
+
+        .form-range::-webkit-slider-thumb {
+            background: var(--erp-navy);
+            margin-top: -6px;
+            width: 18px;
+            height: 18px;
+        }
+
+        .form-range::-moz-range-track {
+            background: #cbd5e1;
+            height: 6px;
+            border-radius: 3px;
+        }
+
+        .form-range::-moz-range-thumb {
+            background: var(--erp-navy);
+            border: none;
+            width: 18px;
+            height: 18px;
+        }
+
+        .form-range:focus {
+            box-shadow: none;
+        }
+
+        /* ========== 六、分類 Badge ========== */
+        .badge-cat {
+            display: inline-block;
+            padding: .35em .75em;
+            border-radius: 999px;
+            font-size: .8rem;
+            font-weight: 600;
+        }
+
+        .badge-cat.cat-snack {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-cat.cat-dairy {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-cat.cat-drink {
+            background: #cffafe;
+            color: #155e75;
+        }
+
+        .badge-cat.cat-food {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-cat.cat-bakery {
+            background: #ffedd5;
+            color: #9a3412;
+        }
+
+        .badge-cat.cat-frozen {
+            background: #e0f2fe;
+            color: #075985;
+        }
+
+        .badge-cat.cat-season {
+            background: #f3e8ff;
+            color: #6b21a8;
+        }
+
+        .badge-cat.cat-fresh {
+            background: #ecfccb;
+            color: #3f6212;
+        }
+
+        .badge-cat.cat-daily {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .badge-cat.cat-other {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        /* ========== 七、SweetAlert2 統一風格 ========== */
+        .swal2-popup {
+            border-radius: var(--erp-radius);
+            font-family: inherit;
+        }
+
+        .swal2-title {
+            color: var(--erp-navy);
+            font-size: 1.4rem;
+        }
+
+        .swal2-styled.swal2-confirm {
+            background-color: var(--erp-navy) !important;
+            border-radius: 6px;
+        }
+
+        .swal2-styled.swal2-deny {
+            background-color: #fff !important;
+            color: var(--erp-muted) !important;
+            border: 1px solid var(--erp-border) !important;
+            border-radius: 6px;
+        }
+
+        .swal2-styled:focus {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, .35) !important;
+        }
+
+        /* ========== R頁專用：統計卡片 ========== */
+        .stat-card {
+            background: var(--erp-surface);
+            border: 1px solid var(--erp-border);
+            border-radius: var(--erp-radius);
+            box-shadow: var(--erp-shadow);
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            height: 100%;
+            animation: erpFadeIn .3s ease;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+            background: #e0e9fb;
+            color: var(--erp-navy);
+        }
+
+        .stat-icon.is-danger {
+            background: var(--erp-danger-bg);
+            color: var(--erp-danger);
+        }
+
+        .stat-label {
+            font-size: .8rem;
+            color: var(--erp-muted);
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--erp-navy);
+            line-height: 1.2;
+        }
+
+        /* ========== R頁專用：資料表格 ========== */
+        .table-erp {
+            margin-bottom: 0;
+            vertical-align: middle;
+        }
+
+        .table-erp thead th {
+            background-color: var(--erp-navy);
+            color: #fff;
+            font-weight: 600;
+            font-size: .875rem;
+            border: none;
+            padding: .85rem 1rem;
+            white-space: nowrap;
+        }
+
+        .table-erp thead th.sortable {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .table-erp thead th.sortable:hover {
+            background-color: var(--erp-navy-light);
+        }
+
+        .sort-icon {
+            margin-left: .35rem;
+            opacity: .45;
+            font-size: .8rem;
+        }
+
+        .sort-icon.active {
+            opacity: 1;
+            color: #93c5fd;
+        }
+
+        .table-erp tbody td {
+            padding: .85rem 1rem;
+            border-color: var(--erp-border);
+        }
+
+        .table-erp tbody tr:hover {
+            background-color: #eef3fc;
+        }
+
+        .text-num {
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .text-center-col {
+            text-align: center;
+        }
+
+        .time-text {
+            color: var(--erp-muted);
+            font-size: .88rem;
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+        }
+
+        .remark-text {
+            color: var(--erp-muted);
+            font-size: .9rem;
+        }
+
+        .stock {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .stock-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .stock-low {
+            color: var(--erp-danger);
+        }
+
+        .stock-low .stock-dot {
+            background: var(--erp-danger);
+        }
+
+        .stock-mid {
+            color: var(--erp-warning);
+        }
+
+        .stock-mid .stock-dot {
+            background: var(--erp-warning);
+        }
+
+        .stock-ok {
+            color: var(--erp-success);
+        }
+
+        .stock-ok .stock-dot {
+            background: var(--erp-success);
+        }
+
+        .btn-erp {
+            border-radius: 6px;
+            font-size: .85rem;
+            font-weight: 600;
+            padding: .35rem .8rem;
+            border: 1px solid transparent;
+        }
+
+        .btn-erp-edit {
+            background: #e0e9fb;
+            color: var(--erp-navy);
+            border-color: #c3d4f5;
+        }
+
+        .btn-erp-edit:hover {
+            background: var(--erp-navy);
+            color: #fff;
+        }
+
+        .btn-erp-delete {
+            background: #fff;
+            color: var(--erp-danger);
+            border-color: #f3b4b4;
+        }
+
+        .btn-erp-delete:hover {
+            background: var(--erp-danger);
+            color: #fff;
+        }
+
+        /* 手機版排序選單 */
+        .sort-mobile {
+            margin-bottom: 1rem;
+        }
+
+        /* 分頁 */
+        .pagination {
+            margin: 1.25rem 0 0;
+            flex-wrap: wrap;
+        }
+
+        .pagination .page-link {
+            color: var(--erp-navy);
+            border: 1px solid var(--erp-border);
+            margin: 2px 3px;
+            border-radius: 6px;
+            min-width: 38px;
+            text-align: center;
+        }
+
+        .pagination .page-link:hover {
+            background: #e0e9fb;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: var(--erp-navy);
+            border-color: var(--erp-navy);
+            color: #fff;
+        }
+
+        /* ========== R頁專用：更新 Modal ========== */
+        .modal-content {
+            border: none;
+            border-radius: var(--erp-radius);
+            box-shadow: 0 10px 30px rgba(16, 24, 40, .25);
+            overflow: hidden;
+        }
+
+        .modal-erp-header {
+            background: var(--erp-navy);
+            color: #fff;
+            padding: 1rem 1.5rem;
+        }
+
+        .modal-erp-header .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            background: #f8fafc;
+            border-top: 1px solid var(--erp-border);
+        }
+
+        /* ========== R頁 RWD ========== */
+        @media screen and (max-width: 1200px) {
+
+            .table-erp thead th,
+            .table-erp tbody td {
+                padding: .65rem .6rem;
+                font-size: .88rem;
+            }
+
+            .btn-erp .btn-text {
+                display: none;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .erp-content {
+                padding: 1rem;
+            }
+
+            .erp-topbar {
+                padding: .6rem 1rem;
+            }
+
+            .erp-card-body {
+                padding: .75rem;
+            }
+
+            .table-rwd thead {
+                display: none;
+            }
+
+            .table-rwd tbody tr {
+                display: block;
+                background: #fff;
+                border: 1px solid var(--erp-border);
+                border-left: 4px solid var(--erp-navy);
+                border-radius: var(--erp-radius);
+                box-shadow: var(--erp-shadow);
+                margin-top: 15px;
+                padding: .5rem 0;
+            }
+
+            .table-rwd tbody tr:hover {
+                background: #fff;
+            }
+
+            .table-rwd tbody tr td {
+                display: block;
+                overflow: hidden;
+                border: none;
+                padding: .5rem 1rem;
+                text-align: left;
+            }
+
+            .table-rwd tbody tr td::before {
+                content: attr(data-th);
+                font-size: .85rem;
+                font-weight: 700;
+                display: block;
+                float: left;
+                width: 30%;
+                text-align: left;
+                padding-right: 15px;
+                color: var(--erp-muted);
+            }
+
+            .table-rwd tbody tr td span {
+                display: block;
+                float: left;
+                width: 70%;
+            }
+
+            .table-rwd tbody tr td:last-child {
+                border-top: 1px solid var(--erp-border);
+                margin-top: .4rem;
+                padding-top: .75rem;
+            }
+
+            .btn-erp .btn-text {
+                display: inline;
+            }
+
+            .text-num {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 側邊欄（桌面版固定顯示） -->
+    <aside class="erp-sidebar d-none d-lg-flex">
+        <a class="erp-brand" href="#"><i class="fa-solid fa-boxes-stacked"></i>ERP 產品庫存管理</a>
+        <div class="erp-nav-title">產品管理</div>
+        <nav>
+            <a class="erp-nav-link" href="#"><i class="fa-solid fa-house"></i>首頁</a>
+            <a class="erp-nav-link" href="20261127-ch8-forms-crud-c-use-flask-api-ai03-1.html"><i
+                    class="fa-solid fa-square-plus"></i>產品建檔</a>
+            <a class="erp-nav-link active" href="20261127-ch8-forms-crud-r-use-flask-api-ai03-1.html" aria-current="page"><i
+                    class="fa-solid fa-table-list"></i>產品列表</a>
+        </nav>
+        <div class="erp-sidebar-footer"><i class="fa-regular fa-clock me-1"></i>時區：台灣 (UTC+8)</div>
+    </aside>
+
+    <!-- 側邊欄（平板、手機版：點選頂部選單鈕展開） -->
+    <div class="offcanvas offcanvas-start erp-offcanvas d-lg-none" tabindex="-1" id="erpSidebar"
+        aria-labelledby="erpSidebarLabel">
+        <div class="offcanvas-header p-0 pe-3 align-items-center">
+            <span id="erpSidebarLabel" class="visually-hidden">主選單</span>
+            <a class="erp-brand" href="#"><i class="fa-solid fa-boxes-stacked"></i>ERP 產品庫存管理</a>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body p-0">
+            <div class="erp-nav-title">產品管理</div>
+            <nav>
+                <a class="erp-nav-link" href="#"><i class="fa-solid fa-house"></i>首頁</a>
+                <a class="erp-nav-link" href="20261127-ch8-forms-crud-c-use-flask-api-ai03-1.html"><i
+                        class="fa-solid fa-square-plus"></i>產品建檔</a>
+                <a class="erp-nav-link active" href="20261127-ch8-forms-crud-r-use-flask-api-ai03-1.html" aria-current="page"><i
+                        class="fa-solid fa-table-list"></i>產品列表</a>
+            </nav>
+        </div>
+    </div>
+
+    <div class="erp-main">
+        <!-- 頂部資訊列 -->
+        <header class="erp-topbar">
+            <button class="btn btn-menu d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#erpSidebar"
+                aria-controls="erpSidebar" aria-label="開啟選單"><i class="fa-solid fa-bars"></i></button>
+            <div>
+                <div class="topbar-title">產品列表</div>
+                <div class="topbar-sub d-none d-sm-block">ERP 產品與庫存管理 / 產品管理</div>
+            </div>
+            <div class="erp-clock d-none d-sm-block"><i class="fa-regular fa-clock me-1"></i><span
+                    id="erp-clock">--</span></div>
+        </header>
+
+        <main class="erp-content mx-auto">
+            <!-- 頁面標題與麵包屑 -->
+            <div class="page-header">
+                <nav aria-label="breadcrumb" class="erp-breadcrumb">
+                    <ol class="breadcrumb mb-1">
+                        <li class="breadcrumb-item"><a href="#"><i class="fa-solid fa-house"></i> 首頁</a></li>
+                        <li class="breadcrumb-item">產品管理</li>
+                        <li class="breadcrumb-item active" aria-current="page">產品列表</li>
+                    </ol>
+                </nav>
+                <h1>產品列表</h1>
+                <p>檢視產品庫存資料，預設依最後更新時間排序，可更新產品價格、數量或刪除產品。</p>
+            </div>
+
+            <!-- 展示模式提示列（可關閉） -->
+            <div class="demo-banner d-none" id="demo-banner" role="alert">
+                <i class="fa-solid fa-circle-info"></i>
+                <span>展示模式：無法連線 API，目前為範例資料，資料僅存於此瀏覽器。</span>
+                <a href="#" id="demo-reset">重設範例資料</a>
+                <button type="button" class="btn-close" id="demo-close" aria-label="關閉提示"></button>
+            </div>
+
+            <!-- 統計資訊卡片（數值由 showdata 依資料計算） -->
+            <div class="row g-3 mb-4">
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fa-solid fa-box"></i></div>
+                        <div>
+                            <div class="stat-label">產品總數</div>
+                            <div class="stat-value" id="stat-total">0</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fa-solid fa-cubes"></i></div>
+                        <div>
+                            <div class="stat-label">庫存總量</div>
+                            <div class="stat-value" id="stat-num">0</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fa-solid fa-sack-dollar"></i></div>
+                        <div>
+                            <div class="stat-label">庫存總價值</div>
+                            <div class="stat-value" id="stat-value">NT$ 0</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="stat-card">
+                        <div class="stat-icon is-danger"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                        <div>
+                            <div class="stat-label">低庫存產品（≤ 20）</div>
+                            <div class="stat-value" id="stat-low">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="erp-card mb-5">
+                <div class="erp-card-header">
+                    <span><i class="fa-solid fa-list me-2"></i>產品資料清單</span>
+                    <small>庫存圖例：
+                        <span class="stock stock-low"><span class="stock-dot"></span>≤20</span>
+                        <span class="stock stock-mid ms-1"><span class="stock-dot"></span>21-50</span>
+                        <span class="stock stock-ok ms-1"><span class="stock-dot"></span>&gt;50</span>
+                    </small>
+                </div>
+                <div class="erp-card-body">
+                    <!-- 手機版排序（桌面版請直接點表頭） -->
+                    <div class="sort-mobile d-md-none">
+                        <label for="sort-select" class="form-label"><i
+                                class="fa-solid fa-arrow-down-wide-short me-1"></i>排序方式</label>
+                        <select id="sort-select" class="form-select">
+                            <option value="updatedAt|desc">最後更新時間（新→舊）</option>
+                            <option value="updatedAt|asc">最後更新時間（舊→新）</option>
+                            <option value="name|asc">產品名稱（A→Z）</option>
+                            <option value="name|desc">產品名稱（Z→A）</option>
+                            <option value="price|asc">產品價格（低→高）</option>
+                            <option value="price|desc">產品價格（高→低）</option>
+                            <option value="num|asc">產品數量（少→多）</option>
+                            <option value="num|desc">產品數量（多→少）</option>
+                            <option value="category|asc">產品分類（A→Z）</option>
+                            <option value="category|desc">產品分類（Z→A）</option>
+                        </select>
+                    </div>
+
+                    <table class="table table-erp table-hover table-rwd">
+                        <thead>
+                            <tr>
+                                <th class="sortable" data-sort="name" width="13%">產品名稱<i
+                                        class="fa-solid fa-sort sort-icon"></i></th>
+                                <th class="sortable text-num" data-sort="price" width="11%">產品價格<i
+                                        class="fa-solid fa-sort sort-icon"></i></th>
+                                <th class="sortable" data-sort="num" width="11%">產品數量<i
+                                        class="fa-solid fa-sort sort-icon"></i></th>
+                                <th class="sortable" data-sort="category" width="12%">產品分類<i
+                                        class="fa-solid fa-sort sort-icon"></i></th>
+                                <th width="17%">產品備註</th>
+                                <th class="sortable" data-sort="updatedAt" width="16%">最後更新時間<i
+                                        class="fa-solid fa-sort sort-icon"></i></th>
+                                <th width="20%" class="text-center-col">#</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mytbody">
+                            <tr>
+                                <td data-th="產品名稱">XXXX</td>
+                                <td data-th="產品價格">XXXX</td>
+                                <td data-th="產品數量">XXXX</td>
+                                <td data-th="產品分類">XXXX</td>
+                                <td data-th="產品備註">XXXX</td>
+                                <td data-th="最後更新時間">XXXX</td>
+                                <td data-th="功能">
+                                    <button class="btn btn-warning" data-bs-toggle="modal"
+                                        data-bs-target="#updateModal">更新</button>
+                                    <button class="btn btn-danger">刪除</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- 頁碼 -->
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center" id="pageList">
+                            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                            <li class="page-item"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- updateModal -->
+    <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
+        data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header modal-erp-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel"><i
+                            class="fa-solid fa-pen-to-square me-2"></i>產品資料編輯</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- 基本資料（可編輯） -->
+                    <div class="form-section-title"><i class="fa-solid fa-tag me-1"></i>基本資料</div>
+                    <div class="mb-3 form-floating">
+                        <input type="text" class="form-control form-control-lg" placeholder="" id="pname" value="餅乾02">
+                        <label for="pname" class="form-label">產品名稱(字數1-10字數)<span
+                                class="tag-editable">可編輯</span></label>
+                        <div class="valid-feedback"><i class="fa-solid fa-circle-check"></i> 符合規定</div>
+                        <div class="invalid-feedback"><i class="fa-solid fa-circle-exclamation"></i> 不符合規定</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="category" class="form-label">產品分類<span class="tag-editable">可編輯</span></label>
+                        <select name="" id="category" class="form-select form-select-lg">
+                            <option value="" class="text-center" disabled>---產品分類---</option>
+                            <option value="零食" selected>零食</option>
+                            <option value="乳製品">乳製品</option>
+                            <option value="飲料">飲料</option>
+                            <option value="食品">食品</option>
+                            <option value="烘焙">烘焙</option>
+                            <option value="冷凍食品">冷凍食品</option>
+                            <option value="調味料">調味料</option>
+                            <option value="生鮮蔬果">生鮮蔬果</option>
+                            <option value="日用品">日用品</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="remark" class="form-label">備註<span class="tag-editable">選填</span></label>
+                        <textarea id="remark" class="form-control" rows="3"
+                            placeholder="選填：有填寫時字數 2-10 字。">避免陽光直射</textarea>
+                        <div class="valid-feedback"><i class="fa-solid fa-circle-check"></i> 符合規定</div>
+                        <div class="invalid-feedback"><i class="fa-solid fa-circle-exclamation"></i> 不符合規定</div>
+                    </div>
+
+                    <!-- 庫存與價格（可編輯） -->
+                    <div class="form-section-title mt-4"><i class="fa-solid fa-coins me-1"></i>庫存與價格</div>
+                    <div class="mb-3">
+                        <label for="price" class="form-label">價格(1-100)<span class="tag-editable">可編輯</span></label>
+                        <input type="number" class="form-control form-control-lg" id="price" min="1" max="100"
+                            value="50">
+                        <div class="valid-feedback"><i class="fa-solid fa-circle-check"></i> 價格符合規定</div>
+                        <div class="invalid-feedback"><i class="fa-solid fa-circle-exclamation"></i> 價格不符合規定</div>
+                    </div>
+
+                    <div class="mb-2">
+                        <label for="num" class="form-label">數量: <span class="h2 text-danger fw-bold"
+                                id="num-text">50</span> 個<span class="tag-editable">可編輯</span></label>
+                        <input type="range" class="form-range" min="1" max="100" step="1" value="50" id="num">
+                        <div class="d-flex justify-content-between">
+                            <span class="fw-bold range-scale">1</span>
+                            <span class="fw-bold range-scale">100</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-erp-secondary" data-bs-dismiss="modal"><i
+                            class="fa-solid fa-xmark me-1"></i>取消</button>
+                    <button type="button" class="btn btn-erp-primary" id="updateModal-btn-update"><i
+                            class="fa-solid fa-floppy-disk me-1"></i>確認更新</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/jquery-4.0.0.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+
+        //========== 共用：時間函式（台灣時間 +08:00） ==========
+        //取得目前台灣時間，格式例如 2026-11-26T09:31:00+08:00
+        function getTaiwanTime() {
+            const d = new Date(Date.now() + 8 * 60 * 60 * 1000);
+            return d.toISOString().replace(/\.\d{3}Z$/, "+08:00");
+        }
+
+        //將時間字串轉成台灣時間顯示 yyyy/MM/dd HH:mm；沒有資料時顯示 —
+        function formatTime(str) {
+            if (!str) return "—";
+            const d = new Date(str);
+            if (isNaN(d.getTime())) return "—";
+            const iso = new Date(d.getTime() + 8 * 60 * 60 * 1000).toISOString();
+            return iso.slice(0, 10).replace(/-/g, "/") + " " + iso.slice(11, 16);
+        }
+
+        //頂部資訊列的即時時鐘
+        function showClock() {
+            const t = new Date(Date.now() + 8 * 60 * 60 * 1000);
+            const iso = t.toISOString();
+            const week = ["日", "一", "二", "三", "四", "五", "六"][t.getUTCDay()];
+            $("#erp-clock").text(iso.slice(0, 10).replace(/-/g, "/") + " (週" + week + ") " + iso.slice(11, 19));
+        }
+
+        //展示模式用的 localStorage 名稱
+        const DEMO_KEY = "erpDemoProducts";        //完整的展示資料
+        const DEMO_NEW_KEY = "erpDemoNewProducts"; //C頁暫存的新增資料（R頁載入時合併）
+        const DEMO_DEFAULT_MAX_ID = 12;            //預設範例資料的最大 id
+
+        //安全讀取 localStorage 的 JSON
+        function readStorage(key) {
+            try {
+                return JSON.parse(localStorage.getItem(key));
+            } catch (e) {
+                return null;
+            }
+        }
+
+        const pageSize = 5;
+        let page = 1;
+        let productData = []; //儲存API取得的所有資料
+
+        let flag_price = true;
+        let flag_pname = true;   //【新增】名稱驗證旗標（編輯窗用）
+        let flag_remark = true;  //【新增】備註驗證旗標（選填，空白也算通過）
+        let uid = "";
+
+        //【新增】排序狀態：預設依最後更新時間，由新到舊
+        let sortKey = "updatedAt";
+        let sortDir = "desc";
+        //【新增】沒有 updatedAt 欄位的舊資料，排序時使用的預設時間
+        const DEFAULT_UPDATED_AT = "2026-09-21T00:00:00+08:00";
+
+        //【新增】展示模式（API 無法連線時使用，例如 GitHub Pages）
+        let isDemoMode = false;
+        let demoData = [];
+
+        //【新增】預設範例資料（僅展示模式使用；id 9、12 刻意缺少時間欄位，用來示範預設更新時間）
+        const DEMO_DEFAULTS = [
+            { id: "1", name: "洋芋片", category: "零食", price: 35, num: 80, remark: "避免陽光直射", createdAt: "2026-10-05T10:20:00+08:00", updatedAt: "2026-11-20T14:05:00+08:00" },
+            { id: "2", name: "巧克力棒", category: "零食", price: 25, num: 15, remark: "常溫保存", createdAt: "2026-10-08T09:00:00+08:00", updatedAt: "2026-11-18T11:30:00+08:00" },
+            { id: "3", name: "鮮奶", category: "乳製品", price: 60, num: 12, remark: "冷藏保存", createdAt: "2026-10-10T08:45:00+08:00", updatedAt: "2026-11-25T16:40:00+08:00" },
+            { id: "4", name: "優格", category: "乳製品", price: 45, num: 40, remark: "開封後盡快食用", createdAt: "2026-10-12T13:10:00+08:00", updatedAt: "2026-11-10T09:15:00+08:00" },
+            { id: "5", name: "綠茶", category: "飲料", price: 20, num: 95, remark: "常溫保存", createdAt: "2026-10-15T15:25:00+08:00", updatedAt: "2026-10-28T10:00:00+08:00" },
+            { id: "6", name: "氣泡水", category: "飲料", price: 18, num: 60, remark: "避免碰撞", createdAt: "2026-10-18T11:00:00+08:00", updatedAt: "2026-11-22T17:20:00+08:00" },
+            { id: "7", name: "即食麵", category: "食品", price: 30, num: 70, remark: "注意保存期限", createdAt: "2026-10-20T09:30:00+08:00", updatedAt: "2026-11-05T13:45:00+08:00" },
+            { id: "8", name: "吐司", category: "烘焙", price: 40, num: 18, remark: "當日配送", createdAt: "2026-10-22T07:50:00+08:00", updatedAt: "2026-11-24T08:10:00+08:00" },
+            { id: "9", name: "冷凍水餃", category: "冷凍食品", price: 85, num: 25, remark: "零下18度保存" },
+            { id: "10", name: "醬油", category: "調味料", price: 55, num: 45, remark: "陰涼處存放", createdAt: "2026-10-25T14:00:00+08:00", updatedAt: "2026-11-12T10:50:00+08:00" },
+            { id: "11", name: "高麗菜", category: "生鮮蔬果", price: 38, num: 10, remark: "需冷藏", createdAt: "2026-11-01T06:30:00+08:00", updatedAt: "2026-11-26T07:00:00+08:00" },
+            { id: "12", name: "衛生紙", category: "日用品", price: 90, num: 100, remark: "防潮存放" }
+        ];
+
+        $(function () {
+            //頂部時鐘
+            showClock();
+            setInterval(showClock, 1000);
+
+            //取得資料  GET API
+            $.ajax({
+                type: "GET",
+                url: "http://192.168.10.23:8080/product",
+                dataType: "json",
+                success: showdata,
+                error: function () {
+                    //【新增】API 無法連線時，切換成展示模式（資料存在瀏覽器 localStorage）
+                    startDemoMode();
+
+                    Swal.fire({
+                        title: "讀取失敗",
+                        text: "無法連接後端API，已切換為展示模式。",
+                        icon: "warning"
+                    });
+                }
+            });
+
+            //【新增】監聽表頭排序（點同一欄位切換升冪／降冪）
+            $(".sortable").on("click", function () {
+                const key = $(this).data("sort");
+                if (sortKey === key) {
+                    sortDir = (sortDir === "asc") ? "desc" : "asc";
+                } else {
+                    sortKey = key;
+                    sortDir = (key === "updatedAt") ? "desc" : "asc";
+                }
+                page = 1;
+                showdata(productData);
+            });
+
+            //【新增】監聽手機版排序下拉選單
+            $("#sort-select").on("change", function () {
+                const arr = $(this).val().split("|");
+                sortKey = arr[0];
+                sortDir = arr[1];
+                page = 1;
+                showdata(productData);
+            });
+
+            //【新增】展示模式提示列：關閉、重設
+            $("#demo-close").on("click", function () {
+                $("#demo-banner").addClass("d-none");
+            });
+
+            $("#demo-reset").on("click", function (e) {
+                e.preventDefault();
+                demoData = JSON.parse(JSON.stringify(DEMO_DEFAULTS));
+                saveDemoData();
+                page = 1;
+                showdata(demoData);
+                Swal.fire({
+                    title: "已重設",
+                    text: "展示資料已還原為預設範例。",
+                    icon: "success"
+                });
+            });
+
+            //監聽點擊頁碼
+            $("#pageList").on("click", ".page-link", function () {
+                console.log($(this).data("page"));
+                page = Number($(this).data("page"));
+
+                //重新顯示畫面
+                showdata(productData);
+            });
+
+            //監聽更新按鈕
+            $("#mytbody").on("click", ".btn-update", function () {
+                console.log($(this).data("id"));
+                const id = $(this).data("id");
+                uid = $(this).data("id");
+
+                //【新增】展示模式：直接從 demoData 取得資料，不呼叫 API
+                if (isDemoMode) {
+                    const found = demoData.find(function (item) {
+                        return String(item.id) === String(id);
+                    });
+                    if (found) {
+                        showUpdateData(found);
+                    }
+                    return;
+                }
+
+                //傳遞至後端API 取得資料
+                $.ajax({
+                    type: "GET",
+                    url: "http://192.168.10.23:8080/product/" + id,
+                    dataType: "json",
+                    success: showUpdateData,
+                    error: function () {
+                        Swal.fire({
+                            title: "讀取失敗",
+                            text: "無法連接後端API。",
+                            icon: "error"
+                        });
+                    }
+                });
+            });
+
+            //監聽產品數量range
+            $("#num").on("input", function () {
+                $("#num-text").text($(this).val());
+            });
+
+            //監聽 價格price
+            $("#price").on("change", function () {
+                const price = Number($(this).val());
+                if (price >= 1 && price <= 100) {
+                    $(this).removeClass("is-invalid");
+                    $(this).addClass("is-valid");
+                    flag_price = true;
+                } else {
+                    $(this).removeClass("is-valid");
+                    $(this).addClass("is-invalid");
+                    flag_price = false;
+                }
+            });
+
+            //【新增】監聽 產品名稱（1-10 字）
+            $("#pname").on("change", function () {
+                const len = $(this).val().length;
+                if (len > 0 && len < 7) {
+                    $(this).removeClass("is-invalid");
+                    $(this).addClass("is-valid");
+                    flag_pname = true;
+                } else {
+                    $(this).removeClass("is-valid");
+                    $(this).addClass("is-invalid");
+                    flag_pname = false;
+                }
+            });
+
+            //【新增】監聽 備註（選填：空白通過；有填寫需 1-10 字）
+            $("#remark").on("change", function () {
+                const len = $(this).val().length;
+                if (len === 0) {
+                    $(this).removeClass("is-valid is-invalid");
+                    flag_remark = true;
+                } else if (len > 0 && len < 11) {
+                    $(this).removeClass("is-invalid");
+                    $(this).addClass("is-valid");
+                    flag_remark = true;
+                } else {
+                    $(this).removeClass("is-valid");
+                    $(this).addClass("is-invalid");
+                    flag_remark = false;
+                }
+            });
+
+            //監聽確認更新按鈕 #updateModal-btn-update
+            $("#updateModal-btn-update").on("click", function () {
+                //【修改】列出有錯誤的欄位
+                let errList = [];
+                if (!flag_pname) {
+                    errList.push("產品名稱：需填寫 1-10 個字");
+                    $("#pname").removeClass("is-valid").addClass("is-invalid");
+                }
+                if (!$("#category").val()) {
+                    errList.push("產品分類：請選擇分類");
+                }
+                if (!flag_remark) {
+                    errList.push("備註：有填寫時需 1-10 個字");
+                    $("#remark").removeClass("is-valid").addClass("is-invalid");
+                }
+                if (!flag_price) {
+                    errList.push("價格：需介於 1-100");
+                    $("#price").removeClass("is-valid").addClass("is-invalid");
+                }
+                if (errList.length > 0) {
+                    Swal.fire({
+                        title: "更新失敗",
+                        html: "請修正下列欄位：<br><div style='text-align:left; display:inline-block; margin-top:.5rem;'>• " + errList.join("<br>• ") + "</div>",
+                        icon: "error"
+                    });
+                    return;
+                }
+
+                //取得表單資料
+                const pname = $("#pname").val();
+                const category = $("#category").val();
+                const remark = $("#remark").val();
+                const price = Number($("#price").val());
+                const num = Number($("#num").val());
+
+                //轉換成json格式
+                //【修改】名稱、分類、備註也可編輯，一併送出；同時更新最後更新時間 updatedAt（台灣時間）
+                const jsonData = {
+                    name: pname,
+                    category: category,
+                    remark: remark,
+                    price: price,
+                    num: num,
+                    updatedAt: getTaiwanTime()
+                }
+
+                console.log(JSON.stringify(jsonData));
+
+                //【新增】展示模式：直接修改 demoData，不呼叫 API
+                if (isDemoMode) {
+                    demoData.forEach(function (item) {
+                        if (String(item.id) === String(uid)) {
+                            item.name = jsonData.name;
+                            item.category = jsonData.category;
+                            item.remark = jsonData.remark;
+                            item.price = jsonData.price;
+                            item.num = jsonData.num;
+                            item.updatedAt = jsonData.updatedAt;
+                        }
+                    });
+                    saveDemoData();
+                    bootstrap.Modal.getInstance(document.getElementById("updateModal")).hide();
+                    Swal.fire({
+                        title: "更新成功",
+                        text: "產品資料已更新。",
+                        icon: "success"
+                    });
+                    showdata(demoData);
+                    return;
+                }
+
+                //傳遞至後端，執行更新步驟
+                $.ajax({
+                    type: "PATCH",
+                    url: "http://192.168.10.23:8080/product/" + uid,
+                    dataType: "json",
+                    data: JSON.stringify(jsonData),
+                    contentType: "application/json",
+                    success: function (data) {
+                        console.log("更新成功: ", data);
+                        //關閉 modal
+                        bootstrap.Modal.getInstance(document.getElementById("updateModal")).hide();
+
+                        Swal.fire({
+                            title: "更新成功",
+                            text: "產品資料已更新。",
+                            icon: "success"
+                        });
+
+                        //重新取得產品列表
+                        $.ajax({
+                            type: "GET",
+                            url: "http://192.168.10.23:8080/product",
+                            dataType: "json",
+                            success: showdata
+                        });
+                    },
+                    // error: function () {
+                    //     Swal.fire({
+                    //         title: "更新失敗",
+                    //         text: "無法更新產品資料!",
+                    //         icon: "error"
+                    //     });
+                    // }
+                    error: function (xhr) {
+                        // 1. 嘗試從 xhr.responseJSON 取得後端回傳的 error 欄位
+                        // 使用 ?. (可選串連) 防止網路斷線導致 responseJSON 不存在而報錯
+                        const errorMsg = xhr.responseJSON?.error || "無法更新產品資料!";
+
+                        Swal.fire({
+                            title: "更新失敗",
+                            text: errorMsg,
+                            icon: "error"
+                        });
+                    }
+                });
+            });
+
+            //監聽刪除按鈕.btn-delete
+            $("#mytbody").on("click", ".btn-delete", function () {
+                console.log($(this).data("id"));
+                const did = $(this).data("id"); //for delete
+
+                //詢問確認是否刪除
+                Swal.fire({
+                    title: "確認刪除嗎?",
+                    showDenyButton: true,
+                    showCancelButton: false,
+                    confirmButtonText: "確認",
+                    denyButtonText: `取消`,
+                    icon: "question"
+                }).then((result) => {
+                    /* Read more about isConfirmed, isDenied below */
+                    if (result.isConfirmed) {
+
+                        //【新增】展示模式：直接從 demoData 移除，不呼叫 API
+                        if (isDemoMode) {
+                            demoData = demoData.filter(function (item) {
+                                return String(item.id) !== String(did);
+                            });
+                            saveDemoData();
+
+                            Swal.fire({
+                                title: "刪除成功",
+                                text: "產品資料已刪除。",
+                                icon: "success"
+                            });
+
+                            //避免刪除後導致頁碼錯誤
+                            const demoTotalPage = Math.ceil(demoData.length / pageSize);
+                            if (page > demoTotalPage) {
+                                page = Math.max(1, demoTotalPage);
+                            }
+                            showdata(demoData);
+                            return;
+                        }
+
+                        //傳送did 至後端API執行刪除
+                        $.ajax({
+                            type: "DELETE",
+                            url: "http://192.168.10.23:8080/product/" + did,
+                            dataType: "json",
+                            success: function (data) {
+                                console.log(data);
+
+                                Swal.fire({
+                                    title: "刪除成功",
+                                    text: "產品資料已刪除。",
+                                    icon: "success"
+                                });
+
+                                //重新取得產品列表
+                                $.ajax({
+                                    type: "GET",
+                                    url: "http://192.168.10.23:8080/product",
+                                    dataType: "json",
+                                    success: function (data) {
+
+                                        //避免刪除後導致頁碼錯誤
+                                        const totalPage = Math.ceil(data.length / pageSize);
+                                        if (page > totalPage) {
+                                            page = Math.max(1, totalPage);
+                                        }
+                                        showdata(data);
+                                    }
+                                });
+
+
+                            },
+                            error: function () {
+                                Swal.fire({
+                                    title: "刪除失敗",
+                                    text: "無法刪除產品資料!",
+                                    icon: "error"
+                                });
+                            }
+                        });
+
+
+                    }
+                    else if (result.isDenied) Swal.fire("放棄刪除", "", "info");
+                });
+            });
+
+        });
+
+        function showdata(data) {
+            console.log(data);
+            productData = data;
+
+            //更新統計卡片（純視覺呈現）
+            showStats(data);
+
+            //【新增】先排序（不改動原陣列），再分頁
+            const sortedData = sortData(data);
+            updateSortUI();
+
+            //分頁
+            const pageData = pagination(sortedData, pageSize, page);
+
+            $("#mytbody").empty();
+            pageData.forEach(function (item) {
+                //依分類、庫存取得 Badge 與狀態樣式
+                const catClass = getCategoryClass(item.category);
+                const stockClass = getStockClass(item.num);
+
+                let srtHTML = `<tr>
+                                    <td data-th="產品名稱"><span class="fw-bold">${item.name}</span></td>
+                                    <td data-th="產品價格" class="text-num"><span>NT$ ${Number(item.price).toLocaleString()}</span></td>
+                                    <td data-th="產品數量"><span class="stock ${stockClass}"><span class="stock-dot"></span>${item.num}</span></td>
+                                    <td data-th="產品分類"><span><span class="badge-cat ${catClass}">${item.category}</span></span></td>
+                                    <td data-th="產品備註"><span class="remark-text">${item.remark}</span></td>
+                                    <td data-th="最後更新時間"><span class="time-text">${formatTime(getUpdatedAt(item))}</span></td>
+                                    <td data-th="功能" class="text-center-col">
+                                        <button class="btn btn-erp btn-erp-edit btn-update" data-bs-toggle="modal" data-bs-target="#updateModal" data-id="${item.id}"><i class="fa-solid fa-pen-to-square"></i> <span class="btn-text">更新</span></button>
+                                        <button class="btn btn-erp btn-erp-delete btn-delete" data-id="${item.id}"><i class="fa-solid fa-trash-can"></i> <span class="btn-text">刪除</span></button>
+                                    </td>
+                                </tr>`;
+                $("#mytbody").append(srtHTML);
+            });
+
+            //產生頁碼
+            const totalPage = Math.ceil(data.length / pageSize);
+            $("#pageList").empty();
+
+            //上一頁
+            if (page > 1) {
+                //【修正原始錯誤】原本屬性為 data-pagehGs_O-41h8g，導致「上一頁」讀不到頁碼，已改為 data-page
+                $("#pageList").append(`<li class="page-item"><a class="page-link" href="#" data-page="${page - 1}"><i class="fa-solid fa-angle-left"></i> 上一頁</a></li>`);
+            }
+
+            //頁碼
+            for (let i = 1; i <= totalPage; i++) {
+                //三元運算子
+                let active = (i === page) ? "active" : "";
+
+                let strHTML = `<li class="page-item ${active}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
+                $("#pageList").append(strHTML);
+            }
+
+            //下一頁
+            if (page < totalPage) {
+                $("#pageList").append(`<li class="page-item"><a class="page-link" href="#" data-page="${page + 1}">下一頁 <i class="fa-solid fa-angle-right"></i></a></li>`);
+            }
+
+        }
+
+        function showUpdateData(data) {
+            console.log(data);
+
+            //將資料擺入updateModal
+            $("#pname").val(data.name);
+            $("#price").val(data.price);
+            $("#num").val(data.num)
+            $("#num-text").text(data.num);
+            $("#category").val(data.category);
+            $("#remark").val(data.remark);
+
+            //【新增】每次開啟都重設驗證樣式與旗標，避免上一筆的錯誤狀態殘留
+            $("#pname, #price, #remark").removeClass("is-valid is-invalid");
+            flag_pname = true;
+            flag_price = true;
+            flag_remark = true;
+        }
+
+
+
+        function pagination(data, pageSize, page) {
+            const start = (page - 1) * pageSize;
+            const end = start + pageSize;
+
+            return data.slice(start, end);
+        }
+
+        //【新增】取得最後更新時間；沒有欄位時使用預設時間
+        function getUpdatedAt(item) {
+            return item.updatedAt ? item.updatedAt : DEFAULT_UPDATED_AT;
+        }
+
+        //【新增】排序資料（回傳新陣列，不改動原資料）
+        function sortData(data) {
+            const dir = (sortDir === "asc") ? 1 : -1;
+            return data.slice().sort(function (a, b) {
+                let result = 0;
+
+                if (sortKey === "price" || sortKey === "num") {
+                    result = Number(a[sortKey]) - Number(b[sortKey]);
+                } else if (sortKey === "updatedAt") {
+                    result = new Date(getUpdatedAt(a)).getTime() - new Date(getUpdatedAt(b)).getTime();
+                } else {
+                    result = String(a[sortKey]).localeCompare(String(b[sortKey]), "zh-Hant");
+                }
+
+                //數值相同時，以 id 當第二排序，讓結果穩定
+                if (result === 0) {
+                    result = String(a.id).localeCompare(String(b.id), "zh-Hant", { numeric: true });
+                }
+                return result * dir;
+            });
+        }
+
+        //【新增】更新表頭排序圖示與手機版下拉選單
+        function updateSortUI() {
+            $(".sortable .sort-icon").attr("class", "fa-solid fa-sort sort-icon");
+            const icon = (sortDir === "asc") ? "fa-sort-up" : "fa-sort-down";
+            $(".sortable[data-sort='" + sortKey + "'] .sort-icon").attr("class", "fa-solid " + icon + " sort-icon active");
+            $("#sort-select").val(sortKey + "|" + sortDir);
+        }
+
+        //計算並顯示統計卡片（全部依資料計算）
+        function showStats(data) {
+            let totalNum = 0;     //庫存總量
+            let totalValue = 0;   //庫存總價值 = 價格 x 數量
+            let lowCount = 0;     //低庫存數量（num <= 20）
+
+            data.forEach(function (item) {
+                totalNum += Number(item.num);
+                totalValue += Number(item.price) * Number(item.num);
+                if (Number(item.num) <= 20) {
+                    lowCount++;
+                }
+            });
+
+            $("#stat-total").text(data.length.toLocaleString());
+            $("#stat-num").text(totalNum.toLocaleString());
+            $("#stat-value").text("NT$ " + totalValue.toLocaleString());
+            $("#stat-low").text(lowCount.toLocaleString());
+        }
+
+        //依分類回傳 Badge 顏色 class
+        function getCategoryClass(category) {
+            if (category === "零食") return "cat-snack";
+            if (category === "乳製品") return "cat-dairy";
+            if (category === "飲料") return "cat-drink";
+            if (category === "食品") return "cat-food";
+            if (category === "烘焙") return "cat-bakery";
+            if (category === "冷凍食品") return "cat-frozen";
+            if (category === "調味料") return "cat-season";
+            if (category === "生鮮蔬果") return "cat-fresh";
+            if (category === "日用品") return "cat-daily";
+            return "cat-other";
+        }
+
+        //依數量回傳庫存狀態 class
+        function getStockClass(num) {
+            num = Number(num);
+            if (num <= 20) return "stock-low";
+            if (num <= 50) return "stock-mid";
+            return "stock-ok";
+        }
+
+        //【新增】啟動展示模式：讀取 localStorage，沒有就用預設範例，並合併 C 頁暫存的新增資料
+        function startDemoMode() {
+            isDemoMode = true;
+
+            let saved = readStorage(DEMO_KEY);
+            if (!Array.isArray(saved)) {
+                saved = JSON.parse(JSON.stringify(DEMO_DEFAULTS));
+            }
+
+            const pending = readStorage(DEMO_NEW_KEY);
+            if (Array.isArray(pending)) {
+                saved = saved.concat(pending);
+                localStorage.removeItem(DEMO_NEW_KEY);
+            }
+
+            demoData = saved;
+            saveDemoData();
+            $("#demo-banner").removeClass("d-none");
+            showdata(demoData);
+        }
+
+        //【新增】儲存展示資料到 localStorage
+        function saveDemoData() {
+            localStorage.setItem(DEMO_KEY, JSON.stringify(demoData));
+        }
+
+    </script>
+</body>
+
+</html>
